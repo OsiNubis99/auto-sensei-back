@@ -1,0 +1,41 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type FaqType {
+  """
+  FAQ ID
+  """
+  _id: ID!
+
+  """
+  FAQ Question
+  """
+  question: String!
+
+  """
+  FAQ Answer
+  """
+  answer: String!
+}
+
+type Query {
+  faq: [FaqType!]!
+  oneFaq(id: String!): FaqType!
+}
+
+type Mutation {
+  createFaq(input: CreateFaqInput!): FaqType!
+}
+
+input CreateFaqInput {
+  """
+  FAQ Question
+  """
+  question: String!
+
+  """
+  FAQ Answer
+  """
+  answer: String!
+}

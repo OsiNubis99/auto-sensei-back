@@ -1,0 +1,20 @@
+import { registerAs } from '@nestjs/config';
+import * as Joi from 'joi';
+
+import { IJWTConfig } from './interface/jwt-config.interface';
+import JoiUtil, { JoiConfig } from './util/joi';
+
+export const JWTConfig = registerAs('jwt', (): IJWTConfig => {
+  const configs: JoiConfig<IJWTConfig> = {
+    secret: {
+      value: process.env.JWT_SECRET,
+      joi: Joi.string().required(),
+    },
+    expiresIn: {
+      value: process.env.JWT_EXPIRESIN,
+      joi: Joi.string().required().valid('1d', '4h'),
+    },
+  };
+
+  return JoiUtil.validate(configs);
+});
