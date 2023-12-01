@@ -1,7 +1,7 @@
 import { LoginDto } from '@auth/dto/login.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class RegisterUserDto extends LoginDto {
   @IsNotEmpty()
@@ -20,10 +20,10 @@ export class RegisterUserDto extends LoginDto {
   name: string;
 
   @IsNotEmpty()
+  @IsEmail()
   @ApiProperty({
-    description: 'user username',
-    example: 'barryallen1',
-    required: false,
+    description: "user's email",
+    example: 'barryallen@justiceleague.com',
   })
-  username: string;
+  email: string;
 }
