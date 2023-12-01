@@ -1,31 +1,32 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+import { UserTypeEnum } from '@common/enums/user-type.enum';
+
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
   @Prop({
-    required: true,
+    enum: UserTypeEnum,
   })
+  type: UserTypeEnum;
+
+  @Prop()
   name: string;
 
   @Prop({
     lowercase: true,
-    required: true,
     unique: true,
   })
   email: string;
 
   @Prop({
-    required: true,
     unique: true,
   })
   username: string;
 
-  @Prop({
-    required: true,
-  })
+  @Prop({ select: false })
   password: string;
 }
 

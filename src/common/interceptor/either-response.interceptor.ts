@@ -1,13 +1,21 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  HttpException,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Observable, map } from 'rxjs';
 
 import { Either } from '@common/generics/Either';
 
 export class EitherResponseInterceptor<T> implements NestInterceptor {
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<T> {
+  intercept(
+    _context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<T | HttpException> {
     return next.handle().pipe(
       map((data: Either<T>) => {
-        if (data.isLeft()) throw data.getLeft();
+        if (data.isLeft()) return data.getLeft();
         return data.getRight();
       }),
     );

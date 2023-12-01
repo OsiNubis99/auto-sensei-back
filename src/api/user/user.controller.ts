@@ -1,24 +1,42 @@
-import {
-  Body,
-  Controller,
-  HttpException,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post, Put, Request } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
-import { UserRegisterDto } from './dto/user-register.dto';
-import { UserRegisterService } from './services/user-register.service';
+import { AuthRequest } from '@common/decorators/auth-request';
+import { BasicRequest } from '@common/decorators/basic-request';
+import { Either } from '@common/generics/Either';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { RegisterUserService } from './services/register-user.service';
+import { UpdateUserService } from './services/update-user.service';
+
+@ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private userRegisterService: UserRegisterService) {}
+  constructor(
+    private registerUserService: RegisterUserService,
+    private updateUserService: UpdateUserService,
+  ) {}
 
   @Post('register')
-  async register(@Body() data: UserRegisterDto): Promise<UserDocument> {
-    const response = await this.userRegisterService.execute(data);
-    if (response.isLeft())
-      throw new HttpException(response.getLeft(), HttpStatus.BAD_REQUEST);
-    return response.getRight();
+  @BasicRequest<UserDocument>({
+    description: 'Create a new user',
+    response: 'User Document',
+  })
+  async register(@Body() data: RegisterUserDto): Promise<Either<UserDocument>> {
+    return await this.registerUserService.execute(data);
+  }
+
+  @Put('')
+  @AuthRequest<UserDocument>({
+    description: 'Create a new user',
+    response: 'User Document',
+  })
+  async update(
+    @Request() { user }: { user: UserDocument },
+    @Body() data: UpdateUserDto,
+  ): Promise<Either<UserDocument>> {
+    return await this.updateUserService.execute({ ...data, user });
   }
 }

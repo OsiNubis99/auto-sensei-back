@@ -1,17 +1,19 @@
-export class Either<T> {
-  private readonly value: Error | T;
+import { HttpException, HttpStatus } from '@nestjs/common';
 
-  private constructor(value: Error | T) {
+export class Either<T> {
+  private readonly value: HttpException | T;
+
+  private constructor(value: HttpException | T) {
     this.value = value;
   }
 
   isLeft(): boolean {
-    return this.value instanceof Error;
+    return this.value instanceof HttpException;
   }
 
-  getLeft(): Error {
+  getLeft(): HttpException {
     if (!this.isLeft()) throw new Error('Call-Bad-Side');
-    return <Error>this.value;
+    return <HttpException>this.value;
   }
 
   isRight(): boolean {
@@ -23,8 +25,8 @@ export class Either<T> {
     return <T>this.value;
   }
 
-  static makeLeft(value: string): Either<null> {
-    return new Either<null>(Error(value));
+  static makeLeft(message: string, code: HttpStatus): Either<null> {
+    return new Either<null>(new HttpException(message, code));
   }
 
   static makeRight<T>(value: T): Either<T> {

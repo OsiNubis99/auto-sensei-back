@@ -4,25 +4,18 @@ import {
   Logger,
   NestInterceptor,
 } from '@nestjs/common';
-import { GqlExecutionContext } from '@nestjs/graphql';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
 
-import { Either } from '@common/generics/Either';
-
-export class LoggerInterceptor<T> implements NestInterceptor {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<Either<T>> {
+export class LoggerInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler) {
+    const req = context.switchToHttp().getRequest();
+    const method = req.method;
+    const url = req.url;
     const now = Date.now();
-    const gqlContext = GqlExecutionContext.create(context);
-    const info = gqlContext.getInfo();
     return next.handle().pipe(
-      map((data: Either<T>) => {
+      map((data) => {
         Logger.log(
-          `Method: ${info.fieldName} Error: ${data.isLeft()} ${
-            Date.now() - now
-          }ms`,
+          `${method} ${url} ${Date.now() - now}ms`,
           context.getClass().name,
         );
         return data;

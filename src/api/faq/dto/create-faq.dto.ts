@@ -1,15 +1,15 @@
-import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
-export class UpdateFaqDto {
-  @IsOptional()
+export class CreateFaqDto {
+  @IsNotEmpty()
   @ApiProperty({
     description: 'FAQ Question',
     example: 'Is auto sensei very cool?',
   })
   readonly question: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @ApiProperty({
     description: 'FAQ Answer',
     example: 'Yes!!',

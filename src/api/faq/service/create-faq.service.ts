@@ -5,15 +5,17 @@ import { Model } from 'mongoose';
 
 import { IAppService } from '@common/generics/IAppService';
 import { Either } from '@common/generics/Either';
-import { CreateFaqInput } from '../input/create-faq.input';
+import { CreateFaqDto } from '../dto/create-faq.dto';
+
+interface P extends CreateFaqDto {}
+
+interface R extends FaqDocument {}
 
 @Injectable()
-export class CreateFaqService
-  implements IAppService<CreateFaqInput, FaqDocument>
-{
+export class CreateFaqService implements IAppService<P, R> {
   constructor(@InjectModel(Faq.name) private faqModel: Model<Faq>) {}
 
-  async execute(param: CreateFaqInput): Promise<Either<FaqDocument>> {
+  async execute(param: P): Promise<Either<R>> {
     const faq = new this.faqModel(param);
     return Either.makeRight(await faq.save());
   }
