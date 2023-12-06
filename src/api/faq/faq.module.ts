@@ -1,12 +1,13 @@
 import { CommonModule } from '@common/common.module';
 import { Module } from '@nestjs/common';
 
-import { FaqResolver } from './faq.controller';
 import { FaqService } from './faq.service';
 import { CreateFaqService } from './service/create-faq.service';
+import { FaqController } from './faq.controller';
 
 @Module({
   imports: [CommonModule],
-  providers: [FaqResolver, FaqService, CreateFaqService],
+  providers: [FaqService, CreateFaqService],
+  controllers: [FaqController],
 })
 export class FaqModule {}

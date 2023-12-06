@@ -1,4 +1,4 @@
-import { Body, Controller, Injectable, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Injectable, Param, Post } from '@nestjs/common';
 
 import { FaqService } from './faq.service';
 import { CreateFaqService } from './service/create-faq.service';
@@ -9,15 +9,15 @@ import { CreateFaqDto } from './dto/create-faq.dto';
 import { Either } from '@common/generics/Either';
 
 @Injectable()
-@ApiTags('User')
-@Controller('user')
-export class FaqResolver {
+@ApiTags('FAQ')
+@Controller('faq')
+export class FaqController {
   constructor(
     private readonly faqService: FaqService,
     private readonly createFaqService: CreateFaqService,
   ) {}
 
-  @Post('register')
+  @Get('/')
   @BasicRequest<FaqDocument[]>({
     description: 'Create a new user',
     response: 'User Document',
@@ -26,7 +26,7 @@ export class FaqResolver {
     return this.faqService.findAll();
   }
 
-  @Post('register/:id')
+  @Get('/:id')
   @BasicRequest<FaqDocument>({
     description: 'Create a new user',
     response: 'User Document',

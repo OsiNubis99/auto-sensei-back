@@ -1,12 +1,15 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
+import { JWTPayloadI } from '@auth/jwt.payload';
+import { User, UserDocument } from '@database/schemas/user.schema';
 import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
-import { User, UserDocument } from '@database/schemas/user.schema';
+
 import { RegisterUserDto } from '@user/dto/register-user.dto';
 
 interface P extends RegisterUserDto {}
@@ -19,7 +22,9 @@ const regex =
 @Injectable()
 export class RegisterUserService implements IAppService<P, R> {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    private jwtService: JwtService,
+    @InjectModel(User.name)
+    private userModel: Model<User>,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -35,14 +40,15 @@ export class RegisterUserService implements IAppService<P, R> {
     param.password = await bcrypt.hash(param.password, 10);
 
     const user = new this.userModel(param);
+    const payload: JWTPayloadI = { sub: user.id };
 
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Testing Nest Mailermodule with template ✔',
       template: 'welcome',
       context: {
+        url: this.jwtService.sign(payload, { expiresIn: '15m' }),
         name: user.name,
-        id: user.id,
       },
     });
 

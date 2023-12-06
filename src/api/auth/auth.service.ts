@@ -49,11 +49,10 @@ export class AuthService {
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Password reset',
-      template: 'welcome',
+      template: 'forgotten-password',
       context: {
         name: user.name,
-        id: user.id,
-        access_token: access_token,
+        url: access_token,
       },
     });
     return Either.makeRight('OK');
