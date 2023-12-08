@@ -11,6 +11,7 @@ import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
 
 import { RegisterUserDto } from '@user/dto/register-user.dto';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 interface P extends RegisterUserDto {}
 
@@ -28,18 +29,31 @@ export class RegisterUserService implements IAppService<P, R> {
     private readonly mailerService: MailerService,
   ) {}
 
-  async execute(param: P): Promise<Either<R>> {
-    if (await this.userModel.findOne({ username: param.username }))
-      return Either.makeLeft('Username already used', HttpStatus.BAD_REQUEST);
+  async execute({ seller, dealer, ...param }: P): Promise<Either<R>> {
+    const newUser: User = <User>{};
+
+    if (seller && dealer)
+      return Either.makeLeft('User only can be 1 type', HttpStatus.BAD_REQUEST);
 
     if (await this.userModel.findOne({ email: param.email }))
       return Either.makeLeft('Email already used', HttpStatus.BAD_REQUEST);
+    newUser.email = param.email;
 
     if (!regex.test(param.password))
       return Either.makeLeft('Pasword should be valid', HttpStatus.BAD_REQUEST);
-    param.password = await bcrypt.hash(param.password, 10);
+    newUser.password = await bcrypt.hash(param.password, 10);
 
-    const user = new this.userModel(param);
+    if (seller) {
+      newUser.type = UserTypeEnum.seller;
+      newUser.seller = seller;
+    }
+
+    if (dealer) {
+      newUser.type = UserTypeEnum.dealer;
+      newUser.dealer = dealer;
+    }
+
+    const user = new this.userModel(newUser);
     const payload: JWTPayloadI = { sub: user.id };
 
     await this.mailerService.sendMail({
@@ -48,7 +62,7 @@ export class RegisterUserService implements IAppService<P, R> {
       template: 'welcome',
       context: {
         url: this.jwtService.sign(payload, { expiresIn: '15m' }),
-        name: user.name,
+        name: user.seller?.firstName || user.dealer?.name || user.email,
       },
     });
 

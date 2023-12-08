@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
-import { Faq, FaqDocument } from '@database/schemas/faq.schema';
+import { Faq, FaqDocument } from '@database/faq.schema';
 import { Either } from '@common/generics/Either';
 
 String;
@@ -16,5 +16,9 @@ export class FaqService {
 
   async findOne(filter: FilterQuery<Faq>): Promise<Either<FaqDocument>> {
     return Either.makeRight(await this.faqModel.findOne(filter));
+  }
+
+  async delete(filter: FilterQuery<Faq>) {
+    return Either.makeRight(await this.faqModel.deleteOne(filter));
   }
 }

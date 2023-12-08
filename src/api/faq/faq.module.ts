@@ -4,10 +4,11 @@ import { Module } from '@nestjs/common';
 import { FaqService } from './faq.service';
 import { CreateFaqService } from './service/create-faq.service';
 import { FaqController } from './faq.controller';
+import { UpdateFaqService } from './service/update-faq.service';
 
 @Module({
   imports: [CommonModule],
-  providers: [FaqService, CreateFaqService],
+  providers: [FaqService, CreateFaqService, UpdateFaqService],
   controllers: [FaqController],
 })
 export class FaqModule {}

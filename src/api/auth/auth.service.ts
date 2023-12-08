@@ -3,14 +3,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 import { Either } from '@common/generics/Either';
 import { User, UserDocument } from '@database/schemas/user.schema';
 import { JWTPayloadI } from './jwt.payload';
-
-const regex =
-  /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
 
 @Injectable()
 export class AuthService {
@@ -20,14 +17,11 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
-  async validateUser(
-    username: string,
-    password: string,
-  ): Promise<UserDocument> {
-    let filter: FilterQuery<User>;
-    if (regex.test(username)) filter = { email: username };
-    else filter = { username };
-    const user = await this.userModel.findOne(filter, { password: 1, _id: 1 });
+  async validateUser(email: string, password: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne(
+      { email },
+      { password: 1, _id: 1 },
+    );
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -44,15 +38,16 @@ export class AuthService {
   async forgottenPassword(email: string): Promise<Either<string>> {
     const user = await this.userModel.findOne({ email });
     if (!user) return Either.makeLeft('User undefined', HttpStatus.BAD_REQUEST);
+
     const payload: JWTPayloadI = { sub: user.id };
-    const access_token = this.jwtService.sign(payload);
+
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Password reset',
       template: 'forgotten-password',
       context: {
-        name: user.name,
-        url: access_token,
+        url: this.jwtService.sign(payload),
+        name: user.seller?.firstName || user.dealer?.name || user.email,
       },
     });
     return Either.makeRight('OK');

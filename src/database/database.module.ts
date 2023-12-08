@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Faq, FaqSchema } from './schemas/faq.schema';
+import { Faq, FaqSchema } from './faq.schema';
 import { User, UserSchema } from './schemas/user.schema';
 
 @Global()

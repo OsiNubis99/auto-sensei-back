@@ -1,10 +1,12 @@
 import { CommonModule } from '@common/common.module';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserController } from './user.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -18,6 +20,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [UserController],
-  providers: [RegisterUserService, UpdateUserService],
+  providers: [UserService, RegisterUserService, UpdateUserService],
 })
 export class UserModule {}

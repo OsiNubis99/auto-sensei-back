@@ -1,0 +1,45 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { FilterQuery, Model } from 'mongoose';
+
+import { User, UserDocument } from '@database/schemas/user.schema';
+import { Either } from '@common/generics/Either';
+
+String;
+@Injectable()
+export class UserService {
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  async findAll(): Promise<Either<UserDocument[]>> {
+    return Either.makeRight(await this.userModel.find());
+  }
+
+  async findSellers(): Promise<Either<UserDocument[]>> {
+    return Either.makeRight(
+      await this.userModel.find({
+        seller: { $exists: true, $ne: null },
+        status: true,
+      }),
+    );
+  }
+
+  async findDealers(): Promise<Either<UserDocument[]>> {
+    return Either.makeRight(
+      await this.userModel.find({
+        dealer: { $exists: true, $ne: null },
+        status: true,
+      }),
+    );
+  }
+
+  async findOne(filter: FilterQuery<User>): Promise<Either<UserDocument>> {
+    return Either.makeRight(await this.userModel.findOne(filter));
+  }
+
+  async delete(filter: FilterQuery<User>) {
+    filter.type = { $ne: 0 };
+    return Either.makeRight(
+      await this.userModel.updateOne(filter, { status: false }),
+    );
+  }
+}

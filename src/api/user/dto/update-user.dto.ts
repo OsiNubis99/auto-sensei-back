@@ -1,20 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional } from 'class-validator';
+import { IsEmail, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { User } from '@database/schemas/user.schema';
+import { UpdateDealerDto } from './update-dealer.dto';
+import { UpdateSellerDto } from './update-seller.dto';
 
-export class UpdateUserDto implements User {
+export class UpdateUserDto {
   @IsOptional()
-  type: UserTypeEnum;
-
-  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateSellerDto)
   @ApiProperty({
-    description: 'user name',
-    example: 'Barry',
-    required: false,
+    description: 'Seller data',
   })
-  name: string;
+  seller: UpdateSellerDto;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateDealerDto)
+  @ApiProperty({
+    description: 'Dealer data',
+  })
+  dealer: UpdateDealerDto;
 
   @IsOptional()
   @IsEmail()
@@ -24,14 +30,6 @@ export class UpdateUserDto implements User {
     required: false,
   })
   email: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'user username',
-    example: 'barryallen1',
-    required: false,
-  })
-  username: string;
 
   @IsOptional()
   @ApiProperty({

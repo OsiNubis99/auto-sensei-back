@@ -3,6 +3,9 @@ import { HydratedDocument } from 'mongoose';
 
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
+import { SellerI } from '@database/interfaces/seller.interface';
+import { DealerI } from '@database/interfaces/dealer.interface';
+
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
@@ -13,7 +16,7 @@ export class User {
   type: UserTypeEnum;
 
   @Prop()
-  name: string;
+  status: boolean;
 
   @Prop({
     lowercase: true,
@@ -21,10 +24,11 @@ export class User {
   })
   email: string;
 
-  @Prop({
-    unique: true,
-  })
-  username: string;
+  @Prop()
+  dealer: DealerI;
+
+  @Prop()
+  seller: SellerI;
 
   @Prop({ select: false })
   password: string;

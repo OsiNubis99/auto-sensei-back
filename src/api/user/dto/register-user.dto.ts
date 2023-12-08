@@ -1,29 +1,26 @@
-import { LoginDto } from '@auth/dto/login.dto';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+import { LoginDto } from '@auth/dto/login.dto';
+
+import { UpdateSellerDto } from './update-seller.dto';
+import { UpdateDealerDto } from './update-dealer.dto';
 
 export class RegisterUserDto extends LoginDto {
-  @IsNotEmpty()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateSellerDto)
   @ApiProperty({
-    description: 'user type',
-    example: UserTypeEnum.dealer,
-    enum: UserTypeEnum,
+    description: 'Seller data',
   })
-  type: UserTypeEnum;
+  seller: UpdateSellerDto;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateDealerDto)
   @ApiProperty({
-    description: "user's name",
-    example: 'Barry',
+    description: 'Dealer data',
   })
-  name: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  @ApiProperty({
-    description: "user's email",
-    example: 'barryallen@justiceleague.com',
-  })
-  email: string;
+  dealer: UpdateDealerDto;
 }
