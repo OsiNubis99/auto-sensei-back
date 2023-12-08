@@ -15,7 +15,7 @@ export class User {
   })
   type: UserTypeEnum;
 
-  @Prop()
+  @Prop({ default: true })
   status: boolean;
 
   @Prop({
