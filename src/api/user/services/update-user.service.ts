@@ -64,6 +64,12 @@ export class UpdateUserService implements IAppService<P, R> {
 
     user.status = true;
 
-    return Either.makeRight(await user.save());
+    try {
+      await this.userModel.updateOne({ _id: user._id }, user);
+    } catch (err) {
+      return Either.makeLeft('Bad update', HttpStatus.BAD_REQUEST);
+    }
+
+    return Either.makeRight(user);
   }
 }

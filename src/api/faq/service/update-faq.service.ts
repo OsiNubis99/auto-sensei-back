@@ -21,8 +21,16 @@ export class UpdateFaqService implements IAppService<P, R> {
     const faq = await this.faqModel.findById(id);
     if (!faq) return Either.makeLeft('Invalid FAQ id', HttpStatus.BAD_REQUEST);
 
-    for (const key of Object.keys(param)) faq[key] = param[key];
+    for (const key of Object.keys(param)) {
+      faq[key] = param[key];
+    }
 
-    return Either.makeRight(await faq.save());
+    try {
+      await this.faqModel.updateOne({ _id: faq._id }, faq);
+    } catch (err) {
+      return Either.makeLeft('Bad update', HttpStatus.BAD_REQUEST);
+    }
+
+    return Either.makeRight(faq);
   }
 }

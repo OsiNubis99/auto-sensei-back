@@ -6,9 +6,5 @@ if [ "$branch" = "master" ]; then
   echo "You can't commit directly to master branch"
   exit 1
 fi
-if [ "$branch" = "develop" ]; then
-  echo "You can't commit directly to develop branch"
-  exit 1
-fi
 
 npm run lint
