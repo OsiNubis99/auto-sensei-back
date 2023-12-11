@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
-import { Faq, FaqDocument } from '@database/faq.schema';
+import { Faq, FaqDocument } from '@database/schemas/faq.schema';
 import { Either } from '@common/generics/Either';
 
 String;

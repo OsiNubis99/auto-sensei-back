@@ -4,6 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 
 import { User, UserDocument } from '@database/schemas/user.schema';
 import { Either } from '@common/generics/Either';
+import { StatusEnum } from '@common/enums/status.enum';
 
 String;
 @Injectable()
@@ -18,7 +19,7 @@ export class UserService {
     return Either.makeRight(
       await this.userModel.find({
         seller: { $exists: true, $ne: null },
-        status: true,
+        status: StatusEnum.active,
       }),
     );
   }
@@ -27,7 +28,7 @@ export class UserService {
     return Either.makeRight(
       await this.userModel.find({
         dealer: { $exists: true, $ne: null },
-        status: true,
+        status: StatusEnum.active,
       }),
     );
   }
@@ -39,7 +40,9 @@ export class UserService {
   async delete(filter: FilterQuery<User>) {
     filter.type = { $ne: 0 };
     return Either.makeRight(
-      await this.userModel.updateOne(filter, { status: false }),
+      await this.userModel.updateOne(filter, {
+        status: StatusEnum.deleted,
+      }),
     );
   }
 }

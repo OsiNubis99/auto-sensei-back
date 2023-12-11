@@ -10,6 +10,14 @@ export const ServerConfig = registerAs('server', (): IServerConfig => {
       value: process.env.NODE_ENV,
       joi: Joi.string().required().valid('development', 'production'),
     },
+    port: {
+      value: process.env.SERVER_PORT,
+      joi: Joi.number().required(),
+    },
+    frontUrl: {
+      value: process.env.FRONT_URL,
+      joi: Joi.string().required(),
+    },
   };
 
   return JoiUtil.validate(configs);

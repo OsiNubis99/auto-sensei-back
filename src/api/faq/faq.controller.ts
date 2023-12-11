@@ -13,11 +13,13 @@ import { FaqService } from './faq.service';
 import { CreateFaqService } from './service/create-faq.service';
 import { BasicRequest } from '@common/decorators/basic-request';
 import { ApiTags } from '@nestjs/swagger';
-import { FaqDocument } from '@database/faq.schema';
+import { FaqDocument } from '@database/schemas/faq.schema';
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { Either } from '@common/generics/Either';
 import { UpdateFaqService } from './service/update-faq.service';
 import { UpdateFaqDto } from './dto/update-faq.dto';
+import { AuthRequest } from '@common/decorators/auth-request';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 @Injectable()
 @ApiTags('FAQ')
@@ -47,10 +49,21 @@ export class FaqController {
     return this.faqService.findOne({ _id });
   }
 
+  @Post('/')
+  @AuthRequest<FaqDocument>({
+    description: 'Create a new faq',
+    response: 'FAQ Document',
+    roles: [UserTypeEnum.admin],
+  })
+  async createFaq(@Body() body: CreateFaqDto): Promise<Either<FaqDocument>> {
+    return this.createFaqService.execute(body);
+  }
+
   @Put('/:id')
-  @BasicRequest<FaqDocument>({
+  @AuthRequest<FaqDocument>({
     description: 'Create a new user',
     response: 'User Document',
+    roles: [UserTypeEnum.admin],
   })
   update(
     @Param('id') id: string,
@@ -60,20 +73,12 @@ export class FaqController {
   }
 
   @Delete('/:id')
-  @BasicRequest<FaqDocument>({
+  @AuthRequest<FaqDocument>({
     description: 'Create a new user',
     response: 'User Document',
+    roles: [UserTypeEnum.admin],
   })
   delete(@Param('id') _id: string) {
     return this.faqService.delete({ _id });
-  }
-
-  @Post('create-faq')
-  @BasicRequest<FaqDocument>({
-    description: 'Create a new faq',
-    response: 'FAQ Document',
-  })
-  async createFaq(@Body() body: CreateFaqDto): Promise<Either<FaqDocument>> {
-    return this.createFaqService.execute(body);
   }
 }

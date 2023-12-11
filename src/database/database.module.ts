@@ -2,7 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Faq, FaqSchema } from './faq.schema';
+import { Auction, AuctionSchema } from './schemas/auction.schema';
+import { Faq, FaqSchema } from './schemas/faq.schema';
 import { User, UserSchema } from './schemas/user.schema';
 
 @Global()
@@ -17,6 +18,7 @@ import { User, UserSchema } from './schemas/user.schema';
     }),
     MongooseModule.forFeature([{ name: Faq.name, schema: FaqSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
   ],
   exports: [MongooseModule],
 })

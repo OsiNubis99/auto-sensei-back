@@ -8,7 +8,7 @@ import { UpdateFaqService } from './service/update-faq.service';
 
 @Module({
   imports: [CommonModule],
-  providers: [FaqService, CreateFaqService, UpdateFaqService],
   controllers: [FaqController],
+  providers: [FaqService, CreateFaqService, UpdateFaqService],
 })
 export class FaqModule {}

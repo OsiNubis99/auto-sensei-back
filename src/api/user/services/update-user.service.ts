@@ -7,8 +7,11 @@ import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
-import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { DealerI } from '@database/interfaces/dealer.interface';
+import { SellerI } from '@database/interfaces/seller.interface';
+import { UpdateUserDto } from '@user/dto/update-user.dto';
+import { StatusEnum } from '@common/enums/status.enum';
 
 interface P extends UpdateUserDto {
   user: UserDocument;
@@ -47,12 +50,14 @@ export class UpdateUserService implements IAppService<P, R> {
     }
 
     if (user.type == UserTypeEnum.dealer && dealer) {
+      if (!user.dealer) user.dealer = <DealerI>{};
       for (const key of Object.keys(dealer)) {
         user.dealer[key] = dealer[key];
       }
     }
 
     if (user.type == UserTypeEnum.seller && seller) {
+      if (!user.seller) user.seller = <SellerI>{};
       for (const key of Object.keys(seller)) {
         user.seller[key] = seller[key];
       }
@@ -62,7 +67,7 @@ export class UpdateUserService implements IAppService<P, R> {
       user[key] = newData[key];
     }
 
-    user.status = true;
+    user.status = StatusEnum.active;
 
     try {
       await this.userModel.updateOne({ _id: user._id }, user);

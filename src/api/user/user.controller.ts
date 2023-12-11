@@ -20,6 +20,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 @ApiTags('User')
 @Controller('user')
@@ -79,9 +80,10 @@ export class UserController {
   }
 
   @Delete('/:id')
-  @BasicRequest<UserDocument>({
+  @AuthRequest<UserDocument>({
     description: 'Delete a user',
     response: 'User Document',
+    roles: [UserTypeEnum.admin],
   })
   delete(@Param('id') _id: string) {
     return this.userService.delete({ _id });

@@ -9,6 +9,9 @@ import { UpdateDealerDto } from './update-dealer.dto';
 
 export class RegisterUserDto extends LoginDto {
   @IsOptional()
+  isAdmin?: boolean;
+
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => UpdateSellerDto)
   @ApiProperty({

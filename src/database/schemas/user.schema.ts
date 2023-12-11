@@ -5,6 +5,7 @@ import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 import { SellerI } from '@database/interfaces/seller.interface';
 import { DealerI } from '@database/interfaces/dealer.interface';
+import { StatusEnum } from '@common/enums/status.enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -12,11 +13,15 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop({
     enum: UserTypeEnum,
+    default: UserTypeEnum.seller,
   })
   type: UserTypeEnum;
 
-  @Prop({ default: true })
-  status: boolean;
+  @Prop({
+    enum: StatusEnum,
+    default: StatusEnum.inactive,
+  })
+  status: StatusEnum;
 
   @Prop({
     lowercase: true,
