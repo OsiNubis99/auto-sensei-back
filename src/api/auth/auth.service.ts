@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
@@ -12,9 +13,10 @@ import { JWTPayloadI } from './jwt.payload';
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    private readonly mailerService: MailerService,
     @InjectModel(User.name) private userModel: Model<User>,
+    private config: ConfigService,
+    private jwtService: JwtService,
+    private mailerService: MailerService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<UserDocument> {
@@ -41,12 +43,18 @@ export class AuthService {
 
     const payload: JWTPayloadI = { sub: user.id };
 
+    const url = `${this.config.get(
+      'server.frontUrl',
+    )}/AUTh/recover-password?token=${this.jwtService.sign(payload, {
+      expiresIn: '15m',
+    })}`;
+
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Password reset',
       template: 'forgotten-password',
       context: {
-        url: this.jwtService.sign(payload),
+        url,
         name: user.seller?.firstName || user.dealer?.name || user.email,
       },
     });

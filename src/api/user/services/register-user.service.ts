@@ -25,11 +25,11 @@ const regex =
 @Injectable()
 export class RegisterUserService implements IAppService<P, R> {
   constructor(
-    private jwtService: JwtService,
     @InjectModel(User.name)
     private userModel: Model<User>,
-    private readonly mailerService: MailerService,
     private config: ConfigService,
+    private jwtService: JwtService,
+    private mailerService: MailerService,
   ) {}
 
   async execute({ isAdmin, seller, dealer, ...param }: P): Promise<Either<R>> {
