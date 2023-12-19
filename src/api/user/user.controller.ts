@@ -58,6 +58,26 @@ export class UserController {
     return this.userService.findDealers();
   }
 
+  @Get('seller/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  findSeller(@Param('id') _id: string) {
+    return this.userService.findOne({ _id });
+  }
+
+  @Get('dealer/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  findDealer(@Param('id') _id: string) {
+    return this.userService.findOne({ _id });
+  }
+
   @Post('register')
   @BasicRequest<UserDocument>({
     description: 'Create a new user',

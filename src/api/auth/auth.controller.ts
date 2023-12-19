@@ -15,7 +15,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { LoginDto } from '@auth/dto/login.dto';
 import { AuthService } from './auth.service';
-import { ForgottenPasswordDto } from './dto/forgotten-password.dto';
+import { EmailDto } from './dto/email.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('Auth')
@@ -43,12 +43,21 @@ export class AuthController {
     return Either.makeRight(req.user);
   }
 
-  @Post('forgotten-password/')
+  @Post('send-email-validation')
+  @BasicRequest({
+    description: 'Send EmailValidation email if user exist',
+    response: 'OK',
+  })
+  async emailValidation(@Body() data: EmailDto) {
+    return this.authService.emailValidation(data.email);
+  }
+
+  @Post('forgotten-password')
   @BasicRequest({
     description: 'Send forgottenPassword email if user exist',
     response: 'OK',
   })
-  async forgottenPassword(@Body() data: ForgottenPasswordDto) {
+  async forgottenPassword(@Body() data: EmailDto) {
     return this.authService.forgottenPassword(data.email);
   }
 }

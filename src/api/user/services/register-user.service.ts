@@ -1,19 +1,16 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { JWTPayloadI } from '@auth/jwt.payload';
-import { User, UserDocument } from '@database/schemas/user.schema';
+import { StatusEnum } from '@common/enums/status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
+import { User, UserDocument } from '@database/schemas/user.schema';
 
+import { AuthService } from '@auth/auth.service';
 import { RegisterUserDto } from '@user/dto/register-user.dto';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { ConfigService } from '@nestjs/config';
-import { StatusEnum } from '@common/enums/status.enum';
 
 interface P extends RegisterUserDto {}
 
@@ -27,9 +24,7 @@ export class RegisterUserService implements IAppService<P, R> {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
-    private config: ConfigService,
-    private jwtService: JwtService,
-    private mailerService: MailerService,
+    private authService: AuthService,
   ) {}
 
   async execute({ isAdmin, seller, dealer, ...param }: P): Promise<Either<R>> {
@@ -60,24 +55,13 @@ export class RegisterUserService implements IAppService<P, R> {
       user.type = UserTypeEnum.admin;
     }
 
-    const payload: JWTPayloadI = { sub: user.id };
-
     if (user.type == UserTypeEnum.seller || user.type == UserTypeEnum.dealer) {
-      let url = this.config.get('server.frontUrl');
-      url += '/signup/';
-      if (user.type == UserTypeEnum.seller) url += 'sellers';
-      if (user.type == UserTypeEnum.dealer) url += 'dealers';
-      url += `?token=${this.jwtService.sign(payload, { expiresIn: '15m' })}`;
-
-      await this.mailerService.sendMail({
-        to: user.email,
-        subject: 'Testing Nest Mailermodule with template ✔',
-        template: 'welcome',
-        context: {
-          url,
-          name: user.seller?.firstName || user.dealer?.name || user.email,
-        },
-      });
+      const emailValidation = await this.authService.emailValidation(
+        user.email,
+      );
+      if (emailValidation.isLeft()) {
+        return emailValidation;
+      }
     } else {
       user.status = StatusEnum.active;
     }

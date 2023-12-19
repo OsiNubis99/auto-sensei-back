@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
-import { User } from './user.schema';
+import { User, UserDocument } from './user.schema';
 import { StatusEnum } from '@common/enums/status.enum';
 
 export type AuctionDocument = HydratedDocument<Auction>;
@@ -40,7 +40,7 @@ export class Auction {
   vehicleDetails: VehicleDetailsI;
 
   @Prop({ type: mongooseSchema.Types.ObjectId, ref: User.name })
-  owner: User;
+  owner: UserDocument;
 }
 
 export const AuctionSchema = SchemaFactory.createForClass(Auction);

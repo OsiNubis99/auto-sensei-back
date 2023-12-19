@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
+import { AuthService } from '@auth/auth.service';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserController } from './user.controller';
@@ -20,6 +21,6 @@ import { UserService } from './user.service';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, RegisterUserService, UpdateUserService],
+  providers: [AuthService, UserService, RegisterUserService, UpdateUserService],
 })
 export class UserModule {}

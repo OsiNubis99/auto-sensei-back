@@ -20,6 +20,7 @@ import { AuctionsService } from './auctions.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { CreateAuctionService } from './services/create-auctions.service';
+import { UpdateAuctionService } from './services/update-auctions.service';
 
 @ApiTags('Auctions')
 @Controller('auctions')
@@ -27,6 +28,7 @@ export class AuctionsController {
   constructor(
     private readonly auctionsService: AuctionsService,
     private readonly createAuctionService: CreateAuctionService,
+    private readonly updateAuctionService: UpdateAuctionService,
   ) {}
 
   @Post()
@@ -57,8 +59,17 @@ export class AuctionsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAuctionDto: UpdateAuctionDto) {
-    return this.auctionsService.update(+id, updateAuctionDto);
+  @AuthRequest<AuctionDocument>({
+    description: 'Create a new user',
+    response: 'User Document',
+    roles: [UserTypeEnum.seller, UserTypeEnum.admin],
+  })
+  update(
+    @Param('id') _id: string,
+    @Body() data: UpdateAuctionDto,
+    @Request() { user }: { user: UserDocument },
+  ): Promise<Either<AuctionDocument>> {
+    return this.updateAuctionService.execute({ _id, user, ...data });
   }
 
   @Delete(':id')
