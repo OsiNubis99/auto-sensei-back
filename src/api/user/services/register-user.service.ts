@@ -60,7 +60,7 @@ export class RegisterUserService implements IAppService<P, R> {
         user.email,
       );
       if (emailValidation.isLeft()) {
-        return emailValidation;
+        return <Either<null>>emailValidation;
       }
     } else {
       user.status = StatusEnum.active;
