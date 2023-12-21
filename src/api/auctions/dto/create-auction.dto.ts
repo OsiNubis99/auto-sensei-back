@@ -36,6 +36,12 @@ export class CreateAuctionDto {
   @ApiProperty({
     description: 'Auction Buyout',
   })
+  vehicleStatus: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction Buyout',
+  })
   buyout: string;
 
   @IsOptional()

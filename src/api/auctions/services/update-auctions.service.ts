@@ -25,7 +25,14 @@ export class UpdateAuctionService implements IAppService<P, R> {
     private auctionModel: Model<Auction>,
   ) {}
 
-  async execute({ _id, user, vin, status, ...param }: P): Promise<Either<R>> {
+  async execute({
+    _id,
+    user,
+    vin,
+    status,
+    vehicleDetails,
+    ...param
+  }: P): Promise<Either<R>> {
     const auction = await this.auctionModel.findOne({ _id });
 
     if (user.type == UserTypeEnum.admin || user._id == auction.owner._id) {
@@ -37,25 +44,16 @@ export class UpdateAuctionService implements IAppService<P, R> {
       for (const key of Object.keys(param)) {
         auction[key] = param[key];
       }
+
+      for (const key of Object.keys(vehicleDetails)) {
+        auction.vehicleDetails[key] = vehicleDetails[key];
+      }
     } else {
       return Either.makeLeft(
         'This auction is not allowed in your account',
         HttpStatus.UNAUTHORIZED,
       );
     }
-
-    auction.owner = user;
-
-    auction.vehicleDetails = <VehicleDetailsI>{
-      vin,
-      year: 'year',
-      make: 'make',
-      model: 'model',
-      series: 'series',
-      bodyType: 'bodyType',
-      cylinder: 'cylinder',
-      transmission: 'transmission',
-    };
 
     return Either.makeRight(await auction.save());
   }

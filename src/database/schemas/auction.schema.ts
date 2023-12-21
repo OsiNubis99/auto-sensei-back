@@ -31,6 +31,9 @@ export class Auction {
   keysNumber: string;
 
   @Prop()
+  vehicleStatus: string;
+
+  @Prop()
   buyout: string;
 
   @Prop()
