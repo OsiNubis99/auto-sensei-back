@@ -4,52 +4,52 @@ import { IsOptional } from 'class-validator';
 import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
 export class UpdateVehicleDetailsDto {
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  vin: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // vin: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  year: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // year: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  make: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // make: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  model: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // model: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  series: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // series: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  bodyType: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // bodyType: string;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  cylinder: string;
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  transmission: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // cylinder: string;
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Vehicledetails',
+  // })
+  // transmission: string;
 
   @IsOptional()
   @ApiProperty({
@@ -106,4 +106,16 @@ export class UpdateVehicleDetailsDto {
     description: 'Vehicledetails',
   })
   brakeReplacement: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  rotorCondition: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  rotorReplacement: string;
 }
