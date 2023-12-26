@@ -9,6 +9,7 @@ import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { CreateAuctionDto } from '../dto/create-auction.dto';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 interface P extends CreateAuctionDto {
   user: UserDocument;
@@ -32,6 +33,8 @@ export class CreateAuctionService implements IAppService<P, R> {
     for (const key of Object.keys(param)) {
       auction[key] = param[key];
     }
+
+    auction.status = AuctionStatusEnum.draft;
 
     auction.vehicleDetails = <VehicleDetailsI>{
       vin,

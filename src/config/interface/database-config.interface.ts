@@ -1,3 +1,3 @@
-export interface IDatabaseConfig {
+export interface DatabaseConfigI {
   uri: string;
 }

@@ -1,4 +1,4 @@
-export interface IJWTConfig {
+export interface JWTConfigI {
   secret: string;
   expiresIn: string;
 }

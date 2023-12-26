@@ -3,17 +3,17 @@ import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { User, UserDocument } from './user.schema';
-import { StatusEnum } from '@common/enums/status.enum';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 export type AuctionDocument = HydratedDocument<Auction>;
 
 @Schema({ timestamps: true })
 export class Auction {
   @Prop({
-    enum: StatusEnum,
-    default: StatusEnum.inactive,
+    enum: AuctionStatusEnum,
+    default: AuctionStatusEnum.draft,
   })
-  status: StatusEnum;
+  status: AuctionStatusEnum;
 
   @Prop()
   vin: string;

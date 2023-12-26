@@ -1,11 +1,11 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
 
-import { IJWTConfig } from './interface/jwt-config.interface';
+import { JWTConfigI } from './interface/jwt-config.interface';
 import JoiUtil, { JoiConfig } from './util/joi';
 
-export const JWTConfig = registerAs('jwt', (): IJWTConfig => {
-  const configs: JoiConfig<IJWTConfig> = {
+export const JWTConfig = registerAs('jwt', (): JWTConfigI => {
+  const configs: JoiConfig<JWTConfigI> = {
     secret: {
       value: process.env.JWT_SECRET,
       joi: Joi.string().required(),

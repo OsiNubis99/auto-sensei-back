@@ -1,11 +1,11 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
 
-import { IServerConfig } from './interface/server-config.interface';
+import { ServerConfigI } from './interface/server-config.interface';
 import JoiUtil, { JoiConfig } from './util/joi';
 
-export const ServerConfig = registerAs('server', (): IServerConfig => {
-  const configs: JoiConfig<IServerConfig> = {
+export const ServerConfig = registerAs('server', (): ServerConfigI => {
+  const configs: JoiConfig<ServerConfigI> = {
     nodeEnv: {
       value: process.env.NODE_ENV,
       joi: Joi.string().required().valid('development', 'production'),

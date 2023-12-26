@@ -9,6 +9,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { UpdateAuctionDto } from '../dto/update-auction.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 interface P extends UpdateAuctionDto {
   _id: string;
@@ -28,7 +29,7 @@ export class UpdateAuctionService implements IAppService<P, R> {
     _id,
     user,
     vin,
-    status,
+    finished,
     vehicleDetails,
     ...param
   }: P): Promise<Either<R>> {
@@ -44,8 +45,8 @@ export class UpdateAuctionService implements IAppService<P, R> {
         auction.owner._id,
     );
     if (user.type == UserTypeEnum.admin || user._id == auction.owner._id) {
-      if (user.type == UserTypeEnum.admin) {
-        auction.status = status;
+      if (user.type == UserTypeEnum.admin && finished) {
+        auction.status = AuctionStatusEnum.unapproved;
       }
       auction.vin = vin;
 
