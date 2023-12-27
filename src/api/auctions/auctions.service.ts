@@ -44,6 +44,7 @@ export class AuctionsService {
 
   async calculateStatus(auction: AuctionDocument) {
     Logger.log(auction);
+    return auction;
     if (!auction) return auction;
     if (auction.dropOffDate < new Date()) {
       if (auction.status !== AuctionStatusEnum.live) return auction;
