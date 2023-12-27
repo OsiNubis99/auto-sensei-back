@@ -32,7 +32,7 @@ export class AuctionsService {
         await this.auctionModel.find({
           $or: filter,
         })
-      ).map((auction: AuctionDocument) => this.calculateStatus(auction)),
+      ).map(this.calculateStatus),
     );
   }
 
@@ -44,10 +44,10 @@ export class AuctionsService {
 
   async calculateStatus(auction: AuctionDocument) {
     Logger.log(auction);
-    return auction;
     if (!auction) return auction;
     if (auction.dropOffDate < new Date()) {
-      if (auction.status !== AuctionStatusEnum.live) return auction;
+      Logger.log('here');
+      // if (auction.status !== AuctionStatusEnum.live) return auction;
       auction.status = AuctionStatusEnum.completed;
       auction.save();
     } else if (auction.startDate < new Date()) {
