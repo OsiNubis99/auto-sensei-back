@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
@@ -32,7 +32,7 @@ export class AuctionsService {
         await this.auctionModel.find({
           $or: filter,
         })
-      ).map((auction) => this.calculateStatus(auction)),
+      ).map((auction: AuctionDocument) => this.calculateStatus(auction)),
     );
   }
 
@@ -43,6 +43,7 @@ export class AuctionsService {
   }
 
   async calculateStatus(auction: AuctionDocument) {
+    Logger.log(auction);
     if (!auction) return auction;
     if (auction.dropOffDate < new Date()) {
       if (auction.status !== AuctionStatusEnum.live) return auction;
