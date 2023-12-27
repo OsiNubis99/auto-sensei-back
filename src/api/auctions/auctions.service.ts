@@ -28,9 +28,11 @@ export class AuctionsService {
       filter.push({ status: AuctionStatusEnum.completed }); // solo las que participo
     }
     return Either.makeRight(
-      (await this.auctionModel.find(filter)).map((auction) =>
-        this.calculateStatus(auction),
-      ),
+      (
+        await this.auctionModel.find({
+          $or: filter,
+        })
+      ).map((auction) => this.calculateStatus(auction)),
     );
   }
 
