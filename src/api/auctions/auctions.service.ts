@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
@@ -16,7 +16,7 @@ export class AuctionsService {
   ) {}
 
   async findAll(user: UserDocument) {
-    const filter: Array<FilterQuery<Auction>> = [];
+    const filter: Array<FilterQuery<Auction>> = [{}];
     if (user.type == UserTypeEnum.seller) {
       filter.push({
         owner: user._id,
@@ -42,12 +42,10 @@ export class AuctionsService {
     );
   }
 
-  async calculateStatus(auction: AuctionDocument) {
-    Logger.log(auction);
+  calculateStatus(auction: AuctionDocument) {
     if (!auction) return auction;
     if (auction.dropOffDate < new Date()) {
-      Logger.log('here');
-      // if (auction.status !== AuctionStatusEnum.live) return auction;
+      if (auction.status !== AuctionStatusEnum.live) return auction.toJSON();
       auction.status = AuctionStatusEnum.completed;
       auction.save();
     } else if (auction.startDate < new Date()) {
@@ -60,11 +58,11 @@ export class AuctionsService {
           auction.status = AuctionStatusEnum.canceled;
           break;
         default:
-          return auction;
+          return auction.toJSON();
       }
       auction.save();
     }
-    return auction;
+    return auction.toJSON();
   }
 
   remove(id: number) {
