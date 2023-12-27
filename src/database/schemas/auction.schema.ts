@@ -19,6 +19,9 @@ export class Auction {
   vin: string;
 
   @Prop()
+  startDate: Date;
+
+  @Prop()
   dropOffDate: Date;
 
   @Prop()

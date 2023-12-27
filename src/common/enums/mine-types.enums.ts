@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 export enum MineTypes {
   jpg = 'image/jpeg',
   jpeg = 'image/jpeg',

@@ -67,7 +67,10 @@ export class UpdateUserService implements IAppService<P, R> {
       user[key] = newData[key];
     }
 
-    user.status = StatusEnum.active;
+    if (user.status === StatusEnum.notvalidated) {
+      if (user.type == UserTypeEnum.dealer) user.status = StatusEnum.unaproved;
+      if (user.type == UserTypeEnum.seller) user.status = StatusEnum.active;
+    }
 
     try {
       await this.userModel.updateOne({ _id: user._id }, user);

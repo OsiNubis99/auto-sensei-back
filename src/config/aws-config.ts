@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 import { AWSConfigI } from './interface/aws-config.interface';
 import JoiUtil, { JoiConfig } from './util/joi';
 
-export const MailerConfig = registerAs('aws', (): AWSConfigI => {
+export const AWSConfig = registerAs('aws', (): AWSConfigI => {
   const configs: JoiConfig<AWSConfigI> = {
     accessKey: {
       value: process.env.AWS_ACCESS_KEY_ID,

@@ -1,23 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 import { MineTypes } from '@common/enums/mine-types.enums';
 import { ConfigService } from '@nestjs/config';
+import { Either } from '@common/generics/Either';
 
 @Injectable()
 export default class AWSService {
   private _s3: S3Client;
   private _bucket: string;
 
-  constructor(configService: ConfigService) {
+  constructor(private configService: ConfigService) {
     this._s3 = new S3Client({ region: 'us-east-1' });
-    this._bucket = configService.get('aws.bucket');
+    this._bucket = this.configService.get('aws.bucket');
   }
 
   public async upload(folder: string, name: string, data: Buffer) {
     try {
       const buffer = data;
-      const key = folder + '/' + name;
+      const key = 'autosensei/' + folder + '/' + name;
       const resp = await this._s3.send(
         new PutObjectCommand({
           ContentType: MineTypes[name.split('.').pop()],
@@ -27,10 +28,11 @@ export default class AWSService {
         }),
       );
       if (resp) {
-        return key;
+        return Either.makeRight(key);
       }
     } catch (err) {
-      throw new HttpException('BAD_REQUEST: AWS Fail', HttpStatus.BAD_REQUEST);
+      Logger.error(err);
+      return Either.makeLeft('BAD_REQUEST: AWS Fail', HttpStatus.BAD_REQUEST);
     }
   }
 }

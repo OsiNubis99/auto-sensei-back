@@ -58,7 +58,7 @@ export class RegisterUserService implements IAppService<P, R> {
     await user.save();
 
     if (user.type == UserTypeEnum.seller || user.type == UserTypeEnum.dealer) {
-      user.status = StatusEnum.inactive;
+      user.status = StatusEnum.notvalidated;
       const emailValidation = await this.authService.emailValidation(
         user.email,
       );

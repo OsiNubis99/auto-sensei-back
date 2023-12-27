@@ -118,4 +118,46 @@ export class UpdateVehicleDetailsDto {
     description: 'Vehicledetails',
   })
   rotorReplacement: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  originalDocument: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  driverLicense: string;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  exteriorPhotos: string[];
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  interiorPhotos: string[];
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  vehicleDamage: string[];
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  additionalDocuments: string[];
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+  })
+  vehicleVideo: string;
 }

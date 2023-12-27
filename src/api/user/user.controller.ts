@@ -32,9 +32,10 @@ export class UserController {
   ) {}
 
   @Get('/')
-  @BasicRequest<UserDocument[]>({
-    description: 'List all users (Admin Only)',
-    response: 'User Document List',
+  @AuthRequest<UserDocument[]>({
+    description: 'Get all users',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
   })
   findAll() {
     return this.userService.findAll();
@@ -60,7 +61,7 @@ export class UserController {
 
   @Get('seller/:id')
   @AuthRequest<UserDocument>({
-    description: 'Delete a user',
+    description: 'Get a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
@@ -70,7 +71,7 @@ export class UserController {
 
   @Get('dealer/:id')
   @AuthRequest<UserDocument>({
-    description: 'Delete a user',
+    description: 'Get a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })

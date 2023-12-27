@@ -10,6 +10,7 @@ import { Either } from '@common/generics/Either';
 import { User, UserDocument } from '@database/schemas/user.schema';
 import { JWTPayloadI } from './jwt.payload';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { StatusEnum } from '@common/enums/status.enum';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,11 @@ export class AuthService {
       { email },
       { password: 1, _id: 1 },
     );
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (
+      user &&
+      user.status !== StatusEnum.unaproved &&
+      (await bcrypt.compare(password, user.password))
+    ) {
       return user;
     }
     return null;

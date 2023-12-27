@@ -21,4 +21,11 @@ export class VehicleDetailsI {
   brakeReplacement: string;
   rotorCondition: string;
   rotorReplacement: string;
+  originalDocument: string;
+  driverLicense: string;
+  exteriorPhotos: string[];
+  interiorPhotos: string[];
+  vehicleDamage: string[];
+  additionalDocuments: string[];
+  vehicleVideo: string;
 }

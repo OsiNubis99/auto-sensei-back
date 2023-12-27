@@ -19,7 +19,7 @@ export class UploaderService {
         HttpStatus.BAD_REQUEST,
       );
 
-    const name = body.name;
+    const name = Date.now();
     const url = await this.awsService.upload(
       body.location,
       name + ext,

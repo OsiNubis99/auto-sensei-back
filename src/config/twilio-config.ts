@@ -5,7 +5,7 @@ import { TwilioConfigI } from './interface/twilio-config.interface';
 
 import JoiUtil, { JoiConfig } from './util/joi';
 
-export const MailerConfig = registerAs('twilio', (): TwilioConfigI => {
+export const TwilioConfig = registerAs('twilio', (): TwilioConfigI => {
   const configs: JoiConfig<TwilioConfigI> = {
     accountSID: {
       value: process.env.TWILIO_ACCOUNT_SID,
