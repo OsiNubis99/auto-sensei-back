@@ -10,6 +10,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 import { UpdateAuctionDto } from '../dto/update-auction.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 
 interface P extends UpdateAuctionDto {
   _id: string;
@@ -47,8 +48,14 @@ export class UpdateAuctionService implements IAppService<P, R> {
         auction[key] = param[key];
       }
 
-      for (const key of Object.keys(vehicleDetails)) {
-        auction.vehicleDetails[key] = vehicleDetails[key];
+      if (vehicleDetails) {
+        const newVehicleDehtails = <VehicleDetailsI>{
+          ...auction.vehicleDetails,
+        };
+        for (const key of Object.keys(vehicleDetails)) {
+          newVehicleDehtails[key] = vehicleDetails[key];
+        }
+        auction.vehicleDetails = newVehicleDehtails;
       }
     } else {
       return Either.makeLeft(
