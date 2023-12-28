@@ -5,6 +5,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { User, UserDocument } from '@database/schemas/user.schema';
 import { Either } from '@common/generics/Either';
 import { StatusEnum } from '@common/enums/status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 String;
 @Injectable()
@@ -18,6 +19,7 @@ export class UserService {
   async findSellers(): Promise<Either<UserDocument[]>> {
     return Either.makeRight(
       await this.userModel.find({
+        type: UserTypeEnum.seller,
         seller: { $exists: true, $ne: null },
         status: StatusEnum.active,
       }),
@@ -27,6 +29,7 @@ export class UserService {
   async findDealers(): Promise<Either<UserDocument[]>> {
     return Either.makeRight(
       await this.userModel.find({
+        type: UserTypeEnum.dealer,
         dealer: { $exists: true, $ne: null },
         status: StatusEnum.active,
       }),

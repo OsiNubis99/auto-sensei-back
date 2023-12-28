@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -33,18 +33,11 @@ export class UpdateAuctionService implements IAppService<P, R> {
     vehicleDetails,
     ...param
   }: P): Promise<Either<R>> {
-    const auction = await this.auctionModel.findOne({ _id }, { owner: true });
-
-    Logger.log(
-      user.type +
-        ' ' +
-        UserTypeEnum.admin +
-        ' ' +
-        user._id +
-        ' ' +
-        auction.owner._id,
-    );
-    if (user.type == UserTypeEnum.admin || user._id == auction.owner._id) {
+    const auction = await this.auctionModel.findOne({ _id }).populate('owner');
+    if (
+      user.type === UserTypeEnum.admin ||
+      user._id.equals(auction.owner._id)
+    ) {
       if (user.type == UserTypeEnum.admin && finished) {
         auction.status = AuctionStatusEnum.unapproved;
       }

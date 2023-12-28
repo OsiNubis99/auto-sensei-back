@@ -16,33 +16,32 @@ export class AuctionsService {
   ) {}
 
   async findAll(user: UserDocument) {
-    const filter: Array<FilterQuery<Auction>> = [{}];
+    let filter = <FilterQuery<Auction>>{};
     if (user.type == UserTypeEnum.seller) {
-      filter.push({
-        owner: { _id: user._id },
-      });
+      filter = {
+        owner: user._id,
+      };
     }
     if (user.type == UserTypeEnum.dealer) {
-      filter.push({ status: AuctionStatusEnum.upcoming });
-      filter.push({ status: AuctionStatusEnum.live });
-      filter.push({ status: AuctionStatusEnum.completed }); // solo las que participo
+      filter = {
+        status: [
+          AuctionStatusEnum.upcoming,
+          AuctionStatusEnum.live,
+          AuctionStatusEnum.completed,
+        ],
+      };
     }
     return Either.makeRight(
-      (
-        await this.auctionModel.find(
-          {
-            $or: filter,
-          },
-          { owner: true },
-        )
-      ).map(this.calculateStatus),
+      (await this.auctionModel.find(filter).populate('owner')).map(
+        this.calculateStatus,
+      ),
     );
   }
 
   async findOne(filter: FilterQuery<Auction>) {
     return Either.makeRight(
       this.calculateStatus(
-        await this.auctionModel.findOne(filter, { owner: true }),
+        await this.auctionModel.findOne(filter).populate('owner'),
       ),
     );
   }
