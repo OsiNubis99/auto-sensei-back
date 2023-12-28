@@ -19,7 +19,7 @@ export class AuctionsService {
     const filter: Array<FilterQuery<Auction>> = [{}];
     if (user.type == UserTypeEnum.seller) {
       filter.push({
-        owner: user._id,
+        owner: { _id: user._id },
       });
     }
     if (user.type == UserTypeEnum.dealer) {
@@ -29,16 +29,21 @@ export class AuctionsService {
     }
     return Either.makeRight(
       (
-        await this.auctionModel.find({
-          $or: filter,
-        })
+        await this.auctionModel.find(
+          {
+            $or: filter,
+          },
+          { owner: true },
+        )
       ).map(this.calculateStatus),
     );
   }
 
   async findOne(filter: FilterQuery<Auction>) {
     return Either.makeRight(
-      this.calculateStatus(await this.auctionModel.findOne(filter)),
+      this.calculateStatus(
+        await this.auctionModel.findOne(filter, { owner: true }),
+      ),
     );
   }
 
