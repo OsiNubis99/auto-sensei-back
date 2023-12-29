@@ -21,6 +21,7 @@ import { CreateAuctionDto } from './dto/create-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { CreateAuctionService } from './services/create-auctions.service';
 import { UpdateAuctionService } from './services/update-auctions.service';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 @ApiTags('Auctions')
 @Controller('auctions')
@@ -70,6 +71,26 @@ export class AuctionsController {
     @Request() { user }: { user: UserDocument },
   ): Promise<Either<AuctionDocument>> {
     return this.updateAuctionService.execute({ _id, user, ...data });
+  }
+
+  @Get('/activate/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  activateUser(@Param('id') _id: string) {
+    return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.upcoming);
+  }
+
+  @Get('/inactivate/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  inactivateUser(@Param('id') _id: string) {
+    return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.canceled);
   }
 
   @Delete(':id')

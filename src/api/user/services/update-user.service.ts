@@ -68,7 +68,6 @@ export class UpdateUserService implements IAppService<P, R> {
     }
 
     if (user.status === StatusEnum.notvalidated) {
-      if (user.type == UserTypeEnum.dealer) user.status = StatusEnum.unaproved;
       if (user.type == UserTypeEnum.seller) user.status = StatusEnum.active;
     }
 

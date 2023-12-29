@@ -69,6 +69,12 @@ export class AuctionsService {
     return auction.toJSON();
   }
 
+  async setStatus(filter: FilterQuery<Auction>, status: AuctionStatusEnum) {
+    return Either.makeRight(
+      await this.auctionModel.updateOne(filter, { status }),
+    );
+  }
+
   remove(id: number) {
     return Either.makeRight(`This action removes a #${id} auction`);
   }

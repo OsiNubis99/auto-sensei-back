@@ -21,6 +21,7 @@ import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { StatusEnum } from '@common/enums/status.enum';
 
 @ApiTags('User')
 @Controller('user')
@@ -98,6 +99,26 @@ export class UserController {
     @Body() data: UpdateUserDto,
   ): Promise<Either<UserDocument>> {
     return await this.updateUserService.execute({ ...data, user });
+  }
+
+  @Get('/activate/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  activateUser(@Param('id') _id: string) {
+    return this.userService.setStatus({ _id }, StatusEnum.active);
+  }
+
+  @Get('/inactivate/:id')
+  @AuthRequest<UserDocument>({
+    description: 'Delete a user',
+    response: 'User Document',
+    roles: [UserTypeEnum.admin],
+  })
+  inactivateUser(@Param('id') _id: string) {
+    return this.userService.setStatus({ _id }, StatusEnum.inactive);
   }
 
   @Delete('/:id')
