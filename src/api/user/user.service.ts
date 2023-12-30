@@ -12,28 +12,42 @@ String;
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async findAll(): Promise<Either<UserDocument[]>> {
-    return Either.makeRight(await this.userModel.find());
+  async findSellers(user: UserDocument): Promise<Either<UserDocument[]>> {
+    let filter: FilterQuery<User> = {};
+    switch (user.type) {
+      case UserTypeEnum.dealer:
+        filter = {
+          type: UserTypeEnum.seller,
+          seller: { $exists: true, $ne: null },
+          status: StatusEnum.active,
+        };
+        break;
+      case UserTypeEnum.seller:
+        filter = {
+          _id: user._id,
+        };
+        break;
+    }
+    return Either.makeRight(await this.userModel.find(filter));
   }
 
-  async findSellers(): Promise<Either<UserDocument[]>> {
-    return Either.makeRight(
-      await this.userModel.find({
-        type: UserTypeEnum.seller,
-        seller: { $exists: true, $ne: null },
-        status: StatusEnum.active,
-      }),
-    );
-  }
-
-  async findDealers(): Promise<Either<UserDocument[]>> {
-    return Either.makeRight(
-      await this.userModel.find({
-        type: UserTypeEnum.dealer,
-        dealer: { $exists: true, $ne: null },
-        status: StatusEnum.active,
-      }),
-    );
+  async findDealers(user: UserDocument): Promise<Either<UserDocument[]>> {
+    let filter: FilterQuery<User> = {};
+    switch (user.type) {
+      case UserTypeEnum.dealer:
+        filter = {
+          _id: user._id,
+        };
+        break;
+      case UserTypeEnum.seller:
+        filter = {
+          type: UserTypeEnum.dealer,
+          dealer: { $exists: true, $ne: null },
+          status: StatusEnum.active,
+        };
+        break;
+    }
+    return Either.makeRight(await this.userModel.find(filter));
   }
 
   async findOne(filter: FilterQuery<User>): Promise<Either<UserDocument>> {

@@ -32,39 +32,28 @@ export class UserController {
     private updateUserService: UpdateUserService,
   ) {}
 
-  @Get('/')
-  @AuthRequest<UserDocument[]>({
-    description: 'Get all users',
-    response: 'User Document',
-    roles: [UserTypeEnum.admin],
-  })
-  findAll() {
-    return this.userService.findAll();
-  }
-
   @Get('/sellers')
-  @BasicRequest<UserDocument[]>({
+  @AuthRequest<UserDocument[]>({
     description: 'List Sellers Users',
     response: 'User Document List',
   })
-  findSellers() {
-    return this.userService.findSellers();
+  findSellers(@Request() req: { user: UserDocument }) {
+    return this.userService.findSellers(req.user);
   }
 
   @Get('/dealers')
-  @BasicRequest<UserDocument[]>({
+  @AuthRequest<UserDocument[]>({
     description: 'List Dealers Users',
     response: 'User Document List',
   })
-  findDealers() {
-    return this.userService.findDealers();
+  findDealers(@Request() req: { user: UserDocument }) {
+    return this.userService.findDealers(req.user);
   }
 
   @Get('seller/:id')
   @AuthRequest<UserDocument>({
     description: 'Get a user',
     response: 'User Document',
-    roles: [UserTypeEnum.admin],
   })
   findSeller(@Param('id') _id: string) {
     return this.userService.findOne({ _id });
@@ -74,7 +63,6 @@ export class UserController {
   @AuthRequest<UserDocument>({
     description: 'Get a user',
     response: 'User Document',
-    roles: [UserTypeEnum.admin],
   })
   findDealer(@Param('id') _id: string) {
     return this.userService.findOne({ _id });
