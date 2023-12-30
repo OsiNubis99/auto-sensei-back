@@ -1,5 +1,10 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,14 +31,14 @@ export class AuthService {
       { email },
       { password: 1, _id: 1, status: 1 },
     );
-    if (
-      user &&
-      user.status !== StatusEnum.unaproved &&
-      (await bcrypt.compare(password, user.password))
-    ) {
-      return user;
+    if (user) {
+      if (user.status === StatusEnum.notvalidated)
+        throw new HttpException('User not validated', 20001);
+      if (user.status === StatusEnum.unaproved)
+        throw new HttpException('User not aproved', 20002);
+      if (await bcrypt.compare(password, user.password)) return user;
     }
-    return null;
+    throw new UnauthorizedException();
   }
 
   async login(user: UserDocument) {
