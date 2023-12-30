@@ -13,7 +13,9 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async findSellers(user: UserDocument): Promise<Either<UserDocument[]>> {
-    let filter: FilterQuery<User> = {};
+    let filter: FilterQuery<User> = {
+      type: UserTypeEnum.seller,
+    };
     switch (user.type) {
       case UserTypeEnum.dealer:
         filter = {
@@ -32,7 +34,9 @@ export class UserService {
   }
 
   async findDealers(user: UserDocument): Promise<Either<UserDocument[]>> {
-    let filter: FilterQuery<User> = {};
+    let filter: FilterQuery<User> = {
+      type: UserTypeEnum.dealer,
+    };
     switch (user.type) {
       case UserTypeEnum.dealer:
         filter = {
