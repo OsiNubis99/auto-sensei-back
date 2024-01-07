@@ -47,7 +47,7 @@ export class AuctionsController {
     return this.createAuctionService.execute({ user, ...body });
   }
 
-  @Post()
+  @Post('/findAll')
   @AuthRequest<AuctionDocument[]>({
     description: 'Create a new user',
     response: 'User Document',
