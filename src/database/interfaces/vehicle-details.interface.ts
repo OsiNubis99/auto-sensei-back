@@ -2,7 +2,7 @@ import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
 export class VehicleDetailsI {
   vin: string;
-  year: string;
+  year: Date;
   make: string;
   model: string;
   series: string;
@@ -10,7 +10,7 @@ export class VehicleDetailsI {
   cylinder: string;
   transmission: string;
 
-  odometer: string;
+  odometer: number;
   doors: string;
   color: string;
   driveTrain: DriveTrainEnum;

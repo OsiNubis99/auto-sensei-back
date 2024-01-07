@@ -22,6 +22,8 @@ import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { CreateAuctionService } from './services/create-auctions.service';
 import { UpdateAuctionService } from './services/update-auctions.service';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { FilterAuctionDto } from './dto/filter-auction.dto';
+import { SortAuctionDto } from './dto/sort-auction.dto';
 
 @ApiTags('Auctions')
 @Controller('auctions')
@@ -45,13 +47,16 @@ export class AuctionsController {
     return this.createAuctionService.execute({ user, ...body });
   }
 
-  @Get()
+  @Post()
   @AuthRequest<AuctionDocument[]>({
     description: 'Create a new user',
     response: 'User Document',
   })
-  findAll(@Request() { user }: { user: UserDocument }) {
-    return this.auctionsService.findAll(user);
+  findAll(
+    @Body() data: FilterAuctionDto & SortAuctionDto,
+    @Request() { user }: { user: UserDocument },
+  ) {
+    return this.auctionsService.findAll(user, data);
   }
 
   @Get(':id')
@@ -73,23 +78,23 @@ export class AuctionsController {
     return this.updateAuctionService.execute({ _id, user, ...data });
   }
 
-  @Get('/activate/:id')
+  @Put('/activate/:id')
   @AuthRequest<UserDocument>({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  activateUser(@Param('id') _id: string) {
+  activate(@Param('id') _id: string) {
     return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.upcoming);
   }
 
-  @Get('/inactivate/:id')
+  @Put('/inactivate/:id')
   @AuthRequest<UserDocument>({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  inactivateUser(@Param('id') _id: string) {
+  inactivate(@Param('id') _id: string) {
     return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.canceled);
   }
 

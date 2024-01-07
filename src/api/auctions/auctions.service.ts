@@ -7,6 +7,9 @@ import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/Either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
+import { FilterAuctionDto } from './dto/filter-auction.dto';
+import { SortAuctionDto } from './dto/sort-auction.dto';
+import { SortAuctionEnum } from './enum/sort-auction.enum';
 
 @Injectable()
 export class AuctionsService {
@@ -15,7 +18,17 @@ export class AuctionsService {
     private auctionModel: Model<Auction>,
   ) {}
 
-  async findAll(user: UserDocument) {
+  async findAll(
+    user: UserDocument,
+    {
+      yearStart,
+      yearEnd,
+      odometerEnd,
+      odometerStart,
+      sortBy,
+      ...params
+    }: FilterAuctionDto & SortAuctionDto,
+  ) {
     let filter = <FilterQuery<Auction>>{};
     if (user.type == UserTypeEnum.seller) {
       filter = {
@@ -31,11 +44,45 @@ export class AuctionsService {
         ],
       };
     }
-    return Either.makeRight(
-      (await this.auctionModel.find(filter).populate('owner')).map(
-        this.calculateStatus,
-      ),
-    );
+    for (const key of Object.keys(params)) {
+      if (!filter.vehicleDetails) filter.vehicleDetails = {};
+      filter.vehicleDetails[key] = params[key];
+    }
+    if (yearStart) {
+      if (!filter.vehicleDetails) filter.vehicleDetails = {};
+      filter.vehicleDetails.year = { $gte: yearStart };
+    }
+    if (yearEnd) {
+      if (!filter.vehicleDetails) filter.vehicleDetails = {};
+      filter.vehicleDetails.year = { $lte: yearEnd };
+    }
+    if (odometerStart) {
+      if (!filter.vehicleDetails) filter.vehicleDetails = {};
+      filter.vehicleDetails.odometer = { $gte: odometerStart };
+    }
+    if (odometerEnd) {
+      if (!filter.vehicleDetails) filter.vehicleDetails = {};
+      filter.vehicleDetails.odometer = { $lte: odometerEnd };
+    }
+    const data = await this.auctionModel.find(filter).populate('owner');
+    data.map(this.calculateStatus);
+    switch (sortBy) {
+      case SortAuctionEnum.date:
+        data.sort((a, b) => a.dropOffDate.valueOf() - b.dropOffDate.valueOf());
+        break;
+      case SortAuctionEnum.year:
+        data.sort(
+          (a, b) =>
+            a?.vehicleDetails.year.valueOf() - b?.vehicleDetails.year.valueOf(),
+        );
+        break;
+      case SortAuctionEnum.odometer:
+        data.sort(
+          (a, b) => a?.vehicleDetails.odometer - b?.vehicleDetails.odometer,
+        );
+        break;
+    }
+    return Either.makeRight(data);
   }
 
   async findOne(filter: FilterQuery<Auction>) {

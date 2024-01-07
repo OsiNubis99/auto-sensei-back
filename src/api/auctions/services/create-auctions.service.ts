@@ -38,7 +38,7 @@ export class CreateAuctionService implements IAppService<P, R> {
 
     auction.vehicleDetails = <VehicleDetailsI>{
       vin,
-      year: 'year',
+      year: new Date(),
       make: 'make',
       model: 'model',
       series: 'series',
