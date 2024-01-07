@@ -8,7 +8,6 @@ import { Either } from '@common/generics/Either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
-import { SortAuctionDto } from './dto/sort-auction.dto';
 import { SortAuctionEnum } from './enum/sort-auction.enum';
 
 @Injectable()
@@ -27,7 +26,7 @@ export class AuctionsService {
       odometerStart,
       sortBy,
       ...params
-    }: FilterAuctionDto & SortAuctionDto,
+    }: FilterAuctionDto,
   ) {
     let filter = <FilterQuery<Auction>>{};
     if (user.type == UserTypeEnum.seller) {

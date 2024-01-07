@@ -23,7 +23,6 @@ import { CreateAuctionService } from './services/create-auctions.service';
 import { UpdateAuctionService } from './services/update-auctions.service';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
-import { SortAuctionDto } from './dto/sort-auction.dto';
 
 @ApiTags('Auctions')
 @Controller('auctions')
@@ -53,8 +52,8 @@ export class AuctionsController {
     response: 'User Document',
   })
   findAll(
-    @Body() data: FilterAuctionDto & SortAuctionDto,
     @Request() { user }: { user: UserDocument },
+    @Body() data: FilterAuctionDto,
   ) {
     return this.auctionsService.findAll(user, data);
   }
