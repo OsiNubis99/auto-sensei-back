@@ -33,9 +33,15 @@ export class AuthService {
     );
     if (user) {
       if (user.status === StatusEnum.notvalidated)
-        throw new HttpException('User not validated', 20001);
+        throw new HttpException(
+          { statusCode: 20001, message: 'User not validated' },
+          HttpStatus.UNAUTHORIZED,
+        );
       if (user.status === StatusEnum.unaproved)
-        throw new HttpException('User not aproved', 20002);
+        throw new HttpException(
+          { statusCode: 20002, message: 'User not aproved' },
+          HttpStatus.UNAUTHORIZED,
+        );
       if (await bcrypt.compare(password, user.password)) return user;
     }
     throw new UnauthorizedException();
