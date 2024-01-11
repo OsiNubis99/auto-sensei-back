@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 
-import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
-import { User, UserDocument } from './user.schema';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
+import { VehicleStatusI } from '@database/interfaces/vehicle-status.interface';
+import { User, UserDocument } from './user.schema';
+import { BuyNewI } from '@database/interfaces/buy-new.interface';
 
 export type AuctionDocument = HydratedDocument<Auction>;
 
@@ -22,6 +24,9 @@ export class Auction {
   startDate: Date;
 
   @Prop()
+  duration: string;
+
+  @Prop()
   dropOffDate: Date;
 
   @Prop()
@@ -34,13 +39,13 @@ export class Auction {
   keysNumber: string;
 
   @Prop()
-  vehicleStatus: string;
+  vehicleStatus: VehicleStatusI;
 
   @Prop()
   buyout: string;
 
   @Prop()
-  buyNew: string;
+  buyNew: BuyNewI;
 
   @Prop()
   vehicleDetails: VehicleDetailsI;

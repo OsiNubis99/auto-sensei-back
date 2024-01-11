@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
+import { BuyNewDto } from './buy-new.dto';
+import { VehicleStatusDto } from './vehicle-status.dto';
 
 export class CreateAuctionDto {
   @IsNotEmpty()
@@ -33,10 +36,12 @@ export class CreateAuctionDto {
   keysNumber: string;
 
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => VehicleStatusDto)
   @ApiProperty({
     description: 'Auction Buyout',
   })
-  vehicleStatus: string;
+  vehicleStatus: VehicleStatusDto;
 
   @IsOptional()
   @ApiProperty({
@@ -45,8 +50,10 @@ export class CreateAuctionDto {
   buyout: string;
 
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => BuyNewDto)
   @ApiProperty({
     description: 'Auction Buy New data',
   })
-  buyNew: string;
+  buyNew: BuyNewDto;
 }

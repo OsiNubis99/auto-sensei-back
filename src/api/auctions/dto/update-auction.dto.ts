@@ -1,23 +1,29 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, ValidateNested } from 'class-validator';
+import { IsNumberString, IsOptional, ValidateNested } from 'class-validator';
 
 import { CreateAuctionDto } from './create-auction.dto';
-import { UpdateVehicleDetailsDto } from './update-vehicle-details.dto';
+import { VehicleDetailsDto } from './vehicle-details.dto';
 
 export class UpdateAuctionDto extends PartialType(CreateAuctionDto) {
   @IsOptional()
   @ApiProperty({
-    example: true,
-    description: 'Auction is finished',
+    description: 'Start date',
   })
-  finished: boolean;
+  startDate: Date;
+
+  @IsOptional()
+  @IsNumberString()
+  @ApiProperty({
+    description: 'Auciton duration in minutes',
+  })
+  duration: string;
 
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => UpdateVehicleDetailsDto)
+  @Type(() => VehicleDetailsDto)
   @ApiProperty({
     description: 'Vehicle details data',
   })
-  vehicleDetails: UpdateVehicleDetailsDto;
+  vehicleDetails: VehicleDetailsDto;
 }

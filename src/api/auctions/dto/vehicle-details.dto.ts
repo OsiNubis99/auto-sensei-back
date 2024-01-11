@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 
 import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
-export class UpdateVehicleDetailsDto {
+export class VehicleDetailsDto {
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',

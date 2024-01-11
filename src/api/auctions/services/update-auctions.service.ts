@@ -30,7 +30,8 @@ export class UpdateAuctionService implements IAppService<P, R> {
     _id,
     user,
     vin,
-    finished,
+    startDate,
+    duration,
     vehicleDetails,
     ...param
   }: P): Promise<Either<R>> {
@@ -39,7 +40,9 @@ export class UpdateAuctionService implements IAppService<P, R> {
       user.type === UserTypeEnum.admin ||
       user._id.equals(auction.owner._id)
     ) {
-      if (finished) {
+      if (duration) {
+        auction.startDate = startDate;
+        auction.duration = duration;
         auction.status = AuctionStatusEnum.unapproved;
       }
       auction.vin = vin;
