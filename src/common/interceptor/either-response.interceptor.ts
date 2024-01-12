@@ -15,7 +15,7 @@ export class EitherResponseInterceptor<T> implements NestInterceptor {
   ): Observable<T | HttpException> {
     return next.handle().pipe(
       map((data: Either<T>) => {
-        if (data.isLeft()) return data.getLeft();
+        if (data.isLeft()) throw data.getLeft();
         return data.getRight();
       }),
     );

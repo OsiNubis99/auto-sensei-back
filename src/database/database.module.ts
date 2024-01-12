@@ -16,9 +16,9 @@ import { User, UserSchema } from './schemas/user.schema';
         uri: configService.get<string>('database.uri'),
       }),
     }),
+    MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
     MongooseModule.forFeature([{ name: Faq.name, schema: FaqSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
   ],
   exports: [MongooseModule],
 })

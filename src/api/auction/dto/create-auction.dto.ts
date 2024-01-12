@@ -47,7 +47,7 @@ export class CreateAuctionDto {
   @ApiProperty({
     description: 'Auction Buyout',
   })
-  buyout: string;
+  buyout: number;
 
   @IsOptional()
   @ValidateNested({ each: true })

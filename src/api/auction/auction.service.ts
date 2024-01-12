@@ -11,7 +11,7 @@ import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { SortAuctionEnum } from './enum/sort-auction.enum';
 
 @Injectable()
-export class AuctionsService {
+export class AuctionService {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
@@ -25,7 +25,7 @@ export class AuctionsService {
       odometerEnd,
       odometerStart,
       sortBy,
-      ...params
+      ...filters
     }: FilterAuctionDto,
   ) {
     let filter = <FilterQuery<Auction>>{};
@@ -43,9 +43,9 @@ export class AuctionsService {
         ],
       };
     }
-    for (const key of Object.keys(params)) {
+    for (const key of Object.keys(filters)) {
       if (!filter.vehicleDetails) filter.vehicleDetails = {};
-      filter.vehicleDetails[key] = params[key];
+      filter.vehicleDetails[key] = filters[key];
     }
     if (yearStart) {
       if (!filter.vehicleDetails) filter.vehicleDetails = {};
@@ -63,8 +63,9 @@ export class AuctionsService {
       if (!filter.vehicleDetails) filter.vehicleDetails = {};
       filter.vehicleDetails.odometer = { $lte: odometerEnd };
     }
-    const data = await this.auctionModel.find(filter).populate('owner');
-    data.map(this.calculateStatus);
+
+    let data = await this.auctionModel.find(filter).populate('owner');
+    data = data.map((item) => this.calculateStatus(item));
     switch (sortBy) {
       case SortAuctionEnum.date:
         data.sort((a, b) => a.dropOffDate.valueOf() - b.dropOffDate.valueOf());
@@ -95,7 +96,7 @@ export class AuctionsService {
   calculateStatus(auction: AuctionDocument) {
     if (!auction) return auction;
     if (auction.dropOffDate < new Date()) {
-      if (auction.status !== AuctionStatusEnum.live) return auction.toJSON();
+      if (auction.status !== AuctionStatusEnum.live) return auction;
       auction.status = AuctionStatusEnum.completed;
       auction.save();
     } else if (auction.startDate < new Date()) {
@@ -108,11 +109,11 @@ export class AuctionsService {
           auction.status = AuctionStatusEnum.canceled;
           break;
         default:
-          return auction.toJSON();
+          return auction;
       }
       auction.save();
     }
-    return auction.toJSON();
+    return auction;
   }
 
   async setStatus(filter: FilterQuery<Auction>, status: AuctionStatusEnum) {

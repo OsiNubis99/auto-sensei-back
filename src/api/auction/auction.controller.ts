@@ -16,27 +16,30 @@ import { Either } from '@common/generics/Either';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
-import { AuctionsService } from './auctions.service';
-import { CreateAuctionDto } from './dto/create-auction.dto';
-import { UpdateAuctionDto } from './dto/update-auction.dto';
-import { CreateAuctionService } from './services/create-auctions.service';
-import { UpdateAuctionService } from './services/update-auctions.service';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { AuctionService } from './auction.service';
+import { CreateAuctionDto } from './dto/create-auction.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
+import { UpdateAuctionDto } from './dto/update-auction.dto';
+import { CreateAuctionService } from './services/create-auction.service';
+import { CreateBidService } from './services/create-bid.service';
+import { UpdateAuctionService } from './services/update-auction.service';
+import { CreateBidDto } from './dto/create-bid.dto';
 
-@ApiTags('Auctions')
-@Controller('auctions')
-export class AuctionsController {
+@ApiTags('Auction')
+@Controller('auction')
+export class AuctionController {
   constructor(
-    private readonly auctionsService: AuctionsService,
+    private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
+    private readonly createBidService: CreateBidService,
     private readonly updateAuctionService: UpdateAuctionService,
   ) {}
 
-  @Post()
+  @Post('/')
   @AuthRequest<AuctionDocument>({
     description: 'Create a new user',
-    response: 'User Document',
+    response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
   create(
@@ -46,27 +49,27 @@ export class AuctionsController {
     return this.createAuctionService.execute({ user, ...body });
   }
 
-  @Post('/findAll')
+  @Post('/find-all')
   @AuthRequest<AuctionDocument[]>({
     description: 'Create a new user',
-    response: 'User Document',
+    response: 'Auction Document',
   })
   findAll(
     @Request() { user }: { user: UserDocument },
     @Body() data: FilterAuctionDto,
   ) {
-    return this.auctionsService.findAll(user, data);
+    return this.auctionService.findAll(user, data);
   }
 
-  @Get(':id')
+  @Get('/:id')
   findOne(@Param('id') _id: string) {
-    return this.auctionsService.findOne({ _id });
+    return this.auctionService.findOne({ _id });
   }
 
-  @Put(':id')
+  @Put('/:id')
   @AuthRequest<AuctionDocument>({
     description: 'Create a new user',
-    response: 'User Document',
+    response: 'Auction Document',
     roles: [UserTypeEnum.seller, UserTypeEnum.admin],
   })
   update(
@@ -79,26 +82,40 @@ export class AuctionsController {
 
   @Put('/activate/:id')
   @AuthRequest<UserDocument>({
-    description: 'Delete a user',
-    response: 'User Document',
+    description: 'Activate an Auction',
+    response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
   activate(@Param('id') _id: string) {
-    return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.upcoming);
+    return this.auctionService.setStatus({ _id }, AuctionStatusEnum.upcoming);
   }
 
   @Put('/inactivate/:id')
   @AuthRequest<UserDocument>({
-    description: 'Delete a user',
-    response: 'User Document',
+    description: 'Inactivate an Auction',
+    response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
   inactivate(@Param('id') _id: string) {
-    return this.auctionsService.setStatus({ _id }, AuctionStatusEnum.canceled);
+    return this.auctionService.setStatus({ _id }, AuctionStatusEnum.canceled);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   remove(@Param('id') id: string) {
-    return this.auctionsService.remove(+id);
+    return this.auctionService.remove(+id);
+  }
+
+  @Post('/bid/:id')
+  @AuthRequest<AuctionDocument[]>({
+    description: 'Create a new bid',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  createBid(
+    @Param('id') _id: string,
+    @Body() data: CreateBidDto,
+    @Request() { user }: { user: UserDocument },
+  ): Promise<Either<AuctionDocument>> {
+    return this.createBidService.execute({ _id, user, ...data });
   }
 }

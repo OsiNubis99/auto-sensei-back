@@ -6,6 +6,7 @@ import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface'
 import { VehicleStatusI } from '@database/interfaces/vehicle-status.interface';
 import { User, UserDocument } from './user.schema';
 import { BuyNewI } from '@database/interfaces/buy-new.interface';
+import { BidI } from '@database/interfaces/bid.interface';
 
 export type AuctionDocument = HydratedDocument<Auction>;
 
@@ -42,13 +43,16 @@ export class Auction {
   vehicleStatus: VehicleStatusI;
 
   @Prop()
-  buyout: string;
+  buyout: number;
 
   @Prop()
   buyNew: BuyNewI;
 
   @Prop()
   vehicleDetails: VehicleDetailsI;
+
+  @Prop()
+  bids: BidI[];
 
   @Prop({ type: mongooseSchema.Types.ObjectId, ref: User.name })
   owner: UserDocument;
