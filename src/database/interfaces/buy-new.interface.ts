@@ -4,6 +4,6 @@ export class BuyNewI {
   model: string;
   mileageStart: string;
   mileageEnd: string;
-  year: string;
-  keysNumber: string;
+  yearStart: string;
+  yearEnd: string;
 }

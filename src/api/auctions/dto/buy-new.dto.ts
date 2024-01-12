@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
-import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 import { BuyNewI } from '@database/interfaces/buy-new.interface';
 
 export class BuyNewDto implements BuyNewI {
@@ -25,14 +24,6 @@ export class BuyNewDto implements BuyNewI {
 
   @IsOptional()
   @ApiProperty({
-    enum: DriveTrainEnum,
-    example: DriveTrainEnum['4WD'],
-    description: 'Auction status',
-  })
-  driveTrain: DriveTrainEnum;
-
-  @IsOptional()
-  @ApiProperty({
     description: 'Buy new data',
   })
   mileageStart: string;
@@ -47,11 +38,11 @@ export class BuyNewDto implements BuyNewI {
   @ApiProperty({
     description: 'Buy new data',
   })
-  year: string;
+  yearStart: string;
 
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
   })
-  keysNumber: string;
+  yearEnd: string;
 }
