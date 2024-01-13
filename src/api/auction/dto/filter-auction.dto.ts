@@ -7,6 +7,8 @@ import {
   IsString,
 } from 'class-validator';
 
+import { SortAuctionDto } from './sort-auction.dto';
+
 export class FilterAuctionDto extends SortAuctionDto {
   @IsString()
   @IsOptional()
