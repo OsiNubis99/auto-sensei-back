@@ -11,20 +11,21 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
+import { IdDto } from '@common/dtos/id.dto';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/Either';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
+import { CreateBidDto } from './dto/create-bid.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { UpdateAuctionService } from './services/update-auction.service';
-import { CreateBidDto } from './dto/create-bid.dto';
 
 @ApiTags('Auction')
 @Controller('auction')
@@ -62,8 +63,8 @@ export class AuctionController {
   }
 
   @Get('/:id')
-  findOne(@Param('id') _id: string) {
-    return this.auctionService.findOne({ _id });
+  findOne(@Param() param: IdDto) {
+    return this.auctionService.findOne({ _id: param.id });
   }
 
   @Put('/:id')
@@ -73,11 +74,11 @@ export class AuctionController {
     roles: [UserTypeEnum.seller, UserTypeEnum.admin],
   })
   update(
-    @Param('id') _id: string,
+    @Param() param: IdDto,
     @Body() data: UpdateAuctionDto,
     @Request() { user }: { user: UserDocument },
   ): Promise<Either<AuctionDocument>> {
-    return this.updateAuctionService.execute({ _id, user, ...data });
+    return this.updateAuctionService.execute({ _id: param.id, user, ...data });
   }
 
   @Put('/activate/:id')
@@ -86,8 +87,11 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  activate(@Param('id') _id: string) {
-    return this.auctionService.setStatus({ _id }, AuctionStatusEnum.upcoming);
+  activate(@Param() param: IdDto) {
+    return this.auctionService.setStatus(
+      { _id: param.id },
+      AuctionStatusEnum.upcoming,
+    );
   }
 
   @Put('/inactivate/:id')
@@ -96,8 +100,11 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  inactivate(@Param('id') _id: string) {
-    return this.auctionService.setStatus({ _id }, AuctionStatusEnum.canceled);
+  inactivate(@Param() param: IdDto) {
+    return this.auctionService.setStatus(
+      { _id: param.id },
+      AuctionStatusEnum.canceled,
+    );
   }
 
   @Delete('/:id')
@@ -112,10 +119,10 @@ export class AuctionController {
     roles: [UserTypeEnum.dealer],
   })
   createBid(
-    @Param('id') _id: string,
+    @Param() param: IdDto,
     @Body() data: CreateBidDto,
     @Request() { user }: { user: UserDocument },
   ): Promise<Either<AuctionDocument>> {
-    return this.createBidService.execute({ _id, user, ...data });
+    return this.createBidService.execute({ _id: param.id, user, ...data });
   }
 }

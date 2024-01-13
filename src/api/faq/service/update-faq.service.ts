@@ -1,14 +1,14 @@
 import { Faq, FaqDocument } from '@database/schemas/faq.schema';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 
 import { IAppService } from '@common/generics/IAppService';
 import { Either } from '@common/generics/Either';
 import { UpdateFaqDto } from '../dto/update-faq.dto';
 
 interface P extends UpdateFaqDto {
-  id: string;
+  _id: Schema.Types.ObjectId;
 }
 
 interface R extends FaqDocument {}
@@ -17,8 +17,8 @@ interface R extends FaqDocument {}
 export class UpdateFaqService implements IAppService<P, R> {
   constructor(@InjectModel(Faq.name) private faqModel: Model<Faq>) {}
 
-  async execute({ id, ...param }: P): Promise<Either<R>> {
-    const faq = await this.faqModel.findById(id);
+  async execute({ _id, ...param }: P): Promise<Either<R>> {
+    const faq = await this.faqModel.findById(_id);
     if (!faq) return Either.makeLeft('Invalid FAQ id', HttpStatus.BAD_REQUEST);
 
     for (const key of Object.keys(param)) {

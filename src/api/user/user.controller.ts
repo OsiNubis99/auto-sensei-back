@@ -12,6 +12,9 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
+import { IdDto } from '@common/dtos/id.dto';
+import { StatusEnum } from '@common/enums/status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/Either';
 import { UserDocument } from '@database/schemas/user.schema';
 
@@ -20,8 +23,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { StatusEnum } from '@common/enums/status.enum';
 
 @ApiTags('User')
 @Controller('user')
@@ -55,8 +56,8 @@ export class UserController {
     description: 'Get a user',
     response: 'User Document',
   })
-  findSeller(@Param('id') _id: string) {
-    return this.userService.findOne({ _id });
+  findSeller(@Param() param: IdDto) {
+    return this.userService.findOne({ _id: param.id });
   }
 
   @Get('dealer/:id')
@@ -64,8 +65,8 @@ export class UserController {
     description: 'Get a user',
     response: 'User Document',
   })
-  findDealer(@Param('id') _id: string) {
-    return this.userService.findOne({ _id });
+  findDealer(@Param() param: IdDto) {
+    return this.userService.findOne({ _id: param.id });
   }
 
   @Post('register')
@@ -95,8 +96,8 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  activateUser(@Param('id') _id: string) {
-    return this.userService.setStatus({ _id }, StatusEnum.active);
+  activateUser(@Param() param: IdDto) {
+    return this.userService.setStatus({ _id: param.id }, StatusEnum.active);
   }
 
   @Get('/inactivate/:id')
@@ -105,8 +106,8 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  inactivateUser(@Param('id') _id: string) {
-    return this.userService.setStatus({ _id }, StatusEnum.inactive);
+  inactivateUser(@Param() param: IdDto) {
+    return this.userService.setStatus({ _id: param.id }, StatusEnum.inactive);
   }
 
   @Delete('/:id')
@@ -115,7 +116,7 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  delete(@Param('id') _id: string) {
-    return this.userService.delete({ _id });
+  delete(@Param() param: IdDto) {
+    return this.userService.delete({ _id: param.id });
   }
 }

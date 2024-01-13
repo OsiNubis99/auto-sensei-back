@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { Schema } from 'mongoose';
 
 import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
@@ -9,7 +10,7 @@ import { AuctionService } from '../auction.service';
 import { CreateBidDto } from '../dto/create-bid.dto';
 
 interface P extends CreateBidDto {
-  _id: string;
+  _id: Schema.Types.ObjectId;
   user: UserDocument;
 }
 

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 
 import { Either } from '@common/generics/Either';
 import { IAppService } from '@common/generics/IAppService';
@@ -13,7 +13,7 @@ import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 
 interface P extends UpdateAuctionDto {
-  _id: string;
+  _id: Schema.Types.ObjectId;
   user: UserDocument;
 }
 

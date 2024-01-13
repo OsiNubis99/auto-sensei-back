@@ -8,18 +8,20 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+import { AuthRequest } from '@common/decorators/auth-request';
+import { BasicRequest } from '@common/decorators/basic-request';
+import { IdDto } from '@common/dtos/id.dto';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { Either } from '@common/generics/Either';
+import { FaqDocument } from '@database/schemas/faq.schema';
+
+import { CreateFaqDto } from './dto/create-faq.dto';
+import { UpdateFaqDto } from './dto/update-faq.dto';
 import { FaqService } from './faq.service';
 import { CreateFaqService } from './service/create-faq.service';
-import { BasicRequest } from '@common/decorators/basic-request';
-import { ApiTags } from '@nestjs/swagger';
-import { FaqDocument } from '@database/schemas/faq.schema';
-import { CreateFaqDto } from './dto/create-faq.dto';
-import { Either } from '@common/generics/Either';
 import { UpdateFaqService } from './service/update-faq.service';
-import { UpdateFaqDto } from './dto/update-faq.dto';
-import { AuthRequest } from '@common/decorators/auth-request';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 @Injectable()
 @ApiTags('FAQ')
@@ -45,8 +47,8 @@ export class FaqController {
     description: 'Create a new user',
     response: 'User Document',
   })
-  oneFaq(@Param('id') _id: string) {
-    return this.faqService.findOne({ _id });
+  oneFaq(@Param() param: IdDto) {
+    return this.faqService.findOne({ _id: param.id });
   }
 
   @Post('/')
@@ -66,10 +68,10 @@ export class FaqController {
     roles: [UserTypeEnum.admin],
   })
   update(
-    @Param('id') id: string,
+    @Param() param: IdDto,
     @Body() body: UpdateFaqDto,
   ): Promise<Either<FaqDocument>> {
-    return this.updateFaqService.execute({ id, ...body });
+    return this.updateFaqService.execute({ _id: param.id, ...body });
   }
 
   @Delete('/:id')
@@ -78,7 +80,7 @@ export class FaqController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  delete(@Param('id') _id: string) {
-    return this.faqService.delete({ _id });
+  delete(@Param() param: IdDto) {
+    return this.faqService.delete({ _id: param.id });
   }
 }
