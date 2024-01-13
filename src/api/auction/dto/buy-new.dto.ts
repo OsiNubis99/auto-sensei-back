@@ -1,48 +1,62 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 import { BuyNewI } from '@database/interfaces/buy-new.interface';
 
-export class BuyNewDto implements BuyNewI {
+export class BuyNewDto implements Partial<BuyNewI> {
+  @IsBoolean()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  anyVehicle: boolean;
+  anyVehicle?: boolean;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  make: string;
+  make?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  model: string;
+  model?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  mileageStart: string;
+  mileageStart?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  mileageEnd: string;
+  mileageEnd?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  yearStart: string;
+  yearStart?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Buy new data',
+    required: false,
   })
-  yearEnd: string;
+  yearEnd?: string;
 }

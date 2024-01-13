@@ -1,18 +1,5 @@
-import { IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/swagger';
 
-export class UpdateFaqDto {
-  @IsOptional()
-  @ApiProperty({
-    description: 'FAQ Question',
-    example: 'Is auto sensei very cool?',
-  })
-  readonly question: string;
+import { CreateFaqDto } from './create-faq.dto';
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'FAQ Answer',
-    example: 'Yes!!',
-  })
-  readonly answer: string;
-}
+export class UpdateFaqDto extends PartialType(CreateFaqDto) {}

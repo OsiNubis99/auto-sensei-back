@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
 
 import { LoginDto } from '@auth/dto/login.dto';
 
-import { UpdateSellerDto } from './update-seller.dto';
-import { UpdateDealerDto } from './update-dealer.dto';
+import { DealerDto } from './dealer.dto';
+import { SellerDto } from './seller.dto';
 
 export class RegisterUserDto extends LoginDto {
   @IsOptional()
@@ -13,17 +13,20 @@ export class RegisterUserDto extends LoginDto {
 
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => UpdateSellerDto)
+  @Type(() => SellerDto)
   @ApiProperty({
     description: 'Seller data',
+    nullable: true,
+    required: false,
   })
-  seller: UpdateSellerDto;
+  seller?: SellerDto;
 
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => UpdateDealerDto)
+  @Type(() => DealerDto)
   @ApiProperty({
     description: 'Dealer data',
+    required: false,
   })
-  dealer: UpdateDealerDto;
+  dealer?: DealerDto;
 }

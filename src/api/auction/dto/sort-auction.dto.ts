@@ -9,7 +9,8 @@ export class SortAuctionDto {
   @ApiProperty({
     example: SortAuctionEnum.date,
     enum: SortAuctionEnum,
-    description: 'Auction is finished',
+    description: 'Auction sort',
+    required: false,
   })
-  sortBy: SortAuctionEnum;
+  sortBy?: SortAuctionEnum;
 }

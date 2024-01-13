@@ -1,116 +1,148 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
 export class VehicleDetailsDto {
+  @IsNumber()
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  odometer: number;
+  odometer?: number;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  doors: string;
+  doors?: string;
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  color: string;
+  color?: string;
 
+  @IsEnum(DriveTrainEnum)
   @IsOptional()
   @ApiProperty({
     enum: DriveTrainEnum,
     example: DriveTrainEnum['4WD'],
     description: 'Auction status',
+    required: false,
   })
-  driveTrain: DriveTrainEnum;
+  driveTrain?: DriveTrainEnum;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  aditionals?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  tireCondition?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  tireReplacement?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  brakeCondition?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  brakeReplacement?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  rotorCondition?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  rotorReplacement?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  originalDocument?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  driverLicense?: string;
 
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  aditionals: string;
+  exteriorPhotos?: string[];
 
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  tireCondition: string;
+  interiorPhotos?: string[];
 
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  tireReplacement: string;
+  vehicleDamage?: string[];
 
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  brakeCondition: string;
+  additionalDocuments?: string[];
 
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Vehicledetails',
+    required: false,
   })
-  brakeReplacement: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  rotorCondition: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  rotorReplacement: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  originalDocument: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  driverLicense: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  exteriorPhotos: string[];
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  interiorPhotos: string[];
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  vehicleDamage: string[];
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  additionalDocuments: string[];
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Vehicledetails',
-  })
-  vehicleVideo: string;
+  vehicleVideo?: string;
 }

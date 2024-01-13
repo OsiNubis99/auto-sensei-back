@@ -1,83 +1,114 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
-import { SortAuctionDto } from './sort-auction.dto';
+import {
+  IsArray,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class FilterAuctionDto extends SortAuctionDto {
+  @IsString()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  make: string;
+  make?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  model?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  trim?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  bodyType?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  cylinder?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  transmission?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  doors?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Auction is finished',
+    required: false,
+  })
+  driveTrain?: string;
 
   @IsOptional()
+  @IsArray()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  model: string;
+  color?: string[];
 
+  @IsDate()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  trim: string;
+  yearStart?: Date;
 
+  @IsDate()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  bodyType: string;
+  yearEnd?: Date;
 
+  @IsNumber()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  cylinder: string;
+  odometerStart?: number;
 
+  @IsNumber()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
+    required: false,
   })
-  transmission: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  doors: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  driveTrain: string;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  color: string[];
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  yearStart: Date;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  yearEnd: Date;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  odometerStart: number;
-
-  @IsOptional()
-  @ApiProperty({
-    description: 'Auction is finished',
-  })
-  odometerEnd: number;
+  odometerEnd?: number;
 }
