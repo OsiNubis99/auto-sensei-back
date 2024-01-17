@@ -20,3 +20,10 @@ export class Chat {
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
+
+const autoPopulate = function (next) {
+  this.populate('auction').populate('participant');
+  next();
+};
+
+ChatSchema.pre('findOne', autoPopulate).pre('find', autoPopulate);

@@ -59,3 +59,10 @@ export class Auction {
 }
 
 export const AuctionSchema = SchemaFactory.createForClass(Auction);
+
+const autoPopulate = function (next) {
+  this.populate('owner');
+  next();
+};
+
+AuctionSchema.pre('findOne', autoPopulate).pre('find', autoPopulate);

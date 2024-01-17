@@ -15,6 +15,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { GetChatsDto } from './dto/get_chats.dto';
 import { GetMessagesDto } from './dto/get_messages.dto';
 import { MessageService } from './message.service';
+import { Logger } from '@nestjs/common';
 
 enum Reasons {
   newMessageSended = 'newMessageSended',
@@ -62,7 +63,13 @@ export class MessageGateway
 
   broadcast(userId: string, message: ChatDocument, reason: Reasons) {
     for (const c of this.wsClients) {
-      if (c.userId == userId) c.client.emit(reason, message);
+      if (c.userId == userId) {
+        try {
+          c.client.emit(reason, message);
+        } catch (err) {
+          Logger.error(err);
+        }
+      }
     }
   }
 
@@ -71,12 +78,12 @@ export class MessageGateway
     try {
       const message = await this.messageService.create(body);
       this.broadcast(
-        message.participant.id,
+        message.participant._id.toString(),
         message,
         Reasons.newMessageRecived,
       );
       this.broadcast(
-        message.auction.owner.id,
+        message.auction.owner._id.toString(),
         message,
         Reasons.newMessageSended,
       );

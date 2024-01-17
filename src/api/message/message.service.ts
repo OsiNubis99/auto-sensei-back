@@ -90,12 +90,10 @@ export class MessageService {
     if (!user) {
       throw 'user invalid';
     }
-    return this.chatModel
-      .findOne({
-        auction,
-        participant: user,
-      })
-      .populate('auction.owner', 'participant');
+    return this.chatModel.findOne({
+      auction,
+      participant: user,
+    });
   }
 
   async getChats(body: GetChatsDto) {
@@ -107,12 +105,11 @@ export class MessageService {
       throw 'user invalid';
     }
     if (user.type == UserTypeEnum.seller)
-      return this.chatModel
-        .find({ 'auction.owner': user })
-        .populate('auction.owner', 'participant');
-    else
-      return this.chatModel
-        .find({ participant: user })
-        .populate('auction.owner', 'participant');
+      return this.chatModel.find({}).then((chats) =>
+        chats.filter((chat) => {
+          return chat.auction.owner._id.equals(user._id);
+        }),
+      );
+    else return this.chatModel.find({ participant: user });
   }
 }
