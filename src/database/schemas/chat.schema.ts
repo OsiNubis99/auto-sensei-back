@@ -3,16 +3,14 @@ import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 
 import { User, UserDocument } from './user.schema';
 import { Auction, AuctionDocument } from './auction.schema';
+import { MessageI } from '@database/interfaces/message.interface';
 
-export type BidDocument = HydratedDocument<Bid>;
+export type ChatDocument = HydratedDocument<Chat>;
 
 @Schema({ timestamps: true })
-export class Bid {
+export class Chat {
   @Prop()
-  amount: number;
-
-  @Prop()
-  biddingLimit: number;
+  messages: MessageI[];
 
   @Prop({ type: mongooseSchema.Types.ObjectId, ref: Auction.name })
   auction: AuctionDocument;
@@ -21,4 +19,4 @@ export class Bid {
   participant: UserDocument;
 }
 
-export const BidSchema = SchemaFactory.createForClass(Bid);
+export const ChatSchema = SchemaFactory.createForClass(Chat);

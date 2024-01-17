@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Auction, AuctionSchema } from './schemas/auction.schema';
+import { Chat, ChatSchema } from './schemas/chat.schema';
 import { Faq, FaqSchema } from './schemas/faq.schema';
 import { User, UserSchema } from './schemas/user.schema';
 
@@ -17,6 +18,7 @@ import { User, UserSchema } from './schemas/user.schema';
       }),
     }),
     MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
+    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
     MongooseModule.forFeature([{ name: Faq.name, schema: FaqSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
