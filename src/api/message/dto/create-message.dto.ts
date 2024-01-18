@@ -13,14 +13,6 @@ export class CreateMessageDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'User Id',
-    required: true,
-  })
-  userId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
     type: String,
     description: 'Content',
     example: true,

@@ -4,7 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { Either } from '@common/generics/Either';
+import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 import { FilterAuctionDto } from './dto/filter-auction.dto';

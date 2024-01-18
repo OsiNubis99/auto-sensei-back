@@ -1,10 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { Either } from '@common/generics/Either';
-import { IAppService } from '@common/generics/IAppService';
+import { Either } from '@common/generics/either';
+import { AppServiceI } from '@common/generics/app-service.interface';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
 import { UserTypeEnum } from '@common/enums/user-type.enum';
@@ -23,28 +23,23 @@ const regex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 @Injectable()
-export class UpdateUserService implements IAppService<P, R> {
+export class UpdateUserService implements AppServiceI<P, R, HttpException> {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async execute({
-    user,
-    password,
-    seller,
-    dealer,
-    ...newData
-  }: P): Promise<Either<R>> {
+  async execute({ user, password, seller, dealer, ...newData }: P) {
     if (
       newData.email &&
       newData.email !== user.email &&
       (await this.userModel.findOne({ email: newData.email }))
     )
-      return Either.makeLeft('Email already used', HttpStatus.BAD_REQUEST);
+      return Either.makeLeft(
+        new HttpException('Email already used', HttpStatus.BAD_REQUEST),
+      );
 
     if (password) {
       if (!regex.test(password))
         return Either.makeLeft(
-          'Pasword should be valid',
-          HttpStatus.BAD_REQUEST,
+          new HttpException('Pasword should be valid', HttpStatus.BAD_REQUEST),
         );
       user.password = await bcrypt.hash(password, 10);
     }
@@ -75,7 +70,9 @@ export class UpdateUserService implements IAppService<P, R> {
     try {
       await this.userModel.updateOne({ _id: user._id }, user);
     } catch (err) {
-      return Either.makeLeft('Bad update', HttpStatus.BAD_REQUEST);
+      return Either.makeLeft(
+        new HttpException('Bad update', HttpStatus.BAD_REQUEST),
+      );
     }
 
     return Either.makeRight(user);

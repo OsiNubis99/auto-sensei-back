@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   Post,
   Put,
@@ -14,7 +15,6 @@ import { AuthRequest } from '@common/decorators/auth-request';
 import { IdDto } from '@common/dtos/id.dto';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { Either } from '@common/generics/Either';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
@@ -38,7 +38,7 @@ export class AuctionController {
   ) {}
 
   @Post('/')
-  @AuthRequest<AuctionDocument>({
+  @AuthRequest<AuctionDocument, HttpException>({
     description: 'Create a new user',
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
@@ -46,12 +46,12 @@ export class AuctionController {
   create(
     @Request() { user }: { user: UserDocument },
     @Body() body: CreateAuctionDto,
-  ): Promise<Either<AuctionDocument>> {
+  ) {
     return this.createAuctionService.execute({ user, ...body });
   }
 
   @Post('/find-all')
-  @AuthRequest<AuctionDocument[]>({
+  @AuthRequest<AuctionDocument[], HttpException>({
     description: 'Create a new user',
     response: 'Auction Document',
   })
@@ -68,7 +68,7 @@ export class AuctionController {
   }
 
   @Put('/:id')
-  @AuthRequest<AuctionDocument>({
+  @AuthRequest<AuctionDocument, HttpException>({
     description: 'Create a new user',
     response: 'Auction Document',
     roles: [UserTypeEnum.seller, UserTypeEnum.admin],
@@ -77,12 +77,12 @@ export class AuctionController {
     @Param() param: IdDto,
     @Body() data: UpdateAuctionDto,
     @Request() { user }: { user: UserDocument },
-  ): Promise<Either<AuctionDocument>> {
+  ) {
     return this.updateAuctionService.execute({ _id: param.id, user, ...data });
   }
 
   @Put('/activate/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<AuctionDocument, HttpException>({
     description: 'Activate an Auction',
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
@@ -95,7 +95,7 @@ export class AuctionController {
   }
 
   @Put('/inactivate/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<AuctionDocument, HttpException>({
     description: 'Inactivate an Auction',
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
@@ -113,7 +113,7 @@ export class AuctionController {
   }
 
   @Post('/bid/:id')
-  @AuthRequest<AuctionDocument[]>({
+  @AuthRequest<AuctionDocument[], HttpException>({
     description: 'Create a new bid',
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
@@ -122,7 +122,7 @@ export class AuctionController {
     @Param() param: IdDto,
     @Body() data: CreateBidDto,
     @Request() { user }: { user: UserDocument },
-  ): Promise<Either<AuctionDocument>> {
+  ) {
     return this.createBidService.execute({ _id: param.id, user, ...data });
   }
 }

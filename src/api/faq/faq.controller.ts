@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Injectable,
   Param,
   Post,
@@ -14,7 +15,6 @@ import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
 import { IdDto } from '@common/dtos/id.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { Either } from '@common/generics/Either';
 import { FaqDocument } from '@database/schemas/faq.schema';
 
 import { CreateFaqDto } from './dto/create-faq.dto';
@@ -34,7 +34,7 @@ export class FaqController {
   ) {}
 
   @Get('/')
-  @BasicRequest<FaqDocument[]>({
+  @BasicRequest<FaqDocument[], HttpException>({
     description: 'Create a new user',
     response: 'User Document',
   })
@@ -43,7 +43,7 @@ export class FaqController {
   }
 
   @Get('/:id')
-  @BasicRequest<FaqDocument>({
+  @BasicRequest<FaqDocument, HttpException>({
     description: 'Create a new user',
     response: 'User Document',
   })
@@ -52,30 +52,27 @@ export class FaqController {
   }
 
   @Post('/')
-  @AuthRequest<FaqDocument>({
+  @AuthRequest<FaqDocument, HttpException>({
     description: 'Create a new faq',
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
-  async createFaq(@Body() body: CreateFaqDto): Promise<Either<FaqDocument>> {
+  async createFaq(@Body() body: CreateFaqDto) {
     return this.createFaqService.execute(body);
   }
 
   @Put('/:id')
-  @AuthRequest<FaqDocument>({
+  @AuthRequest<FaqDocument, HttpException>({
     description: 'Create a new user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  update(
-    @Param() param: IdDto,
-    @Body() body: UpdateFaqDto,
-  ): Promise<Either<FaqDocument>> {
+  update(@Param() param: IdDto, @Body() body: UpdateFaqDto) {
     return this.updateFaqService.execute({ _id: param.id, ...body });
   }
 
   @Delete('/:id')
-  @AuthRequest<FaqDocument>({
+  @AuthRequest<FaqDocument, HttpException>({
     description: 'Create a new user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],

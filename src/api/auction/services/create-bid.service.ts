@@ -1,8 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Schema } from 'mongoose';
 
-import { Either } from '@common/generics/Either';
-import { IAppService } from '@common/generics/IAppService';
+import { Either } from '@common/generics/either';
+import { AppServiceI } from '@common/generics/app-service.interface';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
@@ -17,12 +17,12 @@ interface P extends CreateBidDto {
 interface R extends AuctionDocument {}
 
 @Injectable()
-export class CreateBidService implements IAppService<P, R> {
+export class CreateBidService implements AppServiceI<P, R, HttpException> {
   private autoBidAmount = 100;
 
   constructor(private auctionService: AuctionService) {}
 
-  async execute({ _id, user, ...param }: P): Promise<Either<R>> {
+  async execute({ _id, user, ...param }: P) {
     const auctionSearch = await this.auctionService.findOne({ _id });
     if (auctionSearch.isLeft()) {
       return auctionSearch;
@@ -30,7 +30,9 @@ export class CreateBidService implements IAppService<P, R> {
     const auction = auctionSearch.getRight();
 
     if (auction.bids[0]?.amount >= param.amount) {
-      return Either.makeLeft('Amount is insufficient', HttpStatus.BAD_REQUEST);
+      return Either.makeLeft(
+        new HttpException('Amount is insufficient', HttpStatus.BAD_REQUEST),
+      );
     }
 
     const lastBid = auction.bids[0];

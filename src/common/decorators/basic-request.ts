@@ -16,7 +16,7 @@ export interface BasicRequestI {
   code?: number;
 }
 
-export function BasicRequest<T>(data: BasicRequestI) {
+export function BasicRequest<T, E>(data: BasicRequestI) {
   return applyDecorators(
     ApiOperation({
       description: data.description,
@@ -34,7 +34,7 @@ export function BasicRequest<T>(data: BasicRequestI) {
       description: 'You got an error that we do not are prepared for',
     }),
     UseInterceptors(LoggerInterceptor),
-    UseInterceptors(EitherResponseInterceptor<T>),
+    UseInterceptors(EitherResponseInterceptor<T, E>),
     HttpCode(data.code || 200),
   );
 }

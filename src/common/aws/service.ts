@@ -1,9 +1,9 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { MineTypes } from '@common/enums/mine-types.enums';
+import { Either } from '@common/generics/either';
 import { ConfigService } from '@nestjs/config';
-import { Either } from '@common/generics/Either';
 
 @Injectable()
 export default class AWSService {
@@ -32,7 +32,9 @@ export default class AWSService {
       }
     } catch (err) {
       Logger.error(err);
-      return Either.makeLeft('BAD_REQUEST: AWS Fail', HttpStatus.BAD_REQUEST);
+      return Either.makeLeft(
+        new HttpException('BAD_REQUEST: AWS Fail', HttpStatus.BAD_REQUEST),
+      );
     }
   }
 }

@@ -1,21 +1,25 @@
+import { Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import {
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
+import { isValidObjectId, Model } from 'mongoose';
 import { Server } from 'socket.io';
 
+import { BasicRequest } from '@common/decorators/basic-request';
 import { ChatDocument } from '@database/schemas/chat.schema';
+import { User } from '@database/schemas/user.schema';
+import { CreateMessageService } from './service/create-message.service';
 
 import { CreateMessageDto } from './dto/create-message.dto';
-import { GetChatsDto } from './dto/get_chats.dto';
 import { GetMessagesDto } from './dto/get_messages.dto';
 import { MessageService } from './message.service';
-import { Logger } from '@nestjs/common';
 
 enum Reasons {
   newMessageSended = 'newMessageSended',
@@ -31,7 +35,11 @@ enum Reasons {
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly createMessageService: CreateMessageService,
+    private readonly messageService: MessageService,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
   @WebSocketServer()
   private server: Server;
   private wsClients = [];
@@ -40,16 +48,19 @@ export class MessageGateway
     this.server.emit('testing', { do: 'stuff' });
   }
 
-  handleConnection(client) {
+  async handleConnection(client) {
     const {
       id,
       handshake: { auth },
     } = client;
-    if (auth.userId) {
-      this.wsClients.push({ id, userId: auth.userId, client });
-      return 'Connection successful for id: ' + auth.userId;
+    if (auth.userId && isValidObjectId(auth.userId)) {
+      const user = await this.userModel.findById(auth.userId);
+      if (user) {
+        this.wsClients.push({ id, userId: auth.userId, client });
+        return 'Connection successful for id: ' + auth.userId;
+      }
     }
-    return 'Headers invalid';
+    client.disconnect(true);
   }
 
   handleDisconnect(client) {
@@ -73,47 +84,49 @@ export class MessageGateway
     }
   }
 
+  @BasicRequest<ChatDocument, WsException>({
+    description: '',
+    response: '',
+  })
   @SubscribeMessage('createMessage')
-  async create(@MessageBody() body: CreateMessageDto) {
-    try {
-      const message = await this.messageService.create(body);
+  async create(client, data: CreateMessageDto) {
+    const userId = client?.handshake?.auth?.userId;
+    if (userId) {
+      const messageResponse = await this.createMessageService.execute({
+        ...data,
+        userId,
+      });
+      if (messageResponse.isLeft()) return messageResponse;
+      const message = messageResponse.getRight();
       this.broadcast(
-        message.participant._id.toString(),
+        message.participant._id.equals(userId)
+          ? message.auction.owner._id.toString()
+          : message.participant._id.toString(),
         message,
         Reasons.newMessageRecived,
       );
-      this.broadcast(
-        message.auction.owner._id.toString(),
-        message,
-        Reasons.newMessageSended,
-      );
-      return message;
-    } catch (err) {
-      return {
-        error: err,
-      };
+      this.broadcast(userId, message, Reasons.newMessageSended);
+      return messageResponse;
     }
   }
 
+  @BasicRequest<ChatDocument, WsException>({
+    description: '',
+    response: '',
+  })
   @SubscribeMessage('getMessages')
-  findAll(@MessageBody() body: GetMessagesDto) {
-    try {
-      return this.messageService.getChat(body);
-    } catch (err) {
-      return {
-        error: err,
-      };
-    }
+  findAll(client, data: GetMessagesDto) {
+    const userId = client?.handshake?.auth?.userId;
+    if (userId) return this.messageService.getChat(userId, data);
   }
 
+  @BasicRequest<ChatDocument, WsException>({
+    description: '',
+    response: '',
+  })
   @SubscribeMessage('getChats')
-  getChats(@MessageBody() body: GetChatsDto) {
-    try {
-      return this.messageService.getChats(body);
-    } catch (err) {
-      return {
-        error: err,
-      };
-    }
+  getChats(client) {
+    const userId = client?.handshake?.auth?.userId;
+    if (userId) return this.messageService.getChats(userId);
   }
 }

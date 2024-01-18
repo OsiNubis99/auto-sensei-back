@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { WsException } from '@nestjs/websockets';
 import { isValidObjectId, Model } from 'mongoose';
 
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { Either } from '@common/generics/either';
 import { Auction } from '@database/schemas/auction.schema';
 import { Chat } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
 
-import { CreateMessageDto } from './dto/create-message.dto';
-import { GetChatsDto } from './dto/get_chats.dto';
 import { GetMessagesDto } from './dto/get_messages.dto';
 
 @Injectable()
@@ -19,97 +19,52 @@ export class MessageService {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
-  async create(body: CreateMessageDto) {
-    const auctionId = body.chatId?.split('-')[0];
-    const userId = body.chatId?.split('-')[1];
+  async getChat(userId: string, data: GetMessagesDto) {
+    const auctionId = data.chatId?.split('-')[0];
+    const participantId = data.chatId?.split('-')[1];
 
-    if (!isValidObjectId(auctionId)) {
-      throw 'auction invalid';
-    }
-    if (!isValidObjectId(userId)) {
-      throw 'user invalid';
-    }
-    const auction = await this.auctionModel
-      .findOne({
-        _id: auctionId,
-      })
-      .populate('owner');
-    if (!auction) {
-      throw 'auction invalid';
-    }
-    const participant = await this.userModel.findOne({
-      _id: userId,
-    });
-    if (!participant) {
-      throw 'user invalid';
-    }
+    if (!isValidObjectId(auctionId))
+      return Either.makeLeft(new WsException('auction invalid'));
+    if (!isValidObjectId(participantId))
+      return Either.makeLeft(new WsException('user invalid'));
 
-    let chat = await this.chatModel.findOne({
-      auction,
-      participant,
-    });
-    if (!chat) {
-      chat = new this.chatModel();
-      chat.auction = auction;
-      chat.participant = participant;
-      chat.messages = [];
-    }
-
-    let user = participant;
-    if (body.userId === auction.owner.id) {
-      user = auction.owner;
-    }
-
-    chat.messages.unshift({
-      message: body.message,
-      user,
-    });
-
-    return await chat.save();
-  }
-
-  async getChat(body: GetMessagesDto) {
-    const auctionId = body.chatId?.split('-')[0];
-    const userId = body.chatId?.split('-')[1];
-
-    if (!isValidObjectId(auctionId)) {
-      throw 'auction invalid';
-    }
-    if (!isValidObjectId(userId)) {
-      throw 'user invalid';
-    }
     const auction = await this.auctionModel.findOne({
       _id: auctionId,
     });
-    if (!auction) {
-      throw 'auction invalid';
-    }
+    if (!auction) return Either.makeLeft(new WsException('auction invalid'));
+
     const user = await this.userModel.findOne({
-      _id: userId,
+      _id: participantId,
     });
-    if (!user) {
-      throw 'user invalid';
-    }
-    return this.chatModel.findOne({
-      auction,
-      participant: user,
-    });
+    if (!user) return Either.makeLeft(new WsException('user invalid'));
+
+    if (!user._id.equals(userId) && !auction.owner._id.equals(userId))
+      return Either.makeLeft(new WsException('invalid'));
+
+    return Either.makeRight(
+      await this.chatModel.findOne({
+        auction,
+        participant: user,
+      }),
+    );
   }
 
-  async getChats(body: GetChatsDto) {
-    if (!isValidObjectId(body.userId)) {
+  async getChats(userId: string) {
+    if (!isValidObjectId(userId)) {
       throw 'user invalid';
     }
-    const user = await this.userModel.findOne({ _id: body.userId });
+    const user = await this.userModel.findOne({ _id: userId });
     if (!user) {
-      throw 'user invalid';
+      return Either.makeLeft(new WsException('user invalid'));
     }
     if (user.type == UserTypeEnum.seller)
-      return this.chatModel.find({}).then((chats) =>
-        chats.filter((chat) => {
-          return chat.auction.owner._id.equals(user._id);
-        }),
+      return Either.makeRight(
+        await this.chatModel
+          .find({})
+          .then((chats) =>
+            chats.filter((chat) => chat.auction.owner._id.equals(user._id)),
+          ),
       );
-    else return this.chatModel.find({ participant: user });
+    return Either.makeRight(await this.chatModel.find({ participant: user }));
   }
 }

@@ -1,10 +1,11 @@
-import { Faq, FaqDocument } from '@database/schemas/faq.schema';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
 
-import { IAppService } from '@common/generics/IAppService';
-import { Either } from '@common/generics/Either';
+import { AppServiceI } from '@common/generics/app-service.interface';
+import { Either } from '@common/generics/either';
+import { Faq, FaqDocument } from '@database/schemas/faq.schema';
+
 import { UpdateFaqDto } from '../dto/update-faq.dto';
 
 interface P extends UpdateFaqDto {
@@ -14,23 +15,20 @@ interface P extends UpdateFaqDto {
 interface R extends FaqDocument {}
 
 @Injectable()
-export class UpdateFaqService implements IAppService<P, R> {
+export class UpdateFaqService implements AppServiceI<P, R, HttpException> {
   constructor(@InjectModel(Faq.name) private faqModel: Model<Faq>) {}
 
-  async execute({ _id, ...param }: P): Promise<Either<R>> {
+  async execute({ _id, ...param }: P) {
     const faq = await this.faqModel.findById(_id);
-    if (!faq) return Either.makeLeft('Invalid FAQ id', HttpStatus.BAD_REQUEST);
+    if (!faq)
+      return Either.makeLeft(
+        new HttpException('Invalid FAQ id', HttpStatus.BAD_REQUEST),
+      );
 
     for (const key of Object.keys(param)) {
       faq[key] = param[key];
     }
 
-    try {
-      await this.faqModel.updateOne({ _id: faq._id }, faq);
-    } catch (err) {
-      return Either.makeLeft('Bad update', HttpStatus.BAD_REQUEST);
-    }
-
-    return Either.makeRight(faq);
+    return Either.makeRight(await faq.save());
   }
 }

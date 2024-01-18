@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   Post,
   Request,
   UseGuards,
@@ -10,7 +11,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
-import { Either } from '@common/generics/Either';
+import { Either } from '@common/generics/either';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { LoginDto } from '@auth/dto/login.dto';
@@ -35,7 +36,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  @AuthRequest({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Validate bearer token',
     response: 'User model',
   })
@@ -44,7 +45,7 @@ export class AuthController {
   }
 
   @Post('send-email-validation')
-  @BasicRequest({
+  @BasicRequest<string, HttpException>({
     description: 'Send EmailValidation email if user exist',
     response: 'OK',
   })
@@ -53,7 +54,7 @@ export class AuthController {
   }
 
   @Post('forgotten-password')
-  @BasicRequest({
+  @BasicRequest<string, HttpException>({
     description: 'Send forgottenPassword email if user exist',
     response: 'OK',
   })

@@ -12,11 +12,11 @@ export interface AuthRequestI extends BasicRequestI {
   roles?: UserTypeEnum[];
 }
 
-export function AuthRequest<T>({ roles, ...data }: AuthRequestI) {
+export function AuthRequest<T, E>({ roles, ...data }: AuthRequestI) {
   return applyDecorators(
     ApiBearerAuth(),
     UseGuards(JwtAuthGuard, RolesAuthGuard),
     CanAccessRoles(roles || []),
-    BasicRequest<T>(data),
+    BasicRequest<T, E>(data),
   );
 }

@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
 import { User, UserDocument } from '@database/schemas/user.schema';
-import { Either } from '@common/generics/Either';
+import { Either } from '@common/generics/either';
 import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
@@ -12,7 +12,7 @@ String;
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async findSellers(user: UserDocument): Promise<Either<UserDocument[]>> {
+  async findSellers(user: UserDocument) {
     let filter: FilterQuery<User> = {
       type: UserTypeEnum.seller,
     };
@@ -33,7 +33,7 @@ export class UserService {
     return Either.makeRight(await this.userModel.find(filter));
   }
 
-  async findDealers(user: UserDocument): Promise<Either<UserDocument[]>> {
+  async findDealers(user: UserDocument) {
     let filter: FilterQuery<User> = {
       type: UserTypeEnum.dealer,
     };
@@ -54,7 +54,7 @@ export class UserService {
     return Either.makeRight(await this.userModel.find(filter));
   }
 
-  async findOne(filter: FilterQuery<User>): Promise<Either<UserDocument>> {
+  async findOne(filter: FilterQuery<User>) {
     return Either.makeRight(await this.userModel.findOne(filter));
   }
 

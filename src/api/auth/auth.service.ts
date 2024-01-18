@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { Either } from '@common/generics/Either';
+import { Either } from '@common/generics/either';
 import { User, UserDocument } from '@database/schemas/user.schema';
 import { JWTPayloadI } from './jwt.payload';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
@@ -56,7 +56,10 @@ export class AuthService {
 
   async emailValidation(email: string) {
     const user = await this.userModel.findOne({ email });
-    if (!user) return Either.makeLeft('User undefined', HttpStatus.BAD_REQUEST);
+    if (!user)
+      return Either.makeLeft(
+        new HttpException('User undefined', HttpStatus.BAD_REQUEST),
+      );
 
     const payload: JWTPayloadI = { sub: user.id };
 
@@ -77,14 +80,19 @@ export class AuthService {
         },
       });
     } catch (err) {
-      return Either.makeLeft('Error on mail', HttpStatus.BAD_REQUEST);
+      return Either.makeLeft(
+        new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
+      );
     }
     return Either.makeRight('OK');
   }
 
-  async forgottenPassword(email: string): Promise<Either<string>> {
+  async forgottenPassword(email: string) {
     const user = await this.userModel.findOne({ email });
-    if (!user) return Either.makeLeft('User undefined', HttpStatus.BAD_REQUEST);
+    if (!user)
+      return Either.makeLeft(
+        new HttpException('User undefined', HttpStatus.BAD_REQUEST),
+      );
 
     const payload: JWTPayloadI = { sub: user.id };
 

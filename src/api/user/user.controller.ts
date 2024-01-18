@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   Post,
   Put,
@@ -15,7 +16,6 @@ import { BasicRequest } from '@common/decorators/basic-request';
 import { IdDto } from '@common/dtos/id.dto';
 import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { Either } from '@common/generics/Either';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -34,7 +34,7 @@ export class UserController {
   ) {}
 
   @Get('/sellers')
-  @AuthRequest<UserDocument[]>({
+  @AuthRequest<UserDocument[], HttpException>({
     description: 'List Sellers Users',
     response: 'User Document List',
   })
@@ -43,7 +43,7 @@ export class UserController {
   }
 
   @Get('/dealers')
-  @AuthRequest<UserDocument[]>({
+  @AuthRequest<UserDocument[], HttpException>({
     description: 'List Dealers Users',
     response: 'User Document List',
   })
@@ -52,7 +52,7 @@ export class UserController {
   }
 
   @Get('seller/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Get a user',
     response: 'User Document',
   })
@@ -61,7 +61,7 @@ export class UserController {
   }
 
   @Get('dealer/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Get a user',
     response: 'User Document',
   })
@@ -70,28 +70,28 @@ export class UserController {
   }
 
   @Post('register')
-  @BasicRequest<UserDocument>({
+  @BasicRequest<UserDocument, HttpException>({
     description: 'Create a new user',
     response: 'User Document',
   })
-  async register(@Body() data: RegisterUserDto): Promise<Either<UserDocument>> {
-    return await this.registerUserService.execute(data);
+  async register(@Body() data: RegisterUserDto) {
+    return this.registerUserService.execute(data);
   }
 
   @Put('/')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Create a new user',
     response: 'User Document',
   })
   async update(
     @Request() { user }: { user: UserDocument },
     @Body() data: UpdateUserDto,
-  ): Promise<Either<UserDocument>> {
-    return await this.updateUserService.execute({ ...data, user });
+  ) {
+    return this.updateUserService.execute({ ...data, user });
   }
 
   @Get('/activate/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
@@ -101,7 +101,7 @@ export class UserController {
   }
 
   @Get('/inactivate/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
@@ -111,7 +111,7 @@ export class UserController {
   }
 
   @Delete('/:id')
-  @AuthRequest<UserDocument>({
+  @AuthRequest<UserDocument, HttpException>({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],

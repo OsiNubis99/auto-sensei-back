@@ -1,9 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
 
-import { Either } from '@common/generics/Either';
-import { IAppService } from '@common/generics/IAppService';
+import { Either } from '@common/generics/either';
+import { AppServiceI } from '@common/generics/app-service.interface';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
@@ -20,7 +20,7 @@ interface P extends UpdateAuctionDto {
 interface R extends AuctionDocument {}
 
 @Injectable()
-export class UpdateAuctionService implements IAppService<P, R> {
+export class UpdateAuctionService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
@@ -34,7 +34,7 @@ export class UpdateAuctionService implements IAppService<P, R> {
     duration,
     vehicleDetails,
     ...param
-  }: P): Promise<Either<R>> {
+  }: P) {
     const auction = await this.auctionModel.findOne({ _id }).populate('owner');
     if (
       user.type === UserTypeEnum.admin ||
@@ -62,8 +62,10 @@ export class UpdateAuctionService implements IAppService<P, R> {
       }
     } else {
       return Either.makeLeft(
-        'This auction is not allowed in your account',
-        HttpStatus.UNAUTHORIZED,
+        new HttpException(
+          'This auction is not allowed in your account',
+          HttpStatus.UNAUTHORIZED,
+        ),
       );
     }
 

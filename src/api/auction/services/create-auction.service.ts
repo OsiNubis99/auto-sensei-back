@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Either } from '@common/generics/Either';
-import { IAppService } from '@common/generics/IAppService';
+import { Either } from '@common/generics/either';
+import { AppServiceI } from '@common/generics/app-service.interface';
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
@@ -18,13 +18,13 @@ interface P extends CreateAuctionDto {
 interface R extends AuctionDocument {}
 
 @Injectable()
-export class CreateAuctionService implements IAppService<P, R> {
+export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
   ) {}
 
-  async execute({ user, vin, ...param }: P): Promise<Either<R>> {
+  async execute({ user, vin, ...param }: P) {
     const auction = new this.auctionModel();
 
     auction.owner = user;
