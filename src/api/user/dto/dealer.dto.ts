@@ -1,19 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsAlpha, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 import { DealerI } from '@database/interfaces/dealer.interface';
 
 export class DealerDto implements DealerI {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Dealer picture',
     example: 'url',
   })
   picture: string;
 
+  @IsAlpha()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Dealer name',
     example: 'Barry Allen',
@@ -21,7 +22,7 @@ export class DealerDto implements DealerI {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Dealer OMVIC',
     example: 'Allen',
@@ -29,7 +30,7 @@ export class DealerDto implements DealerI {
   omvic: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Dealer address',
     example: 'My house',
@@ -38,10 +39,10 @@ export class DealerDto implements DealerI {
 
   @IsString()
   @IsPhoneNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Dealer phone',
-    example: '+13254453',
+    example: '+15557720901',
   })
   phone: string;
 }

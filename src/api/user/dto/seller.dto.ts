@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 import { SellerI } from '@database/interfaces/seller.interface';
 
 export class SellerDto implements SellerI {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Seller picture',
     example: 'url',
@@ -13,7 +13,7 @@ export class SellerDto implements SellerI {
   picture: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Seller first name',
     example: 'Barry',
@@ -21,7 +21,7 @@ export class SellerDto implements SellerI {
   firstName: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Seller last name',
     example: 'Allen',
@@ -29,7 +29,7 @@ export class SellerDto implements SellerI {
   lastName: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Seller driver license',
     example: 'url',
@@ -38,7 +38,7 @@ export class SellerDto implements SellerI {
 
   @IsString()
   @IsPhoneNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'Seller phone',
     example: '+13254453',
