@@ -6,7 +6,7 @@ export class IdDto {
   @ApiProperty({
     name: 'id',
     description: 'id',
-    type: Schema.Types.ObjectId,
+    type: String,
   })
   @ValidateBy({
     name: 'id',
