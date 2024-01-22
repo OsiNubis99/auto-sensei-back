@@ -4,7 +4,9 @@ import { isValidObjectId, Schema } from 'mongoose';
 
 export class IdDto {
   @ApiProperty({
+    name: 'id',
     description: 'id',
+    type: Schema.Types.ObjectId,
   })
   @ValidateBy({
     name: 'id',

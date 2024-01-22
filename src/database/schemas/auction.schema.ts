@@ -14,7 +14,7 @@ export type AuctionDocument = HydratedDocument<Auction>;
 export class Auction {
   @Prop({
     enum: AuctionStatusEnum,
-    default: AuctionStatusEnum.draft,
+    default: AuctionStatusEnum.DRAFT,
   })
   status: AuctionStatusEnum;
 
@@ -25,7 +25,7 @@ export class Auction {
   startDate: Date;
 
   @Prop()
-  duration: string;
+  duration: number;
 
   @Prop()
   dropOffDate: Date;

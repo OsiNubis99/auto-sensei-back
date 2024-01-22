@@ -34,7 +34,7 @@ export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
       auction[key] = param[key];
     }
 
-    auction.status = AuctionStatusEnum.draft;
+    auction.status = AuctionStatusEnum.DRAFT;
 
     auction.vehicleDetails = <VehicleDetailsI>{
       vin,

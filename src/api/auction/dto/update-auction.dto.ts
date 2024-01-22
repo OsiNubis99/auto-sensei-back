@@ -25,7 +25,7 @@ export class UpdateAuctionDto extends PartialType(CreateAuctionDto) {
     description: 'Auciton duration in minutes',
     required: false,
   })
-  duration?: string;
+  duration?: number;
 
   @IsOptional()
   @ValidateNested({ each: true })

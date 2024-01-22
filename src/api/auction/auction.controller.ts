@@ -13,7 +13,6 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { IdDto } from '@common/dtos/id.dto';
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
@@ -26,6 +25,7 @@ import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { UpdateAuctionService } from './services/update-auction.service';
+import { BasicRequest } from '@common/decorators/basic-request';
 
 @ApiTags('Auction')
 @Controller('auction')
@@ -63,6 +63,10 @@ export class AuctionController {
   }
 
   @Get('/:id')
+  @BasicRequest({
+    description: '',
+    response: '',
+  })
   findOne(@Param() param: IdDto) {
     return this.auctionService.findOne({ _id: param.id });
   }
@@ -81,35 +85,44 @@ export class AuctionController {
     return this.updateAuctionService.execute({ _id: param.id, user, ...data });
   }
 
-  @Put('/activate/:id')
+  @Put('/aprove/:id')
   @AuthRequest<AuctionDocument, HttpException>({
     description: 'Activate an Auction',
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  activate(@Param() param: IdDto) {
-    return this.auctionService.setStatus(
-      { _id: param.id },
-      AuctionStatusEnum.upcoming,
-    );
+  aprove(@Param() param: IdDto) {
+    return this.auctionService.aprove({ _id: param.id });
   }
 
-  @Put('/inactivate/:id')
+  @Put('/reject/:id')
   @AuthRequest<AuctionDocument, HttpException>({
     description: 'Inactivate an Auction',
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  inactivate(@Param() param: IdDto) {
-    return this.auctionService.setStatus(
-      { _id: param.id },
-      AuctionStatusEnum.canceled,
-    );
+  reject(@Param() param: IdDto) {
+    return this.auctionService.reject({ _id: param.id });
+  }
+
+  @Put('/cancel/:id')
+  @AuthRequest<AuctionDocument, HttpException>({
+    description: 'Inactivate an Auction',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.seller],
+  })
+  cancel(@Param() param: IdDto, @Request() { user }: { user: UserDocument }) {
+    return this.auctionService.cancel(user, { _id: param.id });
   }
 
   @Delete('/:id')
-  remove(@Param('id') id: string) {
-    return this.auctionService.remove(+id);
+  @AuthRequest<AuctionDocument, HttpException>({
+    description: 'Inactivate an Auction',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.seller],
+  })
+  remove(@Param() param: IdDto) {
+    return this.auctionService.remove({ _id: param.id });
   }
 
   @Post('/bid/:id')

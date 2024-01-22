@@ -43,7 +43,7 @@ export class UpdateAuctionService implements AppServiceI<P, R, HttpException> {
       if (duration) {
         auction.startDate = startDate;
         auction.duration = duration;
-        auction.status = AuctionStatusEnum.unapproved;
+        auction.status = AuctionStatusEnum.UNAPPROVED;
       }
       auction.vin = vin;
 
