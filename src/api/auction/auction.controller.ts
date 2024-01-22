@@ -121,8 +121,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  remove(@Param() param: IdDto) {
-    return this.auctionService.remove({ _id: param.id });
+  remove(@Param() param: IdDto, @Request() { user }: { user: UserDocument }) {
+    return this.auctionService.remove(user, { _id: param.id });
   }
 
   @Post('/bid/:id')

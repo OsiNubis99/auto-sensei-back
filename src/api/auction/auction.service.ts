@@ -172,7 +172,7 @@ export class AuctionService {
     return Either.makeRight(await auction.save());
   }
 
-  async remove(filter: FilterQuery<Auction>) {
+  async remove(user: UserDocument, filter: FilterQuery<Auction>) {
     const auction = await this.auctionModel.findOne(filter).populate('owner');
     if (!auction)
       return Either.makeLeft(
