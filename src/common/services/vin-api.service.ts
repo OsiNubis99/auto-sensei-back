@@ -21,6 +21,8 @@ export default class VinApiService {
         headers: { Authorization: 'Bearer ' + this.token },
       });
 
+      if (data.errorType) return Either.makeLeft(new Error(data.message));
+
       return Either.makeRight(<VehicleDetailsI>{
         vin,
         year: data.years?.unshift()?.year,
