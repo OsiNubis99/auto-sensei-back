@@ -29,7 +29,10 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
     }
     const auction = auctionSearch.getRight();
 
-    if (auction.bids[0]?.amount >= param.amount) {
+    const lastPrice =
+      auction.bids[0]?.amount || auction.vehicleDetails.basePrice || 0;
+
+    if (lastPrice >= param.amount) {
       return Either.makeLeft(
         new HttpException('Amount is insufficient', HttpStatus.BAD_REQUEST),
       );

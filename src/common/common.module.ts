@@ -3,10 +3,11 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@database/database.module';
 import { MailerModule } from 'src/mailer/mailer.module';
 
-import AWSService from './aws/service';
-import TwilioService from './twilio/service';
+import AWSService from './services/aws.service';
+import TwilioService from './services/twilio.service';
+import VinApiService from './services/vin-api.service';
 
-const commonServices = [AWSService, TwilioService];
+const commonServices = [AWSService, TwilioService, VinApiService];
 
 @Module({
   imports: [DatabaseModule, MailerModule],

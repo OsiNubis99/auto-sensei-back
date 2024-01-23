@@ -3,5 +3,6 @@ export class SellerI {
   firstName: string;
   lastName: string;
   driverLicense: string;
+  address: string;
   phone: string;
 }

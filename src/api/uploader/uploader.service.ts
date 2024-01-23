@@ -4,7 +4,7 @@ import { UploaderDto } from './dto/uploader.dto';
 
 import { MineTypes } from '@common/enums/mine-types.enums';
 
-import AWSService from 'src/common/aws/service';
+import AWSService from '@common/services/aws.service';
 
 @Injectable()
 export class UploaderService {

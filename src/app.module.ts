@@ -11,6 +11,7 @@ import { JWTConfig } from './config/jwt-config';
 import { MailerConfig } from './config/mailer-config';
 import { ServerConfig } from './config/server-config';
 import { TwilioConfig } from './config/twilio-config';
+import { VinApiConfig } from './config/vin-api-config';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TwilioConfig } from './config/twilio-config';
         MailerConfig,
         ServerConfig,
         TwilioConfig,
+        VinApiConfig,
       ],
       isGlobal: true,
     }),
