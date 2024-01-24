@@ -1,19 +1,17 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { Schema as Schemas } from 'mongoose';
 
+import { ValorationEnum } from '@common/enums/valoration.enum';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
 @Schema({ _id: false })
-export class BidI {
+export class ValorationI {
   @Prop()
-  amount: number;
+  valoration: ValorationEnum;
 
   @Prop()
-  biddingLimit?: number;
+  comment?: string;
 
   @Prop({ type: Schemas.Types.ObjectId, ref: User.name })
-  participant: UserDocument;
-
-  @Prop()
-  automatic?: boolean;
+  user: UserDocument;
 }

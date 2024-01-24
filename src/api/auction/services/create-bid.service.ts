@@ -8,6 +8,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { AuctionService } from '../auction.service';
 import { CreateBidDto } from '../dto/create-bid.dto';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 interface P extends CreateBidDto {
   _id: Schema.Types.ObjectId;
@@ -28,6 +29,12 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       return auctionSearch;
     }
     const auction = auctionSearch.getRight();
+
+    if (auction.status !== AuctionStatusEnum.LIVE) {
+      return Either.makeLeft(
+        new HttpException('Auction status invalid', HttpStatus.BAD_REQUEST),
+      );
+    }
 
     const lastPrice =
       auction.bids[0]?.amount || auction.vehicleDetails.basePrice || 0;

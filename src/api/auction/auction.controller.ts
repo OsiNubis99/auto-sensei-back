@@ -27,6 +27,8 @@ import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { UpdateAuctionService } from './services/update-auction.service';
+import { ValorateAuctionService } from './services/valorate-auction.service';
+import { ValorateAuctionDto } from './dto/valorate-auction.dto';
 
 @ApiTags('Auction')
 @Controller('auction')
@@ -37,6 +39,7 @@ export class AuctionController {
     private readonly createBidService: CreateBidService,
     private readonly getAuctionService: GetAuctionService,
     private readonly updateAuctionService: UpdateAuctionService,
+    private readonly valorateAuctionService: ValorateAuctionService,
   ) {}
 
   @Post('/')
@@ -148,7 +151,7 @@ export class AuctionController {
   }
 
   @Post('/bid/:id')
-  @AuthRequest<AuctionDocument[], HttpException>({
+  @AuthRequest<AuctionDocument, HttpException>({
     description: 'Create a new bid',
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
@@ -159,5 +162,23 @@ export class AuctionController {
     @Request() { user }: { user: UserDocument },
   ) {
     return this.createBidService.execute({ _id: param.id, user, ...data });
+  }
+
+  @Post('/valorate/:id')
+  @AuthRequest<AuctionDocument, HttpException>({
+    description: 'Create a new bid',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  valorate(
+    @Param() param: IdDto,
+    @Body() data: ValorateAuctionDto,
+    @Request() { user }: { user: UserDocument },
+  ) {
+    return this.valorateAuctionService.execute({
+      _id: param.id,
+      user,
+      ...data,
+    });
   }
 }

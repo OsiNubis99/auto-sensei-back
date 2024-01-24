@@ -16,7 +16,7 @@ export class AuctionService {
   ) {}
 
   async findOne(filter: FilterQuery<Auction>) {
-    const auction = await this.auctionModel.findOne(filter).populate('owner');
+    const auction = await this.auctionModel.findOne(filter);
     if (!auction)
       return Either.makeLeft(
         new HttpException('Bad id', HttpStatus.BAD_REQUEST),
@@ -26,27 +26,29 @@ export class AuctionService {
 
   calculateStatus(auction: AuctionDocument) {
     if (!auction) return auction;
+    let edited = false;
     if (auction.duration) {
       const started = timeToStart(auction.startDate) < 0;
       if (started) {
         const ended = timeToEnd(auction.startDate, auction.duration) < 0;
         if (!ended && auction.status == AuctionStatusEnum.UPCOMING) {
           auction.status = AuctionStatusEnum.LIVE;
-          auction.save();
+          edited = true;
         }
         if (ended) {
           if (auction.status == AuctionStatusEnum.LIVE) {
             auction.status = AuctionStatusEnum.BIDS_COMPLETED;
-            auction.save();
+            edited = true;
           }
           const drop_off = timeToStart(auction.dropOffDate) < 0;
-          if (drop_off && auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
+          if (drop_off && auction.status == AuctionStatusEnum.COMPLETED) {
             auction.status = AuctionStatusEnum.DROP_OFF;
-            auction.save();
+            edited = true;
           }
         }
       }
     }
+    if (edited) auction.save();
     return auction;
   }
 

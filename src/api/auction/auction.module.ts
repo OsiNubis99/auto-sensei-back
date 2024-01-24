@@ -8,6 +8,7 @@ import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { UpdateAuctionService } from './services/update-auction.service';
+import { ValorateAuctionService } from './services/valorate-auction.service';
 
 @Module({
   imports: [CommonModule],
@@ -18,6 +19,7 @@ import { UpdateAuctionService } from './services/update-auction.service';
     CreateBidService,
     GetAuctionService,
     UpdateAuctionService,
+    ValorateAuctionService,
   ],
 })
 export class AuctionsModule {}
