@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from '@auth/auth.service';
+import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserController } from './user.controller';
@@ -21,6 +22,12 @@ import { UserService } from './user.service';
     }),
   ],
   controllers: [UserController],
-  providers: [AuthService, UserService, RegisterUserService, UpdateUserService],
+  providers: [
+    AuthService,
+    GetUserValorationsService,
+    UserService,
+    RegisterUserService,
+    UpdateUserService,
+  ],
 })
 export class UserModule {}

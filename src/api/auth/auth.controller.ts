@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
   Post,
   Request,
   UseGuards,
@@ -24,8 +23,17 @@ import { LocalAuthGuard } from './local-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  @Get('profile')
+  @AuthRequest({
+    description: 'Validate bearer token',
+    response: 'User document',
+  })
+  getProfile(@Request() req: { user: UserDocument }) {
+    return Either.makeRight(req.user);
+  }
+
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   @BasicRequest({
     description: 'Validate email and password',
     response: 'Bearer access_token',
@@ -35,17 +43,8 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @Get('profile')
-  @AuthRequest<UserDocument, HttpException>({
-    description: 'Validate bearer token',
-    response: 'User model',
-  })
-  getProfile(@Request() req: { user: UserDocument }) {
-    return Either.makeRight(req.user);
-  }
-
   @Post('send-email-validation')
-  @BasicRequest<string, HttpException>({
+  @BasicRequest({
     description: 'Send EmailValidation email if user exist',
     response: 'OK',
   })
@@ -54,7 +53,7 @@ export class AuthController {
   }
 
   @Post('forgotten-password')
-  @BasicRequest<string, HttpException>({
+  @BasicRequest({
     description: 'Send forgottenPassword email if user exist',
     response: 'OK',
   })

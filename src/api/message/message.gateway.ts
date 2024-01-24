@@ -7,7 +7,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
 import { isValidObjectId, Model } from 'mongoose';
 import { Server } from 'socket.io';
@@ -84,7 +83,7 @@ export class MessageGateway
     }
   }
 
-  @BasicRequest<ChatDocument, WsException>({
+  @BasicRequest({
     description: '',
     response: '',
   })
@@ -110,7 +109,7 @@ export class MessageGateway
     }
   }
 
-  @BasicRequest<ChatDocument, WsException>({
+  @BasicRequest({
     description: '',
     response: '',
   })
@@ -120,7 +119,7 @@ export class MessageGateway
     if (userId) return this.messageService.getChat(userId, data);
   }
 
-  @BasicRequest<ChatDocument, WsException>({
+  @BasicRequest({
     description: '',
     response: '',
   })

@@ -25,7 +25,10 @@ export class UploaderController {
     }),
   )
   @Post('/create')
-  @BasicRequest({ description: '', response: '' })
+  @BasicRequest({
+    description: 'Upload a new file to AWS',
+    response: 'Bucket url',
+  })
   async create(
     @Body() uploaderDto: UploaderDto,
     @UploadedFile() file: Express.Multer.File,

@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   Injectable,
   Param,
   Post,
@@ -15,7 +14,6 @@ import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
 import { IdDto } from '@common/dtos/id.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { FaqDocument } from '@database/schemas/faq.schema';
 
 import { CreateFaqDto } from './dto/create-faq.dto';
 import { UpdateFaqDto } from './dto/update-faq.dto';
@@ -34,26 +32,26 @@ export class FaqController {
   ) {}
 
   @Get('/')
-  @BasicRequest<FaqDocument[], HttpException>({
-    description: 'Create a new user',
-    response: 'User Document',
+  @BasicRequest({
+    description: 'List all FAQs',
+    response: 'FAQ Document List',
   })
-  faq() {
+  listAll() {
     return this.faqService.findAll();
   }
 
   @Get('/:id')
-  @BasicRequest<FaqDocument, HttpException>({
-    description: 'Create a new user',
-    response: 'User Document',
+  @BasicRequest({
+    description: 'List one FAQ',
+    response: 'FAQ Document',
   })
   oneFaq(@Param() param: IdDto) {
     return this.faqService.findOne({ _id: param.id });
   }
 
   @Post('/')
-  @AuthRequest<FaqDocument, HttpException>({
-    description: 'Create a new faq',
+  @AuthRequest({
+    description: 'Create a new FAQ',
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
@@ -62,9 +60,9 @@ export class FaqController {
   }
 
   @Put('/:id')
-  @AuthRequest<FaqDocument, HttpException>({
-    description: 'Create a new user',
-    response: 'User Document',
+  @AuthRequest({
+    description: 'Update a FAQ',
+    response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
   update(@Param() param: IdDto, @Body() body: UpdateFaqDto) {
@@ -72,9 +70,9 @@ export class FaqController {
   }
 
   @Delete('/:id')
-  @AuthRequest<FaqDocument, HttpException>({
-    description: 'Create a new user',
-    response: 'User Document',
+  @AuthRequest({
+    description: 'Delete a FAQ',
+    response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
   delete(@Param() param: IdDto) {

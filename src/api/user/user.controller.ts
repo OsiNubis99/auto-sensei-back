@@ -3,16 +3,16 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   Param,
+  Patch,
   Post,
   Put,
-  Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
+import { UserD } from '@common/decorators/user.decorator';
 import { IdDto } from '@common/dtos/id.dto';
 import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
@@ -20,6 +20,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
@@ -28,40 +29,42 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(
-    private userService: UserService,
+    private getValorationsService: GetUserValorationsService,
     private registerUserService: RegisterUserService,
     private updateUserService: UpdateUserService,
+    private userService: UserService,
   ) {}
 
   @Get('/sellers')
-  @AuthRequest<UserDocument[], HttpException>({
+  @AuthRequest({
     description: 'List Sellers Users',
     response: 'User Document List',
   })
-  findSellers(@Request() req: { user: UserDocument }) {
-    return this.userService.findSellers(req.user);
+  findSellers(@UserD() user: UserDocument) {
+    return this.userService.findSellers(user);
   }
 
   @Get('/dealers')
-  @AuthRequest<UserDocument[], HttpException>({
+  @AuthRequest({
     description: 'List Dealers Users',
     response: 'User Document List',
   })
-  findDealers(@Request() req: { user: UserDocument }) {
-    return this.userService.findDealers(req.user);
+  findDealers(@UserD() user: UserDocument) {
+    return this.userService.findDealers(user);
   }
 
-  @Get('seller/:id')
-  @AuthRequest<UserDocument, HttpException>({
-    description: 'Get a user',
-    response: 'User Document',
+  @Get('/valorations')
+  @AuthRequest({
+    description: 'List User valorations',
+    response: 'User valorations',
+    roles: [UserTypeEnum.dealer],
   })
-  findSeller(@Param() param: IdDto) {
-    return this.userService.findOne({ _id: param.id });
+  getValorations(@UserD() user: UserDocument) {
+    return this.getValorationsService.execute({ user });
   }
 
-  @Get('dealer/:id')
-  @AuthRequest<UserDocument, HttpException>({
+  @Get('/:id')
+  @AuthRequest({
     description: 'Get a user',
     response: 'User Document',
   })
@@ -69,30 +72,27 @@ export class UserController {
     return this.userService.findOne({ _id: param.id });
   }
 
-  @Post('register')
-  @BasicRequest<UserDocument, HttpException>({
+  @Post('/')
+  @BasicRequest({
     description: 'Create a new user',
     response: 'User Document',
   })
-  async register(@Body() data: RegisterUserDto) {
+  register(@Body() data: RegisterUserDto) {
     return this.registerUserService.execute(data);
   }
 
   @Put('/')
-  @AuthRequest<UserDocument, HttpException>({
-    description: 'Create a new user',
+  @AuthRequest({
+    description: 'Update a user',
     response: 'User Document',
   })
-  async update(
-    @Request() { user }: { user: UserDocument },
-    @Body() data: UpdateUserDto,
-  ) {
+  update(@UserD() user: UserDocument, @Body() data: UpdateUserDto) {
     return this.updateUserService.execute({ ...data, user });
   }
 
-  @Get('/activate/:id')
-  @AuthRequest<UserDocument, HttpException>({
-    description: 'Delete a user',
+  @Patch('/activate/:id')
+  @AuthRequest({
+    description: 'Set user status to active',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
@@ -100,9 +100,9 @@ export class UserController {
     return this.userService.setStatus({ _id: param.id }, StatusEnum.active);
   }
 
-  @Get('/inactivate/:id')
-  @AuthRequest<UserDocument, HttpException>({
-    description: 'Delete a user',
+  @Patch('/inactivate/:id')
+  @AuthRequest({
+    description: 'Set user status to inactive',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
@@ -111,7 +111,7 @@ export class UserController {
   }
 
   @Delete('/:id')
-  @AuthRequest<UserDocument, HttpException>({
+  @AuthRequest({
     description: 'Delete a user',
     response: 'User Document',
     roles: [UserTypeEnum.admin],
