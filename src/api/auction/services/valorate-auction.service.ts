@@ -37,7 +37,7 @@ export class ValorateAuctionService
       );
     }
 
-    if (auction.status !== AuctionStatusEnum.BIDS_COMPLETED) {
+    if (auction.status !== AuctionStatusEnum.DROP_OFF) {
       return Either.makeLeft(
         new HttpException('Auction status invalid', HttpStatus.BAD_REQUEST),
       );
@@ -49,7 +49,7 @@ export class ValorateAuctionService
       );
     }
 
-    auction.status = AuctionStatusEnum.COMPLETED;
+    auction.status = AuctionStatusEnum.REVIEWED;
     auction.valuation = {
       valoration: param.valoration,
       comment: param.comment,

@@ -40,11 +40,6 @@ export class AuctionService {
             auction.status = AuctionStatusEnum.BIDS_COMPLETED;
             edited = true;
           }
-          const drop_off = timeToStart(auction.dropOffDate) < 0;
-          if (drop_off && auction.status == AuctionStatusEnum.COMPLETED) {
-            auction.status = AuctionStatusEnum.DROP_OFF;
-            edited = true;
-          }
         }
       }
     }
