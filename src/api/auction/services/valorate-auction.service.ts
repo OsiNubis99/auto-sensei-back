@@ -31,17 +31,29 @@ export class ValorateAuctionService
     }
     const auction = auctionSearch.getRight();
 
+    if (!auction.owner._id.equals(user._id)) {
+      return Either.makeLeft(
+        new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
+      );
+    }
+
     if (auction.status !== AuctionStatusEnum.BIDS_COMPLETED) {
       return Either.makeLeft(
         new HttpException('Auction status invalid', HttpStatus.BAD_REQUEST),
       );
     }
 
+    if (!auction?.bids[0]) {
+      return Either.makeLeft(
+        new HttpException('Auction bids invalid', HttpStatus.BAD_REQUEST),
+      );
+    }
+
     auction.status = AuctionStatusEnum.COMPLETED;
-    auction.valoration = {
+    auction.valuation = {
       valoration: param.valoration,
       comment: param.comment,
-      user: user,
+      user: auction.bids[0].participant,
     };
 
     return Either.makeRight(await auction.save());

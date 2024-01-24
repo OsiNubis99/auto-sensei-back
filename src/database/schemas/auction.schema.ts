@@ -4,7 +4,7 @@ import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { BidI } from '@database/interfaces/bid.interface';
 import { BuyNewI } from '@database/interfaces/buy-new.interface';
-import { ValorationI } from '@database/interfaces/valoration.interface';
+import { ValuationI } from '@database/interfaces/valuation.interface';
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { VehicleStatusI } from '@database/interfaces/vehicle-status.interface';
 import { User, UserDocument } from './user.schema';
@@ -52,8 +52,8 @@ export class Auction {
   @Prop()
   vehicleDetails: VehicleDetailsI;
 
-  @Prop({ type: SchemaFactory.createForClass(ValorationI) })
-  valoration: ValorationI;
+  @Prop({ type: SchemaFactory.createForClass(ValuationI) })
+  valuation: ValuationI;
 
   @Prop({ type: [SchemaFactory.createForClass(BidI)] })
   bids: BidI[];
@@ -67,7 +67,7 @@ export const AuctionSchema = SchemaFactory.createForClass(Auction);
 const autoPopulate = function (next: () => void) {
   this.populate('owner');
   this.populate({ path: 'bids', populate: 'participant' });
-  this.populate({ path: 'valoration', populate: 'user' });
+  this.populate({ path: 'valuation', populate: 'user' });
   next();
 };
 

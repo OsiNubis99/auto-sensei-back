@@ -47,7 +47,7 @@ export class GetAuctionService implements AppServiceI<P, R, HttpException> {
             'bids.participant': user._id,
           },
           {
-            'valoration.user': user._id,
+            'valuation.user': user._id,
           },
         ],
       };

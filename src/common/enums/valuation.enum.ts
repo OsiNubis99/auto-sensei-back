@@ -1,4 +1,4 @@
-export enum ValorationEnum {
+export enum ValuationEnum {
   's0.5' = '0.5',
   's1' = '1',
   's1.5' = '1.5',

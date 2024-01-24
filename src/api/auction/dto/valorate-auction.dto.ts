@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-import { ValorationEnum } from '@common/enums/valoration.enum';
+import { ValuationEnum } from '@common/enums/valuation.enum';
 
 export class ValorateAuctionDto {
   @IsNotEmpty()
-  @IsEnum(ValorationEnum)
+  @IsEnum(ValuationEnum)
   @ApiProperty({
-    example: ValorationEnum.s3,
-    enum: ValorationEnum,
+    example: ValuationEnum.s3,
+    enum: ValuationEnum,
     description: 'Auction valoration',
   })
-  valoration: ValorationEnum;
+  valoration: ValuationEnum;
 
   @IsOptional()
   @IsString()

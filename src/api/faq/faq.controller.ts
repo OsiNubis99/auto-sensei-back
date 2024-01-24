@@ -36,7 +36,7 @@ export class FaqController {
     description: 'List all FAQs',
     response: 'FAQ Document List',
   })
-  listAll() {
+  findAll() {
     return this.faqService.findAll();
   }
 
@@ -45,7 +45,7 @@ export class FaqController {
     description: 'List one FAQ',
     response: 'FAQ Document',
   })
-  oneFaq(@Param() param: IdDto) {
+  findOne(@Param() param: IdDto) {
     return this.faqService.findOne({ _id: param.id });
   }
 
@@ -55,7 +55,7 @@ export class FaqController {
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
-  async createFaq(@Body() body: CreateFaqDto) {
+  createFaq(@Body() body: CreateFaqDto) {
     return this.createFaqService.execute(body);
   }
 
@@ -65,7 +65,7 @@ export class FaqController {
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
-  update(@Param() param: IdDto, @Body() body: UpdateFaqDto) {
+  updateFaq(@Param() param: IdDto, @Body() body: UpdateFaqDto) {
     return this.updateFaqService.execute({ _id: param.id, ...body });
   }
 

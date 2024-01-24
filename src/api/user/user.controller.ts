@@ -68,7 +68,7 @@ export class UserController {
     description: 'Get a user',
     response: 'User Document',
   })
-  findDealer(@Param() param: IdDto) {
+  findOne(@Param() param: IdDto) {
     return this.userService.findOne({ _id: param.id });
   }
 

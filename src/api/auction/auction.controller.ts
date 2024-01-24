@@ -87,7 +87,6 @@ export class AuctionController {
   @AuthRequest({
     description: 'Create a valoration',
     response: 'Auction Document',
-    roles: [UserTypeEnum.dealer],
   })
   valorate(
     @Param() param: IdDto,
