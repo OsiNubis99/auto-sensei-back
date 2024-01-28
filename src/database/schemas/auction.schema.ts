@@ -52,6 +52,9 @@ export class Auction {
   @Prop()
   vehicleDetails: VehicleDetailsI;
 
+  @Prop({ type: Array<mongooseSchema.Types.ObjectId>, ref: User.name })
+  remindList: UserDocument[];
+
   @Prop({ type: SchemaFactory.createForClass(ValuationI) })
   valuation: ValuationI;
 
@@ -66,6 +69,7 @@ export const AuctionSchema = SchemaFactory.createForClass(Auction);
 
 const autoPopulate = function (next: () => void) {
   this.populate('owner');
+  this.populate('remindList');
   this.populate({ path: 'bids', populate: 'participant' });
   this.populate({ path: 'valuation', populate: 'user' });
   next();

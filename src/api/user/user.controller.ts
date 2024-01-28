@@ -20,6 +20,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserStatsService } from './services/get-user-stats.service';
 import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
 import { UpdateUserService } from './services/update-user.service';
@@ -29,6 +30,7 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(
+    private getStatsService: GetUserStatsService,
     private getValorationsService: GetUserValorationsService,
     private registerUserService: RegisterUserService,
     private updateUserService: UpdateUserService,
@@ -51,6 +53,16 @@ export class UserController {
   })
   findDealers(@UserD() user: UserDocument) {
     return this.userService.findDealers(user);
+  }
+
+  @Get('/stats')
+  @AuthRequest({
+    description: 'List User valorations',
+    response: 'User valorations',
+    roles: [UserTypeEnum.dealer],
+  })
+  getStats(@UserD() user: UserDocument) {
+    return this.getStatsService.execute({ user });
   }
 
   @Get('/valorations')

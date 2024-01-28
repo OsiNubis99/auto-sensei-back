@@ -16,28 +16,34 @@ import { IdDto } from '@common/dtos/id.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { UserD } from '@common/decorators/user.decorator';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { CreateBidDto } from './dto/create-bid.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
+import { ValorateAuctionDto } from './dto/valorate-auction.dto';
+import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { GetAuctionService } from './services/get-auction.service';
+import { RemoveAuctionRemindService } from './services/remove-auction-remind.service';
 import { UpdateAuctionService } from './services/update-auction.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
-import { ValorateAuctionDto } from './dto/valorate-auction.dto';
-import { UserD } from '@common/decorators/user.decorator';
+import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
 
 @ApiTags('Auction')
 @Controller('auction')
 export class AuctionController {
   constructor(
+    private readonly addAuctionRemindService: AddAuctionRemindService,
     private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
     private readonly createBidService: CreateBidService,
     private readonly getAuctionService: GetAuctionService,
+    private readonly getCurrentBidsAuctionsService: GetCurrentBidsAuctionsService,
     private readonly updateAuctionService: UpdateAuctionService,
+    private readonly removeAuctionRemindService: RemoveAuctionRemindService,
     private readonly valorateAuctionService: ValorateAuctionService,
   ) {}
 
@@ -67,6 +73,15 @@ export class AuctionController {
   })
   findAll(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
     return this.getAuctionService.execute({ user, ...data });
+  }
+
+  @Post('/find/current-bids')
+  @AuthRequest({
+    description: 'List auctions',
+    response: 'Auction Document',
+  })
+  findCurrentBids(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
+    return this.getCurrentBidsAuctionsService.execute({ user, ...data });
   }
 
   @Post('/bid/:id')
@@ -112,6 +127,26 @@ export class AuctionController {
     @UserD() user: UserDocument,
   ) {
     return this.updateAuctionService.execute({ _id: param.id, user, ...data });
+  }
+
+  @Patch('/:id/add-remind')
+  @AuthRequest({
+    description: 'Add dealer to Auction remind list',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  addRemind(@Param() param: IdDto, @UserD() user: UserDocument) {
+    return this.addAuctionRemindService.execute({ user, _id: param.id });
+  }
+
+  @Patch('/:id/remove-remind')
+  @AuthRequest({
+    description: 'Remove dealer from Auction remind list',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  removeRemind(@Param() param: IdDto, @UserD() user: UserDocument) {
+    return this.removeAuctionRemindService.execute({ user, _id: param.id });
   }
 
   @Patch('/aprove/:id')
