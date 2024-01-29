@@ -47,6 +47,12 @@ export class GetAuctionService implements AppServiceI<P, R, HttpException> {
             'bids.participant': { $ne: user._id },
           },
           {
+            status: {
+              $in: [AuctionStatusEnum.COMPLETED, AuctionStatusEnum.DROP_OFF],
+            },
+            'bids.participant': user._id,
+          },
+          {
             status: { $ne: AuctionStatusEnum.DELETED },
             'valuation.user': user._id,
           },

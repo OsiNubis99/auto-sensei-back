@@ -32,11 +32,13 @@ export class RemoveAuctionRemindService
       );
     }
 
+    if (!auction.remindList) auction.remindList = [];
+
     const userIndexOnList = auction.remindList.findIndex((item) =>
       user._id.equals(item._id),
     );
 
-    if (userIndexOnList < 0) {
+    if (userIndexOnList >= 0) {
       return Either.makeRight(auction);
     }
 
