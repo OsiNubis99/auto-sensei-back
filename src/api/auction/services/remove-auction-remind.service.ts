@@ -38,7 +38,7 @@ export class RemoveAuctionRemindService
       user._id.equals(item._id),
     );
 
-    if (userIndexOnList >= 0) {
+    if (userIndexOnList < 0) {
       return Either.makeRight(auction);
     }
 
