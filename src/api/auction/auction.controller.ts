@@ -20,12 +20,14 @@ import { UserD } from '@common/decorators/user.decorator';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { CreateBidDto } from './dto/create-bid.dto';
+import { UpdateBidDto } from './dto/update-bid.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { ValorateAuctionDto } from './dto/valorate-auction.dto';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
+import { UpdateBidService } from './services/update-bid.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { RemoveAuctionRemindService } from './services/remove-auction-remind.service';
 import { UpdateAuctionService } from './services/update-auction.service';
@@ -40,6 +42,7 @@ export class AuctionController {
     private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
     private readonly createBidService: CreateBidService,
+    private readonly updateBidService: UpdateBidService,
     private readonly getAuctionService: GetAuctionService,
     private readonly getCurrentBidsAuctionsService: GetCurrentBidsAuctionsService,
     private readonly updateAuctionService: UpdateAuctionService,
@@ -147,6 +150,20 @@ export class AuctionController {
   })
   removeRemind(@Param() param: IdDto, @UserD() user: UserDocument) {
     return this.removeAuctionRemindService.execute({ user, _id: param.id });
+  }
+
+  @Patch('/bid/:id')
+  @AuthRequest({
+    description: 'Create a new bid',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  updateBid(
+    @Param() param: IdDto,
+    @Body() data: UpdateBidDto,
+    @UserD() user: UserDocument,
+  ) {
+    return this.updateBidService.execute({ _id: param.id, user, ...data });
   }
 
   @Patch('/aprove/:id')
