@@ -62,7 +62,7 @@ export class MessageService {
         await this.chatModel
           .find({})
           .then((chats) =>
-            chats.filter((chat) => chat.auction.owner._id.equals(user._id)),
+            chats.filter((chat) => chat.auction?.owner._id.equals(user._id)),
           ),
       );
     return Either.makeRight(await this.chatModel.find({ participant: user }));

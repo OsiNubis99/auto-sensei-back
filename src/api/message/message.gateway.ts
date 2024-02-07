@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UseInterceptors } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   OnGatewayConnection,
@@ -11,11 +11,11 @@ import {
 import { isValidObjectId, Model } from 'mongoose';
 import { Server } from 'socket.io';
 
-import { BasicRequest } from '@common/decorators/basic-request';
 import { ChatDocument } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
 import { CreateMessageService } from './service/create-message.service';
 
+import { EitherGatewayInterceptor } from '@common/interceptor/either-gateway.interceptor';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { GetMessagesDto } from './dto/get_messages.dto';
 import { MessageService } from './message.service';
@@ -83,10 +83,7 @@ export class MessageGateway
     }
   }
 
-  @BasicRequest({
-    description: '',
-    response: '',
-  })
+  @UseInterceptors(EitherGatewayInterceptor)
   @SubscribeMessage('createMessage')
   async create(client, data: CreateMessageDto) {
     const userId = client?.handshake?.auth?.userId;
@@ -95,7 +92,9 @@ export class MessageGateway
         ...data,
         userId,
       });
-      if (messageResponse.isLeft()) return messageResponse;
+      if (messageResponse.isLeft()) {
+        return messageResponse;
+      }
       const message = messageResponse.getRight();
       this.broadcast(
         message.participant._id.equals(userId)
@@ -109,20 +108,14 @@ export class MessageGateway
     }
   }
 
-  @BasicRequest({
-    description: '',
-    response: '',
-  })
+  @UseInterceptors(EitherGatewayInterceptor)
   @SubscribeMessage('getMessages')
   findAll(client, data: GetMessagesDto) {
     const userId = client?.handshake?.auth?.userId;
     if (userId) return this.messageService.getChat(userId, data);
   }
 
-  @BasicRequest({
-    description: '',
-    response: '',
-  })
+  @UseInterceptors(EitherGatewayInterceptor)
   @SubscribeMessage('getChats')
   getChats(client) {
     const userId = client?.handshake?.auth?.userId;

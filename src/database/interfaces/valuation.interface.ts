@@ -6,7 +6,10 @@ import { User, UserDocument } from '@database/schemas/user.schema';
 
 @Schema({ _id: false })
 export class ValuationI {
-  @Prop()
+  @Prop({
+    enum: ValuationEnum,
+    default: ValuationEnum['s2.5'],
+  })
   valoration: ValuationEnum;
 
   @Prop()

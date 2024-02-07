@@ -7,19 +7,19 @@ import JoiUtil, { JoiConfig } from './util/joi';
 export const MailerConfig = registerAs('mailer', (): MailerConfigI => {
   const configs: JoiConfig<MailerConfigI> = {
     host: {
-      value: process.env.MAILDEV_HOST,
+      value: process.env.MAILER_HOST,
       joi: Joi.string().required(),
     },
     port: {
-      value: process.env.MAILDEV_PORT,
+      value: process.env.MAILER_PORT,
       joi: Joi.number().required(),
     },
     user: {
-      value: process.env.MAILDEV_USER,
+      value: process.env.MAILER_USER,
       joi: Joi.string().required(),
     },
     pass: {
-      value: process.env.MAILDEV_PASS,
+      value: process.env.MAILER_PASS,
       joi: Joi.string().required(),
     },
   };

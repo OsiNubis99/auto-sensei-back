@@ -37,7 +37,11 @@ export class AuctionService {
         }
         if (ended) {
           if (auction.status == AuctionStatusEnum.LIVE) {
-            auction.status = AuctionStatusEnum.BIDS_COMPLETED;
+            if (auction.bids.length > 0) {
+              auction.status = AuctionStatusEnum.BIDS_COMPLETED;
+            } else {
+              auction.status = AuctionStatusEnum.REJECTED;
+            }
             edited = true;
           }
         }
@@ -127,6 +131,20 @@ export class AuctionService {
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
     auction.status = AuctionStatusEnum.CANCELLED;
+    return Either.makeRight(await auction.save());
+  }
+
+  async dropOff(user: UserDocument, filter: FilterQuery<Auction>) {
+    const auction = await this.auctionModel.findOne(filter).populate('owner');
+    if (!auction)
+      return Either.makeLeft(
+        new HttpException('Bad id', HttpStatus.BAD_REQUEST),
+      );
+    if (!auction.bids[0]?.participant._id.equals(user._id))
+      return Either.makeLeft(
+        new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
+      );
+    auction.status = AuctionStatusEnum.DROP_OFF;
     return Either.makeRight(await auction.save());
   }
 

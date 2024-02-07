@@ -206,6 +206,16 @@ export class AuctionController {
     return this.auctionService.decline(user, { _id: param.id });
   }
 
+  @Patch('/drop-off/:id')
+  @AuthRequest({
+    description: 'Set drop off an Auction',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  dropOff(@Param() param: IdDto, @UserD() user: UserDocument) {
+    return this.auctionService.dropOff(user, { _id: param.id });
+  }
+
   @Patch('/cancel/:id')
   @AuthRequest({
     description: 'Cancel an Auction',

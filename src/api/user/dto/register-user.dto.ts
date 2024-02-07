@@ -16,7 +16,6 @@ export class RegisterUserDto extends LoginDto {
   @Type(() => SellerDto)
   @ApiProperty({
     description: 'Seller data',
-    nullable: true,
     required: false,
   })
   seller?: SellerDto;

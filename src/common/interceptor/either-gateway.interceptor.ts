@@ -3,14 +3,14 @@ import { map, Observable } from 'rxjs';
 
 import { Either } from '@common/generics/either';
 
-export class EitherResponseInterceptor implements NestInterceptor {
+export class EitherGatewayInterceptor implements NestInterceptor {
   intercept(
     _context: ExecutionContext,
     next: CallHandler,
   ): Observable<unknown> {
     return next.handle().pipe(
       map((data: Either<unknown, unknown>) => {
-        if (data.isLeft()) throw data.getLeft();
+        if (data.isLeft()) return data.getLeft();
         return data.getRight();
       }),
     );

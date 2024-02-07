@@ -9,7 +9,7 @@ export type ChatDocument = HydratedDocument<Chat>;
 
 @Schema({ timestamps: true })
 export class Chat {
-  @Prop()
+  @Prop({ type: [SchemaFactory.createForClass(MessageI)] })
   messages: MessageI[];
 
   @Prop({ type: mongooseSchema.Types.ObjectId, ref: Auction.name })
