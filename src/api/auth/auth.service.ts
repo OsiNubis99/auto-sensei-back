@@ -72,7 +72,7 @@ export class AuthService {
     try {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Testing Nest Mailermodule with template ✔',
+        subject: 'Welcome to Auto Sensei',
         template: 'welcome',
         context: {
           url,
