@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { ApiModule } from './api/api.module';
 import { AppController } from './app.controller';
 import { CommonModule } from './common/common.module';
+import { SocketModule } from './socket/socket.module';
 
 import { AWSConfig } from './config/aws-config';
 import { DatabaseConfig } from './config/database-config';
@@ -17,6 +19,8 @@ import { VinApiConfig } from './config/vin-api-config';
   imports: [
     ApiModule,
     CommonModule,
+    SocketModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       load: [
         AWSConfig,

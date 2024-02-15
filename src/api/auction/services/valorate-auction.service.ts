@@ -56,6 +56,6 @@ export class ValorateAuctionService
       user: auction.bids[0].participant,
     };
 
-    return Either.makeRight(await auction.save());
+    return Either.makeRight(await this.auctionService.save(auction));
   }
 }

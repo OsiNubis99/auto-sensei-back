@@ -5,8 +5,8 @@ import { Either } from '@common/generics/either';
 import StripeService from '@common/services/stripe.service';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { AddPaymentMethodDto } from '@api/user/dto/add-payment-method.dto';
 import { PaymentMethodI } from '@database/interfaces/payment-method.interface';
-import { AddPaymentMethodDto } from '@user/dto/add-payment-method.dto';
 
 type P = AddPaymentMethodDto & {
   user: UserDocument;

@@ -9,8 +9,8 @@ import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
+import { RegisterUserDto } from '@api/user/dto/register-user.dto';
 import { AuthService } from '@auth/auth.service';
-import { RegisterUserDto } from '@user/dto/register-user.dto';
 
 interface P extends RegisterUserDto {}
 

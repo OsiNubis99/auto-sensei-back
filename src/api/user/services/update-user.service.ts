@@ -3,15 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { Either } from '@common/generics/either';
 import { AppServiceI } from '@common/generics/app-service.interface';
+import { Either } from '@common/generics/either';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
+import { UpdateUserDto } from '@api/user/dto/update-user.dto';
+import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { DealerI } from '@database/interfaces/dealer.interface';
 import { SellerI } from '@database/interfaces/seller.interface';
-import { UpdateUserDto } from '@user/dto/update-user.dto';
-import { StatusEnum } from '@common/enums/status.enum';
 
 interface P extends UpdateUserDto {
   user: UserDocument;

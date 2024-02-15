@@ -3,7 +3,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UploaderDto } from './dto/uploader.dto';
 
 import { MineTypes } from '@common/enums/mine-types.enums';
-
 import AWSService from '@common/services/aws.service';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class UploaderService {
 
     const name = Date.now();
     const url = await this.awsService.upload(
-      body.location,
+      body.location.replace(' ', ''),
       name + ext,
       file.buffer,
     );

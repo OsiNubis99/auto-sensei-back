@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { DatabaseModule } from '@database/database.module';
 import { MailerModule } from 'src/mailer/mailer.module';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 import AWSService from './services/aws.service';
 import StripeService from './services/stripe.service';
@@ -12,6 +13,7 @@ const commonServices = [
   AWSService,
   StripeService,
   TwilioService,
+  SocketGateway,
   VinApiService,
 ];
 

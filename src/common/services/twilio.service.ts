@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Twilio } from 'twilio';
 
-import { SendCodeMessageDto } from '@common/dtos/SendCodeMessage.dto';
-import { SendRawMessageDto } from '@common/dtos/SendRawMessage.dto';
+import { SendCodeMessageDto } from '@common/dtos/send-code-message.dto';
+import { SendRawMessageDto } from '@common/dtos/send-raw-message.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

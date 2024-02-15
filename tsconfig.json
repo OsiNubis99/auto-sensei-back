@@ -18,9 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@api/*": ["src/api/*"],
       "@auth/*": ["src/api/auth/*"],
       "@decorators/*": ["src/api/decorators/*"],
-      "@user/*": ["src/api/user/*"],
       "@common/*": ["src/common/*"],
       "@database/*": ["src/database/*"]
     }

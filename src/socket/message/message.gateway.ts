@@ -11,19 +11,15 @@ import {
 import { isValidObjectId, Model } from 'mongoose';
 import { Server } from 'socket.io';
 
+import { MessageReasonEnum } from '@common/enums/message-reason.enum';
+import { EitherGatewayInterceptor } from '@common/interceptor/either-gateway.interceptor';
 import { ChatDocument } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
-import { CreateMessageService } from './service/create-message.service';
 
-import { EitherGatewayInterceptor } from '@common/interceptor/either-gateway.interceptor';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { GetMessagesDto } from './dto/get_messages.dto';
 import { MessageService } from './message.service';
-
-enum Reasons {
-  newMessageSended = 'newMessageSended',
-  newMessageRecived = 'newMessageReceived',
-}
+import { CreateMessageService } from './service/create-message.service';
 
 @WebSocketGateway({
   namespace: 'message',
@@ -71,7 +67,7 @@ export class MessageGateway
     }
   }
 
-  broadcast(userId: string, message: ChatDocument, reason: Reasons) {
+  broadcast(userId: string, message: ChatDocument, reason: MessageReasonEnum) {
     for (const c of this.wsClients) {
       if (c.userId == userId) {
         try {
@@ -101,9 +97,9 @@ export class MessageGateway
           ? message.auction.owner._id.toString()
           : message.participant._id.toString(),
         message,
-        Reasons.newMessageRecived,
+        MessageReasonEnum.newMessageRecived,
       );
-      this.broadcast(userId, message, Reasons.newMessageSended);
+      this.broadcast(userId, message, MessageReasonEnum.newMessageSended);
       return messageResponse;
     }
   }

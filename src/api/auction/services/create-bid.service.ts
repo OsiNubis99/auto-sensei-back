@@ -1,14 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Schema } from 'mongoose';
 
-import { Either } from '@common/generics/either';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { MessageReasonEnum } from '@common/enums/message-reason.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
+import { Either } from '@common/generics/either';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 import { AuctionService } from '../auction.service';
 import { CreateBidDto } from '../dto/create-bid.dto';
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 interface P extends CreateBidDto {
   _id: Schema.Types.ObjectId;
@@ -21,7 +23,10 @@ interface R extends AuctionDocument {}
 export class CreateBidService implements AppServiceI<P, R, HttpException> {
   private autoBidAmount = 100;
 
-  constructor(private auctionService: AuctionService) {}
+  constructor(
+    private auctionService: AuctionService,
+    private socket: SocketGateway,
+  ) {}
 
   async execute({ _id, user, ...param }: P) {
     const auctionSearch = await this.auctionService.findOne({ _id });
@@ -51,6 +56,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       biddingLimit: param.biddingLimit,
       participant: user,
     });
+    let userToNotify = lastBid.participant;
 
     if (lastBid?.biddingLimit >= param.amount) {
       // Automatic bid
@@ -78,6 +84,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
         });
       } else {
         // Automatic user response insufficient
+        userToNotify = user;
         const userBigestBid = param.biddingLimit || param.amount;
         let bidAmount = lastBid.biddingLimit;
 
@@ -94,8 +101,12 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       }
     }
 
-    //Notificate other participants
+    this.socket.broadcast({
+      userId: userToNotify._id.toString(),
+      reason: MessageReasonEnum.bidExceeded,
+      message: auction,
+    });
 
-    return Either.makeRight(await auction.save());
+    return Either.makeRight(await this.auctionService.save(auction));
   }
 }

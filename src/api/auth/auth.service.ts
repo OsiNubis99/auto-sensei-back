@@ -11,11 +11,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
+import { StatusEnum } from '@common/enums/status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/either';
 import { User, UserDocument } from '@database/schemas/user.schema';
+
 import { JWTPayloadI } from './jwt.payload';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { StatusEnum } from '@common/enums/status.enum';
 
 @Injectable()
 export class AuthService {
