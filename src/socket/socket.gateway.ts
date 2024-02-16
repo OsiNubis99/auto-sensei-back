@@ -17,12 +17,16 @@ import { MessageReasonEnum } from '@common/enums/message-reason.enum';
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private clients = [];
 
-  async handleConnection({ disconnect, id, handshake, emit }) {
-    if (handshake.auth.userId && isValidObjectId(handshake.auth.userId)) {
-      this.clients.push({ id, userId: handshake.auth.userId, emit });
-      return 'Connection successful for id: ' + handshake.auth.userId;
+  async handleConnection(client) {
+    const {
+      id,
+      handshake: { auth },
+    } = client;
+    if (auth.userId && isValidObjectId(auth.userId)) {
+      this.clients.push({ id, userId: auth.userId, client });
+      return 'Connection successful for id: ' + auth.userId;
     }
-    disconnect(true);
+    client.disconnect(true);
   }
 
   handleDisconnect({ id }) {
@@ -42,9 +46,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     for (const client of this.clients) {
       if (!data.userId || client.userId === data.userId) {
         try {
-          client.emit(data.reason, data.message);
+          client.client.emit(data.reason, data.message);
         } catch (err) {
-          Logger.error(err);
+          Logger.error(err, 'Socket');
         }
       }
     }

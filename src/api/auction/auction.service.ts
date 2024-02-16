@@ -29,24 +29,14 @@ export class AuctionService {
         if (!ended && auction.status == AuctionStatusEnum.UPCOMING) {
           auction.status = AuctionStatusEnum.LIVE;
           edited = true;
-          auction.remindList.map((user) =>
-            this.socket.broadcast({
-              userId: user._id.toString(),
-              reason: MessageReasonEnum.subscribedAuctionStarted,
-              message: auction,
-            }),
-          );
+          this.notifySubscribedUsers(auction);
         }
         if (ended) {
           if (auction.status == AuctionStatusEnum.LIVE) {
             if (auction.bids.length > 0) {
               auction.status = AuctionStatusEnum.BIDS_COMPLETED;
               edited = true;
-              this.socket.broadcast({
-                userId: auction.bids[0].participant._id.toString(),
-                reason: MessageReasonEnum.bidsFinished,
-                message: auction,
-              });
+              this.processPayment(auction);
             } else {
               auction.status = AuctionStatusEnum.REJECTED;
               edited = true;
@@ -67,6 +57,25 @@ export class AuctionService {
       message: auction,
     });
     return auction.save();
+  }
+
+  async notifySubscribedUsers(auction: AuctionDocument) {
+    for (const user of auction.remindList) {
+      this.socket.broadcast({
+        userId: user._id.toString(),
+        reason: MessageReasonEnum.subscribedAuctionStarted,
+        message: auction,
+      });
+    }
+  }
+
+  async processPayment(auction: AuctionDocument) {
+    // try payment
+    this.socket.broadcast({
+      userId: auction.bids[0].participant._id.toString(),
+      reason: MessageReasonEnum.bidsFinished,
+      message: auction,
+    });
   }
 
   @Cron('1 0,30 * * * *')
@@ -98,6 +107,7 @@ export class AuctionService {
       } else {
         auction.startDate = new Date();
         auction.status = AuctionStatusEnum.LIVE;
+        this.notifySubscribedUsers(auction);
       }
       return Either.makeRight(await this.save(auction));
     }
