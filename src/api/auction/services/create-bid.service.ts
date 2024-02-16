@@ -56,7 +56,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       biddingLimit: param.biddingLimit,
       participant: user,
     });
-    let userToNotify = lastBid.participant;
+    let userToNotify = lastBid?.participant;
 
     if (lastBid?.biddingLimit >= param.amount) {
       // Automatic bid
@@ -101,11 +101,13 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       }
     }
 
-    this.socket.broadcast({
-      userId: userToNotify._id.toString(),
-      reason: MessageReasonEnum.bidExceeded,
-      message: auction,
-    });
+    if (userToNotify) {
+      this.socket.broadcast({
+        userId: userToNotify._id.toString(),
+        reason: MessageReasonEnum.bidExceeded,
+        message: auction,
+      });
+    }
 
     return Either.makeRight(await this.auctionService.save(auction));
   }
