@@ -3,7 +3,6 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketGateway,
-  WebSocketServer,
 } from '@nestjs/websockets';
 import { isValidObjectId } from 'mongoose';
 
@@ -16,8 +15,6 @@ import { MessageReasonEnum } from '@common/enums/message-reason.enum';
   },
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor() {}
-  @WebSocketServer()
   private clients = [];
 
   async handleConnection({ disconnect, id, handshake, emit }) {
