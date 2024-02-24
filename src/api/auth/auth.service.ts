@@ -68,7 +68,7 @@ export class AuthService {
     url += '/signup/';
     if (user.type == UserTypeEnum.seller) url += 'sellers';
     if (user.type == UserTypeEnum.dealer) url += 'dealers';
-    url += `?token=${this.jwtService.sign(payload, { expiresIn: '15m' })}`;
+    url += `?token=${this.jwtService.sign(payload, { expiresIn: '1d' })}`;
 
     try {
       await this.mailerService.sendMail({
