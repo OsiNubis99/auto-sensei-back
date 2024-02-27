@@ -20,7 +20,7 @@ export default class TwilioService {
       shortenUrls: true,
       body: `Auto Sensei code: ${data.code}\nData and msg may apply.`,
       from: '+' + this.configService.get('twilio.number'),
-      to: '+' + data.number,
+      to: '+' + data.phone,
     });
     return !messageResponse.errorCode;
   }
@@ -30,7 +30,7 @@ export default class TwilioService {
       shortenUrls: true,
       body: data.message,
       from: '+' + this.configService.get('twilio.number'),
-      to: '+' + data.number,
+      to: '+' + data.phone,
     });
     return !messageResponse.errorCode;
   }

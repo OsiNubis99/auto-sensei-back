@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsAlpha, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
+import { PhoneDto } from '@common/dtos/phone.dto';
 import { DealerI } from '@database/interfaces/dealer.interface';
 
-export class DealerDto implements DealerI {
+export class DealerDto extends PhoneDto implements DealerI {
   @IsString()
   @IsOptional()
   @ApiProperty({
@@ -12,7 +13,6 @@ export class DealerDto implements DealerI {
   })
   picture: string;
 
-  @IsAlpha()
   @IsString()
   @IsOptional()
   @ApiProperty({
@@ -36,13 +36,4 @@ export class DealerDto implements DealerI {
     example: 'My house',
   })
   address: string;
-
-  @IsString()
-  @IsPhoneNumber()
-  @IsOptional()
-  @ApiProperty({
-    description: 'Dealer phone',
-    example: '+15557720901',
-  })
-  phone: string;
 }

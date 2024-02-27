@@ -7,6 +7,7 @@ import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
+import { PhoneCode } from '@database/schemas/phone-code.schema';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
 import { RegisterUserDto } from '@api/user/dto/register-user.dto';
@@ -24,6 +25,8 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(PhoneCode.name)
+    private phoneCodeModel: Model<PhoneCode>,
     private authService: AuthService,
   ) {}
 
@@ -47,18 +50,29 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
       );
     user.password = await bcrypt.hash(param.password, 10);
 
-    if (seller) {
-      user.type = UserTypeEnum.seller;
-      user.seller = seller;
-    }
-
-    if (dealer) {
-      user.type = UserTypeEnum.dealer;
-      user.dealer = dealer;
-    }
-
     if (isAdmin) {
       user.type = UserTypeEnum.admin;
+    } else {
+      const phoneCode = await this.phoneCodeModel.findOne({
+        phone: param.phone,
+      });
+      if (!phoneCode || phoneCode.code !== param.validationCode) {
+        return Either.makeLeft(
+          new HttpException("Phone isn't valid", HttpStatus.BAD_REQUEST),
+        );
+      }
+
+      if (seller) {
+        user.type = UserTypeEnum.seller;
+        user.seller = seller;
+        user.seller.phone = param.phone;
+      }
+
+      if (dealer) {
+        user.type = UserTypeEnum.dealer;
+        user.dealer = dealer;
+        user.dealer.phone = param.phone;
+      }
     }
 
     await user.save();

@@ -14,6 +14,7 @@ import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
 import { UserD } from '@common/decorators/user.decorator';
 import { IdDto } from '@common/dtos/id.dto';
+import { PhoneDto } from '@common/dtos/phone.dto';
 import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { UserDocument } from '@database/schemas/user.schema';
@@ -25,6 +26,7 @@ import { AddPaymentMethodService } from './services/add-payment-method.service';
 import { GetUserStatsService } from './services/get-user-stats.service';
 import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
+import { SendValidationCodeService } from './services/send-validation-code.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
 
@@ -36,6 +38,7 @@ export class UserController {
     private getStatsService: GetUserStatsService,
     private getValorationsService: GetUserValorationsService,
     private registerUserService: RegisterUserService,
+    private sendValidationCodeService: SendValidationCodeService,
     private updateUserService: UpdateUserService,
     private userService: UserService,
   ) {}
@@ -94,6 +97,15 @@ export class UserController {
   })
   register(@Body() data: RegisterUserDto) {
     return this.registerUserService.execute(data);
+  }
+
+  @Post('/send-validation-code')
+  @BasicRequest({
+    description: 'Create a new user',
+    response: 'User Document',
+  })
+  sendValidationCode(@Body() data: PhoneDto) {
+    return this.sendValidationCodeService.execute(data);
   }
 
   @Post('/payment_method')

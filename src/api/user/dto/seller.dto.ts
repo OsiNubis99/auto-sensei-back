@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
+import { PhoneDto } from '@common/dtos/phone.dto';
 import { SellerI } from '@database/interfaces/seller.interface';
 
-export class SellerDto implements SellerI {
+export class SellerDto extends PhoneDto implements SellerI {
   @IsString()
   @IsOptional()
   @ApiProperty({
@@ -43,13 +44,4 @@ export class SellerDto implements SellerI {
     example: 'url',
   })
   driverLicense: string;
-
-  @IsString()
-  @IsPhoneNumber()
-  @IsOptional()
-  @ApiProperty({
-    description: 'Seller phone',
-    example: '+13254453',
-  })
-  phone: string;
 }

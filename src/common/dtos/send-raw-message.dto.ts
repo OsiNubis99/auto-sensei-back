@@ -1,5 +1,5 @@
 export interface SendRawMessageDto {
   challengeId?: number;
-  number: string;
+  phone: string;
   message: string;
 }

@@ -1,13 +1,20 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  Length,
+  ValidateNested,
+} from 'class-validator';
 
 import { LoginDto } from '@auth/dto/login.dto';
+import { PhoneDto } from '@common/dtos/phone.dto';
 
 import { DealerDto } from './dealer.dto';
 import { SellerDto } from './seller.dto';
 
-export class RegisterUserDto extends LoginDto {
+export class RegisterUserDto extends IntersectionType(LoginDto, PhoneDto) {
   @IsOptional()
   isAdmin?: boolean;
 
@@ -28,4 +35,13 @@ export class RegisterUserDto extends LoginDto {
     required: false,
   })
   dealer?: DealerDto;
+
+  @IsNumberString()
+  @Length(6, 6)
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Phone validation code',
+    example: '720901',
+  })
+  validationCode: string;
 }
