@@ -131,23 +131,6 @@ export class AuctionService {
     );
   }
 
-  async accept(user: UserDocument, filter: FilterQuery<Auction>) {
-    const auction = await this.auctionModel.findOne(filter).populate('owner');
-    if (!auction)
-      return Either.makeLeft(
-        new HttpException('Bad id', HttpStatus.BAD_REQUEST),
-      );
-    if (!auction.owner._id.equals(user._id))
-      return Either.makeLeft(
-        new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
-      );
-    if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
-      auction.status = AuctionStatusEnum.COMPLETED;
-      return Either.makeRight(await this.save(auction));
-    }
-    return Either.makeRight(auction);
-  }
-
   async decline(user: UserDocument, filter: FilterQuery<Auction>) {
     const auction = await this.auctionModel.findOne(filter).populate('owner');
     if (!auction)

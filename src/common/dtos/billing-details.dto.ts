@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 import { BillingDetailsI } from '@database/interfaces/billing-details.interface';
 import { Type } from 'class-transformer';
@@ -29,22 +22,4 @@ export class BillingDetailsDto implements BillingDetailsI {
     example: 'Barry Allen',
   })
   name: string;
-
-  @IsString()
-  @IsEmail()
-  @IsOptional()
-  @ApiProperty({
-    description: 'Email',
-    example: 'barryallen@justiceleague.com',
-  })
-  email?: string;
-
-  @IsString()
-  @IsPhoneNumber()
-  @IsOptional()
-  @ApiProperty({
-    description: 'Phone number with extension',
-    example: '+18004444444',
-  })
-  phone?: string;
 }

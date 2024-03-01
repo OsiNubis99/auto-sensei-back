@@ -20,24 +20,27 @@ import { UserD } from '@common/decorators/user.decorator';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { CreateBidDto } from './dto/create-bid.dto';
-import { UpdateBidDto } from './dto/update-bid.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
+import { UpdateBidDto } from './dto/update-bid.dto';
 import { ValorateAuctionDto } from './dto/valorate-auction.dto';
+import { AcceptAuctionService } from './services/accept.auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
-import { UpdateBidService } from './services/update-bid.service';
 import { GetAuctionService } from './services/get-auction.service';
+import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
 import { RemoveAuctionRemindService } from './services/remove-auction-remind.service';
 import { UpdateAuctionService } from './services/update-auction.service';
+import { UpdateBidService } from './services/update-bid.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
-import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
+import PDFService from '@common/services/pdf.service';
 
 @ApiTags('Auction')
 @Controller('auction')
 export class AuctionController {
   constructor(
+    private readonly acceptAuctionService: AcceptAuctionService,
     private readonly addAuctionRemindService: AddAuctionRemindService,
     private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
@@ -48,7 +51,13 @@ export class AuctionController {
     private readonly updateAuctionService: UpdateAuctionService,
     private readonly removeAuctionRemindService: RemoveAuctionRemindService,
     private readonly valorateAuctionService: ValorateAuctionService,
+    private pdfService: PDFService,
   ) {}
+
+  @Get('/test')
+  async test() {
+    return this.pdfService.generatePDF('hi');
+  }
 
   @Get('/:id')
   @BasicRequest({
@@ -193,7 +202,10 @@ export class AuctionController {
     roles: [UserTypeEnum.seller],
   })
   accept(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.accept(user, { _id: param.id });
+    return this.acceptAuctionService.execute({
+      user,
+      filter: { _id: param.id },
+    });
   }
 
   @Patch('/decline/:id')
