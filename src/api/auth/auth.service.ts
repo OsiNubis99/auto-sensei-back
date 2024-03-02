@@ -28,9 +28,10 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<UserDocument> {
-    const user = await this.userModel
-      .findOne({ email }, { password: 1, _id: 1, status: 1 })
-      .populate('paymentMethods');
+    const user = await this.userModel.findOne(
+      { email },
+      { password: 1, _id: 1, status: 1 },
+    );
     if (user) {
       if (user.status === StatusEnum.notvalidated)
         throw new HttpException(

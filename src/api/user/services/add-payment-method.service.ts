@@ -6,23 +6,29 @@ import StripeService from '@common/services/stripe.service';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { AddPaymentMethodDto } from '@api/user/dto/add-payment-method.dto';
-import { PaymentMethodI } from '@database/interfaces/payment-method.interface';
+import { PaymentMethod } from '@database/schemas/payment-method.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 type P = AddPaymentMethodDto & {
   user: UserDocument;
 };
 
-type R = UserDocument;
+type R = string;
 
 @Injectable()
 export class AddPaymentMethodService
   implements AppServiceI<P, R, HttpException>
 {
-  constructor(private stripeService: StripeService) {}
+  constructor(
+    @InjectModel(PaymentMethod.name)
+    private paymentMethodModel: Model<PaymentMethod>,
+    private stripeService: StripeService,
+  ) {}
 
   async execute({ user, ...param }: P) {
     const paymentMethodResponse = await this.stripeService.addPaymentMethod(
-      param.billing_details,
+      { email: user.email, ...param.billing_details },
       param.card,
     );
     if (paymentMethodResponse.isLeft()) {
@@ -34,19 +40,17 @@ export class AddPaymentMethodService
       );
     }
 
-    const paymentMethod: PaymentMethodI = {
-      cardDto: param.card,
+    const paymentMethod = await new this.paymentMethodModel({
+      cardDto: JSON.stringify(param.card),
       stripePaymentId: paymentMethodResponse.getRight().id,
       billingDetails: paymentMethodResponse.getRight().billing_details,
-      card: {
-        last4: paymentMethodResponse.getRight().card.last4,
-        exp_month: paymentMethodResponse.getRight().card.exp_month,
-        exp_year: paymentMethodResponse.getRight().card.exp_year,
-      },
-    };
+      card: paymentMethodResponse.getRight().card,
+    }).save();
 
     user.paymentMethods.push(paymentMethod);
 
-    return Either.makeRight(await user.save());
+    await user.save();
+
+    return Either.makeRight('OK');
   }
 }

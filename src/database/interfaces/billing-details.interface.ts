@@ -12,7 +12,4 @@ export class BillingDetailsI {
 
   @Prop()
   email?: string;
-
-  @Prop()
-  phone?: string;
 }

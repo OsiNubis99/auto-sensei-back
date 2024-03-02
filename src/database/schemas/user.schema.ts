@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 import { StatusEnum } from '@common/enums/status.enum';
 import { DealerI } from '@database/interfaces/dealer.interface';
-import { PaymentMethodI } from '@database/interfaces/payment-method.interface';
 import { SellerI } from '@database/interfaces/seller.interface';
+
+import { PaymentMethod, PaymentMethodDocument } from './payment-method.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -36,8 +37,8 @@ export class User {
   @Prop()
   seller: SellerI;
 
-  @Prop({ type: [SchemaFactory.createForClass(PaymentMethodI)] })
-  paymentMethods: PaymentMethodI[];
+  @Prop({ type: [mongooseSchema.Types.ObjectId], ref: PaymentMethod.name })
+  paymentMethods: [PaymentMethodDocument];
 
   @Prop({ select: false })
   password: string;
