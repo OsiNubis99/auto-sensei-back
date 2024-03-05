@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Schema } from 'mongoose';
 
+import { IdDto } from '@common/dtos/id.dto';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { MessageReasonEnum } from '@common/enums/message-reason.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
@@ -11,24 +11,45 @@ import { SocketGateway } from 'src/socket/socket.gateway';
 
 import { AuctionService } from '../auction.service';
 import { CreateBidDto } from '../dto/create-bid.dto';
+import { PaymentMethod } from '@database/schemas/payment-method.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-interface P extends CreateBidDto {
-  _id: Schema.Types.ObjectId;
-  user: UserDocument;
-}
+type P = IdDto &
+  CreateBidDto & {
+    user: UserDocument;
+  };
 
-interface R extends AuctionDocument {}
+type R = AuctionDocument;
 
 @Injectable()
 export class CreateBidService implements AppServiceI<P, R, HttpException> {
   private autoBidAmount = 100;
 
   constructor(
+    @InjectModel(PaymentMethod.name)
+    private paymentMethodModel: Model<PaymentMethod>,
     private auctionService: AuctionService,
     private socket: SocketGateway,
   ) {}
 
   async execute({ _id, user, ...param }: P) {
+    const hasPaymentMethod = user.paymentMethods.some((v) =>
+      v._id.equals(param.idPaymentMethod),
+    );
+    if (!hasPaymentMethod) {
+      return Either.makeLeft(
+        new HttpException('Payment Method is invalid', HttpStatus.BAD_REQUEST),
+      );
+    }
+    const paymentMethod = await this.paymentMethodModel
+      .findOne({ _id: param.idPaymentMethod })
+      .populate('owner');
+    if (!paymentMethod)
+      return Either.makeLeft(
+        new HttpException('Bad payment id', HttpStatus.BAD_REQUEST),
+      );
+
     const auctionSearch = await this.auctionService.findOne({ _id });
     if (auctionSearch.isLeft()) {
       return auctionSearch;
@@ -55,6 +76,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
       amount: param.amount,
       biddingLimit: param.biddingLimit,
       participant: user,
+      paymentMethod: paymentMethod,
     });
     let userToNotify = lastBid?.participant;
 
@@ -74,12 +96,14 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
           amount: lastBidAmount,
           biddingLimit: lastBid.biddingLimit,
           participant: lastBid.participant,
+          paymentMethod: lastBid.paymentMethod,
           automatic: true,
         });
         auction.bids.unshift({
           amount: userAmount,
           biddingLimit: param.biddingLimit,
           participant: user,
+          paymentMethod: paymentMethod,
           automatic: true,
         });
       } else {
@@ -96,6 +120,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
           amount: bidAmount,
           biddingLimit: lastBid.biddingLimit,
           participant: lastBid.participant,
+          paymentMethod: lastBid.paymentMethod,
           automatic: true,
         });
       }

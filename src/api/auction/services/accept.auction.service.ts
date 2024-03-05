@@ -8,6 +8,7 @@ import { Either } from '@common/generics/either';
 import PDFService from '@common/services/pdf.service';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
+
 import { AuctionService } from '../auction.service';
 
 type P = {
@@ -15,7 +16,7 @@ type P = {
   filter: FilterQuery<Auction>;
 };
 
-interface R extends AuctionDocument {}
+type R = AuctionDocument;
 
 @Injectable()
 export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {

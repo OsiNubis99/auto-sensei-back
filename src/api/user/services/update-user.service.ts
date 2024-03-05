@@ -3,28 +3,34 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
+import { StatusEnum } from '@common/enums/status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
+import { DealerI } from '@database/interfaces/dealer.interface';
+import { SellerI } from '@database/interfaces/seller.interface';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
 import { UpdateUserDto } from '@api/user/dto/update-user.dto';
-import { StatusEnum } from '@common/enums/status.enum';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
-import { DealerI } from '@database/interfaces/dealer.interface';
-import { SellerI } from '@database/interfaces/seller.interface';
+import { PhoneCode } from '@database/schemas/phone-code.schema';
 
-interface P extends UpdateUserDto {
+type P = UpdateUserDto & {
   user: UserDocument;
-}
+};
 
-interface R extends UserDocument {}
+type R = UserDocument;
 
 const regex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 @Injectable()
 export class UpdateUserService implements AppServiceI<P, R, HttpException> {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name)
+    private userModel: Model<User>,
+    @InjectModel(PhoneCode.name)
+    private phoneCodeModel: Model<PhoneCode>,
+  ) {}
 
   async execute({ user, password, seller, dealer, ...newData }: P) {
     if (
@@ -42,6 +48,17 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
           new HttpException('Pasword should be valid', HttpStatus.BAD_REQUEST),
         );
       user.password = await bcrypt.hash(password, 10);
+    }
+
+    if (newData.phone) {
+      const phoneCode = await this.phoneCodeModel.findOne({
+        phone: newData.phone,
+      });
+      if (!phoneCode || phoneCode.code !== newData.validationCode) {
+        return Either.makeLeft(
+          new HttpException("Phone isn't valid", HttpStatus.BAD_REQUEST),
+        );
+      }
     }
 
     if (user.type == UserTypeEnum.dealer && dealer) {

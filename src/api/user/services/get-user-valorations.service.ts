@@ -7,11 +7,11 @@ import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
-interface P {
+type P = {
   user: UserDocument;
-}
+};
 
-interface R extends Array<AuctionDocument> {}
+type R = Array<AuctionDocument>;
 
 @Injectable()
 export class GetUserValorationsService

@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
@@ -9,13 +10,12 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { AuctionService } from '../auction.service';
 import { FilterAuctionDto } from '../dto/filter-auction.dto';
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
-interface P extends FilterAuctionDto {
+type P = FilterAuctionDto & {
   user: UserDocument;
-}
+};
 
-interface R extends Array<AuctionDocument> {}
+type R = Array<AuctionDocument>;
 
 @Injectable()
 export class GetCurrentBidsAuctionsService

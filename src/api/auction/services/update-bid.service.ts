@@ -1,21 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Schema } from 'mongoose';
 
-import { Either } from '@common/generics/either';
+import { IdDto } from '@common/dtos/id.dto';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
+import { Either } from '@common/generics/either';
 import { AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { AuctionService } from '../auction.service';
 import { UpdateBidDto } from '../dto/update-bid.dto';
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
-interface P extends UpdateBidDto {
-  _id: Schema.Types.ObjectId;
-  user: UserDocument;
-}
+type P = IdDto &
+  UpdateBidDto & {
+    user: UserDocument;
+  };
 
-interface R extends AuctionDocument {}
+type R = AuctionDocument;
 
 @Injectable()
 export class UpdateBidService implements AppServiceI<P, R, HttpException> {

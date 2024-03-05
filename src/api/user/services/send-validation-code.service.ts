@@ -5,8 +5,8 @@ import { Model } from 'mongoose';
 import { PhoneDto } from '@common/dtos/phone.dto';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
-import { PhoneCode } from '@database/schemas/phone-code.schema';
 import TwilioService from '@common/services/twilio.service';
+import { PhoneCode } from '@database/schemas/phone-code.schema';
 
 type P = PhoneDto;
 

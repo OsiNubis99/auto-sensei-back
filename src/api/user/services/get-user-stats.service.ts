@@ -11,9 +11,9 @@ import { DealerStatsI } from '../interfaces/dealer-stats.interface';
 import { SellerStatsI } from '../interfaces/seller-stats.interface';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
-interface P {
+type P = {
   user: UserDocument;
-}
+};
 
 type R = DealerStatsI | SellerStatsI;
 

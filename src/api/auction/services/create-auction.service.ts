@@ -11,11 +11,11 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { CreateAuctionDto } from '../dto/create-auction.dto';
 
-interface P extends CreateAuctionDto {
+type P = CreateAuctionDto & {
   user: UserDocument;
-}
+};
 
-interface R extends AuctionDocument {}
+type R = AuctionDocument;
 
 @Injectable()
 export class CreateAuctionService implements AppServiceI<P, R, HttpException> {

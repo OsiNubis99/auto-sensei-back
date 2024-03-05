@@ -1,18 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 
+import { IdDto } from '@common/dtos/id.dto';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Faq, FaqDocument } from '@database/schemas/faq.schema';
 
 import { UpdateFaqDto } from '../dto/update-faq.dto';
 
-interface P extends UpdateFaqDto {
-  _id: Schema.Types.ObjectId;
-}
+type P = IdDto & UpdateFaqDto;
 
-interface R extends FaqDocument {}
+type R = FaqDocument;
 
 @Injectable()
 export class UpdateFaqService implements AppServiceI<P, R, HttpException> {

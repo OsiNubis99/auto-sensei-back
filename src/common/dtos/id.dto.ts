@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidateBy } from 'class-validator';
-import { isValidObjectId, Schema } from 'mongoose';
+import { isValidObjectId } from 'mongoose';
 
 export class IdDto {
   @ApiProperty({
-    name: 'id',
     description: 'id',
     type: String,
   })
@@ -16,5 +15,5 @@ export class IdDto {
         'id should be a valid value, received ' + err.value,
     },
   })
-  id: Schema.Types.ObjectId;
+  _id: string;
 }

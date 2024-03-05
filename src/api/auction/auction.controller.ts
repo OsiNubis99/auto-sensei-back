@@ -64,8 +64,8 @@ export class AuctionController {
     description: 'List auction by ID',
     response: 'Auction Document',
   })
-  findOne(@Param() param: IdDto) {
-    return this.auctionService.findOne({ _id: param.id });
+  findOne(@Param() { _id }: IdDto) {
+    return this.auctionService.findOne({ _id });
   }
 
   @Post('/')
@@ -103,11 +103,11 @@ export class AuctionController {
     roles: [UserTypeEnum.dealer],
   })
   createBid(
-    @Param() param: IdDto,
+    @Param() { _id }: IdDto,
     @Body() data: CreateBidDto,
     @UserD() user: UserDocument,
   ) {
-    return this.createBidService.execute({ _id: param.id, user, ...data });
+    return this.createBidService.execute({ _id, user, ...data });
   }
 
   @Post('/valorate/:id')
@@ -116,12 +116,12 @@ export class AuctionController {
     response: 'Auction Document',
   })
   valorate(
-    @Param() param: IdDto,
+    @Param() { _id }: IdDto,
     @Body() data: ValorateAuctionDto,
     @UserD() user: UserDocument,
   ) {
     return this.valorateAuctionService.execute({
-      _id: param.id,
+      _id,
       user,
       ...data,
     });
@@ -134,11 +134,11 @@ export class AuctionController {
     roles: [UserTypeEnum.seller, UserTypeEnum.admin],
   })
   update(
-    @Param() param: IdDto,
+    @Param() { _id }: IdDto,
     @Body() data: UpdateAuctionDto,
     @UserD() user: UserDocument,
   ) {
-    return this.updateAuctionService.execute({ _id: param.id, user, ...data });
+    return this.updateAuctionService.execute({ _id, user, ...data });
   }
 
   @Patch('/:id/add-remind')
@@ -147,8 +147,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
   })
-  addRemind(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.addAuctionRemindService.execute({ user, _id: param.id });
+  addRemind(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.addAuctionRemindService.execute({ _id, user });
   }
 
   @Patch('/:id/remove-remind')
@@ -157,8 +157,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
   })
-  removeRemind(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.removeAuctionRemindService.execute({ user, _id: param.id });
+  removeRemind(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.removeAuctionRemindService.execute({ _id, user });
   }
 
   @Patch('/bid/:id')
@@ -168,11 +168,11 @@ export class AuctionController {
     roles: [UserTypeEnum.dealer],
   })
   updateBid(
-    @Param() param: IdDto,
+    @Param() { _id }: IdDto,
     @Body() data: UpdateBidDto,
     @UserD() user: UserDocument,
   ) {
-    return this.updateBidService.execute({ _id: param.id, user, ...data });
+    return this.updateBidService.execute({ _id, user, ...data });
   }
 
   @Patch('/aprove/:id')
@@ -181,8 +181,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  aprove(@Param() param: IdDto) {
-    return this.auctionService.aprove({ _id: param.id });
+  aprove(@Param() { _id }: IdDto) {
+    return this.auctionService.aprove({ _id });
   }
 
   @Patch('/reject/:id')
@@ -191,8 +191,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  reject(@Param() param: IdDto) {
-    return this.auctionService.reject({ _id: param.id });
+  reject(@Param() { _id }: IdDto) {
+    return this.auctionService.reject({ _id });
   }
 
   @Patch('/accept/:id')
@@ -201,10 +201,10 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  accept(@Param() param: IdDto, @UserD() user: UserDocument) {
+  accept(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
     return this.acceptAuctionService.execute({
       user,
-      filter: { _id: param.id },
+      filter: { _id },
     });
   }
 
@@ -214,8 +214,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  decline(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.decline(user, { _id: param.id });
+  decline(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.auctionService.decline(user, { _id });
   }
 
   @Patch('/drop-off/:id')
@@ -224,8 +224,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
   })
-  dropOff(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.dropOff(user, { _id: param.id });
+  dropOff(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.auctionService.dropOff(user, { _id });
   }
 
   @Patch('/cancel/:id')
@@ -234,8 +234,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  cancel(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.cancel(user, { _id: param.id });
+  cancel(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.auctionService.cancel(user, { _id });
   }
 
   @Delete('/:id')
@@ -244,7 +244,7 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  remove(@Param() param: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.remove(user, { _id: param.id });
+  remove(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return this.auctionService.remove(user, { _id });
   }
 }

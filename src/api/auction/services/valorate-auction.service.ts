@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Schema } from 'mongoose';
 
+import { IdDto } from '@common/dtos/id.dto';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
@@ -10,12 +10,12 @@ import { UserDocument } from '@database/schemas/user.schema';
 import { AuctionService } from '../auction.service';
 import { ValorateAuctionDto } from '../dto/valorate-auction.dto';
 
-interface P extends ValorateAuctionDto {
-  _id: Schema.Types.ObjectId;
-  user: UserDocument;
-}
+type P = IdDto &
+  ValorateAuctionDto & {
+    user: UserDocument;
+  };
 
-interface R extends AuctionDocument {}
+type R = AuctionDocument;
 
 @Injectable()
 export class ValorateAuctionService

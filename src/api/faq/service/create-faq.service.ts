@@ -8,9 +8,9 @@ import { Faq, FaqDocument } from '@database/schemas/faq.schema';
 
 import { CreateFaqDto } from '../dto/create-faq.dto';
 
-interface P extends CreateFaqDto {}
+type P = CreateFaqDto;
 
-interface R extends FaqDocument {}
+type R = FaqDocument;
 
 @Injectable()
 export class CreateFaqService implements AppServiceI<P, R, HttpException> {

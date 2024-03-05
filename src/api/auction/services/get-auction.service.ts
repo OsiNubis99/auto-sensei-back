@@ -12,11 +12,11 @@ import { UserDocument } from '@database/schemas/user.schema';
 import { AuctionService } from '../auction.service';
 import { FilterAuctionDto } from '../dto/filter-auction.dto';
 
-interface P extends FilterAuctionDto {
+type P = FilterAuctionDto & {
   user: UserDocument;
-}
+};
 
-interface R extends Array<AuctionDocument> {}
+type R = Array<AuctionDocument>;
 
 @Injectable()
 export class GetAuctionService implements AppServiceI<P, R, HttpException> {
