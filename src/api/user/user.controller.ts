@@ -81,7 +81,7 @@ export class UserController {
     return this.getValorationsService.execute({ user });
   }
 
-  @Get('/:id')
+  @Get('/:_id')
   @AuthRequest({
     description: 'Get a user',
     response: 'User Document',
@@ -129,7 +129,7 @@ export class UserController {
     return this.updateUserService.execute({ ...data, user });
   }
 
-  @Patch('/activate/:id')
+  @Patch('/activate/:_id')
   @AuthRequest({
     description: 'Set user status to active',
     response: 'User Document',
@@ -139,7 +139,7 @@ export class UserController {
     return this.userService.setStatus({ _id }, StatusEnum.active);
   }
 
-  @Patch('/inactivate/:id')
+  @Patch('/inactivate/:_id')
   @AuthRequest({
     description: 'Set user status to inactive',
     response: 'User Document',
@@ -149,7 +149,7 @@ export class UserController {
     return this.userService.setStatus({ _id }, StatusEnum.inactive);
   }
 
-  @Delete('/:id')
+  @Delete('/:_id')
   @AuthRequest({
     description: 'Delete a user',
     response: 'User Document',

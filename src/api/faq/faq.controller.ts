@@ -40,7 +40,7 @@ export class FaqController {
     return this.faqService.findAll();
   }
 
-  @Get('/:id')
+  @Get('/:_id')
   @BasicRequest({
     description: 'List one FAQ',
     response: 'FAQ Document',
@@ -59,7 +59,7 @@ export class FaqController {
     return this.createFaqService.execute(body);
   }
 
-  @Put('/:id')
+  @Put('/:_id')
   @AuthRequest({
     description: 'Update a FAQ',
     response: 'FAQ Document',
@@ -69,7 +69,7 @@ export class FaqController {
     return this.updateFaqService.execute({ _id, ...body });
   }
 
-  @Delete('/:id')
+  @Delete('/:_id')
   @AuthRequest({
     description: 'Delete a FAQ',
     response: 'FAQ Document',

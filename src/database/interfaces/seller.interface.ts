@@ -4,5 +4,5 @@ export class SellerI {
   lastName: string;
   driverLicense: string;
   address: string;
-  phone: string;
+  phone?: string;
 }

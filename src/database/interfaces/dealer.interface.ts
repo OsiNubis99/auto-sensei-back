@@ -3,5 +3,5 @@ export class DealerI {
   name: string;
   omvic: string;
   address: string;
-  phone: string;
+  phone?: string;
 }

@@ -1,10 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 import { PhoneDto } from '@common/dtos/phone.dto';
 import { SellerI } from '@database/interfaces/seller.interface';
 
-export class SellerDto extends PhoneDto implements SellerI {
+export class SellerDto extends PartialType(PhoneDto) implements SellerI {
   @IsString()
   @IsOptional()
   @ApiProperty({

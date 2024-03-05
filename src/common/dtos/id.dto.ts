@@ -8,7 +8,7 @@ export class IdDto {
     type: String,
   })
   @ValidateBy({
-    name: 'id',
+    name: '_id',
     validator: {
       validate: isValidObjectId,
       defaultMessage: (err) =>

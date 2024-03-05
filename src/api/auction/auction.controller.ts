@@ -59,7 +59,7 @@ export class AuctionController {
     return this.pdfService.generatePDF('hi');
   }
 
-  @Get('/:id')
+  @Get('/:_id')
   @BasicRequest({
     description: 'List auction by ID',
     response: 'Auction Document',
@@ -96,7 +96,7 @@ export class AuctionController {
     return this.getCurrentBidsAuctionsService.execute({ user, ...data });
   }
 
-  @Post('/bid/:id')
+  @Post('/bid/:_id')
   @AuthRequest({
     description: 'Create a new bid',
     response: 'Auction Document',
@@ -110,7 +110,7 @@ export class AuctionController {
     return this.createBidService.execute({ _id, user, ...data });
   }
 
-  @Post('/valorate/:id')
+  @Post('/valorate/:_id')
   @AuthRequest({
     description: 'Create a valoration',
     response: 'Auction Document',
@@ -127,7 +127,7 @@ export class AuctionController {
     });
   }
 
-  @Put('/:id')
+  @Put('/:_id')
   @AuthRequest({
     description: 'Update an auction',
     response: 'Auction Document',
@@ -141,7 +141,7 @@ export class AuctionController {
     return this.updateAuctionService.execute({ _id, user, ...data });
   }
 
-  @Patch('/:id/add-remind')
+  @Patch('/:_id/add-remind')
   @AuthRequest({
     description: 'Add dealer to Auction remind list',
     response: 'Auction Document',
@@ -151,7 +151,7 @@ export class AuctionController {
     return this.addAuctionRemindService.execute({ _id, user });
   }
 
-  @Patch('/:id/remove-remind')
+  @Patch('/:_id/remove-remind')
   @AuthRequest({
     description: 'Remove dealer from Auction remind list',
     response: 'Auction Document',
@@ -161,7 +161,7 @@ export class AuctionController {
     return this.removeAuctionRemindService.execute({ _id, user });
   }
 
-  @Patch('/bid/:id')
+  @Patch('/bid/:_id')
   @AuthRequest({
     description: 'Create a new bid',
     response: 'Auction Document',
@@ -175,7 +175,7 @@ export class AuctionController {
     return this.updateBidService.execute({ _id, user, ...data });
   }
 
-  @Patch('/aprove/:id')
+  @Patch('/aprove/:_id')
   @AuthRequest({
     description: 'Aprove an Auction',
     response: 'Auction Document',
@@ -185,7 +185,7 @@ export class AuctionController {
     return this.auctionService.aprove({ _id });
   }
 
-  @Patch('/reject/:id')
+  @Patch('/reject/:_id')
   @AuthRequest({
     description: 'Reject an Auction',
     response: 'Auction Document',
@@ -195,7 +195,7 @@ export class AuctionController {
     return this.auctionService.reject({ _id });
   }
 
-  @Patch('/accept/:id')
+  @Patch('/accept/:_id')
   @AuthRequest({
     description: 'Accept last Auction Bid',
     response: 'Auction Document',
@@ -208,7 +208,7 @@ export class AuctionController {
     });
   }
 
-  @Patch('/decline/:id')
+  @Patch('/decline/:_id')
   @AuthRequest({
     description: 'Inactivate last Auction bid',
     response: 'Auction Document',
@@ -218,7 +218,7 @@ export class AuctionController {
     return this.auctionService.decline(user, { _id });
   }
 
-  @Patch('/drop-off/:id')
+  @Patch('/drop-off/:_id')
   @AuthRequest({
     description: 'Set drop off an Auction',
     response: 'Auction Document',
@@ -228,7 +228,7 @@ export class AuctionController {
     return this.auctionService.dropOff(user, { _id });
   }
 
-  @Patch('/cancel/:id')
+  @Patch('/cancel/:_id')
   @AuthRequest({
     description: 'Cancel an Auction',
     response: 'Auction Document',
@@ -238,7 +238,7 @@ export class AuctionController {
     return this.auctionService.cancel(user, { _id });
   }
 
-  @Delete('/:id')
+  @Delete('/:_id')
   @AuthRequest({
     description: 'Delete an Auction',
     response: 'Auction Document',
