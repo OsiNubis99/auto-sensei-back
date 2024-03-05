@@ -45,8 +45,8 @@ export class FaqController {
     description: 'List one FAQ',
     response: 'FAQ Document',
   })
-  findOne(@Param() param: IdDto) {
-    return this.faqService.findOne({ _id: param.id });
+  findOne(@Param() { _id }: IdDto) {
+    return this.faqService.findOne({ _id });
   }
 
   @Post('/')
@@ -65,8 +65,8 @@ export class FaqController {
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
-  updateFaq(@Param() param: IdDto, @Body() body: UpdateFaqDto) {
-    return this.updateFaqService.execute({ _id: param.id, ...body });
+  updateFaq(@Param() { _id }: IdDto, @Body() body: UpdateFaqDto) {
+    return this.updateFaqService.execute({ _id, ...body });
   }
 
   @Delete('/:id')
@@ -75,7 +75,7 @@ export class FaqController {
     response: 'FAQ Document',
     roles: [UserTypeEnum.admin],
   })
-  delete(@Param() param: IdDto) {
-    return this.faqService.delete({ _id: param.id });
+  delete(@Param() { _id }: IdDto) {
+    return this.faqService.delete({ _id });
   }
 }

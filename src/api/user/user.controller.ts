@@ -86,8 +86,8 @@ export class UserController {
     description: 'Get a user',
     response: 'User Document',
   })
-  findOne(@Param() param: IdDto) {
-    return this.userService.findOne({ _id: param.id });
+  findOne(@Param() { _id }: IdDto) {
+    return this.userService.findOne({ _id });
   }
 
   @Post('/')
@@ -135,8 +135,8 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  activateUser(@Param() param: IdDto) {
-    return this.userService.setStatus({ _id: param.id }, StatusEnum.active);
+  activateUser(@Param() { _id }: IdDto) {
+    return this.userService.setStatus({ _id }, StatusEnum.active);
   }
 
   @Patch('/inactivate/:id')
@@ -145,8 +145,8 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  inactivateUser(@Param() param: IdDto) {
-    return this.userService.setStatus({ _id: param.id }, StatusEnum.inactive);
+  inactivateUser(@Param() { _id }: IdDto) {
+    return this.userService.setStatus({ _id }, StatusEnum.inactive);
   }
 
   @Delete('/:id')
@@ -155,7 +155,7 @@ export class UserController {
     response: 'User Document',
     roles: [UserTypeEnum.admin],
   })
-  delete(@Param() param: IdDto) {
-    return this.userService.delete({ _id: param.id });
+  delete(@Param() { _id }: IdDto) {
+    return this.userService.delete({ _id });
   }
 }

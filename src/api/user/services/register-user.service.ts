@@ -53,13 +53,11 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
       if (seller) {
         user.type = UserTypeEnum.seller;
         user.seller = seller;
-        user.seller.phone = param.phone;
       }
 
       if (dealer) {
         user.type = UserTypeEnum.dealer;
         user.dealer = dealer;
-        user.dealer.phone = param.phone;
       }
     }
 

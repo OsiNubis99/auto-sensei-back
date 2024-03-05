@@ -32,7 +32,15 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
     private phoneCodeModel: Model<PhoneCode>,
   ) {}
 
-  async execute({ user, password, seller, dealer, ...newData }: P) {
+  async execute({
+    user,
+    password,
+    seller,
+    dealer,
+    phone,
+    validationCode,
+    ...newData
+  }: P) {
     if (
       newData.email &&
       newData.email !== user.email &&
@@ -50,17 +58,6 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       user.password = await bcrypt.hash(password, 10);
     }
 
-    if (newData.phone) {
-      const phoneCode = await this.phoneCodeModel.findOne({
-        phone: newData.phone,
-      });
-      if (!phoneCode || phoneCode.code !== newData.validationCode) {
-        return Either.makeLeft(
-          new HttpException("Phone isn't valid", HttpStatus.BAD_REQUEST),
-        );
-      }
-    }
-
     if (user.type == UserTypeEnum.dealer && dealer) {
       if (!user.dealer) user.dealer = <DealerI>{};
       for (const key of Object.keys(dealer)) {
@@ -72,6 +69,26 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       if (!user.seller) user.seller = <SellerI>{};
       for (const key of Object.keys(seller)) {
         user.seller[key] = seller[key];
+      }
+    }
+
+    if (phone) {
+      const phoneCode = await this.phoneCodeModel.findOne({
+        phone: phone,
+      });
+      if (!phoneCode || phoneCode.code !== validationCode) {
+        return Either.makeLeft(
+          new HttpException("Phone isn't valid", HttpStatus.BAD_REQUEST),
+        );
+      }
+      if (user.type == UserTypeEnum.dealer) {
+        if (!user.dealer) user.dealer = <DealerI>{};
+        user.dealer.phone = phone;
+      }
+
+      if (user.type == UserTypeEnum.seller) {
+        if (!user.seller) user.seller = <SellerI>{};
+        user.seller.phone = phone;
       }
     }
 
