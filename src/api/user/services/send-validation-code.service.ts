@@ -35,6 +35,6 @@ export class SendValidationCodeService
     const phoneCode = new this.phoneCodeModel({ phone, code });
     phoneCode.save();
 
-    return Either.makeRight('Ok');
+    return Either.makeRight({ status: 'ok', code });
   }
 }
