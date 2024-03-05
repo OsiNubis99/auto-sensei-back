@@ -10,7 +10,10 @@ import { PhoneCode } from '@database/schemas/phone-code.schema';
 
 type P = PhoneDto;
 
-type R = string;
+type R = {
+  status: string;
+  code: string;
+};
 
 @Injectable()
 export class SendValidationCodeService
