@@ -7,6 +7,7 @@ import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import TwilioService from '@common/services/twilio.service';
 import { PhoneCode } from '@database/schemas/phone-code.schema';
+import { StatusEnum } from '@common/enums/status.enum';
 
 type P = PhoneDto;
 
@@ -35,7 +36,16 @@ export class SendValidationCodeService
       );
     }
 
-    const phoneCode = new this.phoneCodeModel({ phone, code });
+    let phoneCode = await this.phoneCodeModel.findOne({
+      phone: phone,
+    });
+    if (!phoneCode) {
+      phoneCode = new this.phoneCodeModel({
+        phone,
+        status: StatusEnum.active,
+      });
+    }
+    phoneCode.code = code;
     phoneCode.save();
 
     return Either.makeRight({ status: 'ok', code });
