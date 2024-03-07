@@ -4,15 +4,15 @@ import { isValidObjectId } from 'mongoose';
 
 export class CreateBidDto {
   @ApiProperty({
-    description: 'id',
+    description: 'idPaymentMethod',
     type: String,
   })
   @ValidateBy({
-    name: 'id',
+    name: 'idPaymentMethod',
     validator: {
       validate: isValidObjectId,
       defaultMessage: (err) =>
-        'id should be a valid value, received ' + err.value,
+        'idPaymentMethod should be a valid value, received ' + err.value,
     },
   })
   idPaymentMethod: string;
