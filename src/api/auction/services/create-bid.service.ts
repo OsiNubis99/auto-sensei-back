@@ -42,9 +42,9 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
         new HttpException('Payment Method is invalid', HttpStatus.BAD_REQUEST),
       );
     }
-    const paymentMethod = await this.paymentMethodModel
-      .findOne({ _id: param.idPaymentMethod })
-      .populate('owner');
+    const paymentMethod = await this.paymentMethodModel.findOne({
+      _id: param.idPaymentMethod,
+    });
     if (!paymentMethod)
       return Either.makeLeft(
         new HttpException('Bad payment id', HttpStatus.BAD_REQUEST),
