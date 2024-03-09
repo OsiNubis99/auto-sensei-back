@@ -72,6 +72,7 @@ const autoPopulate = function (next: () => void) {
   this.populate('remindList');
   this.populate({ path: 'bids', populate: 'participant' });
   this.populate({ path: 'valuation', populate: 'user' });
+  this.populate({ path: 'bids', populate: 'paymentMethod' });
   next();
 };
 
