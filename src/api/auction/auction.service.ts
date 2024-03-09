@@ -36,7 +36,11 @@ export class AuctionService {
             if (auction.bids.length > 0) {
               auction.status = AuctionStatusEnum.BIDS_COMPLETED;
               edited = true;
-              this.processPayment(auction);
+              this.socket.broadcast({
+                userId: auction.bids[0].participant._id.toString(),
+                reason: MessageReasonEnum.bidsFinished,
+                message: auction,
+              });
             } else {
               auction.status = AuctionStatusEnum.REJECTED;
               edited = true;
@@ -67,15 +71,6 @@ export class AuctionService {
         message: auction,
       });
     }
-  }
-
-  async processPayment(auction: AuctionDocument) {
-    // try payment
-    this.socket.broadcast({
-      userId: auction.bids[0].participant._id.toString(),
-      reason: MessageReasonEnum.bidsFinished,
-      message: auction,
-    });
   }
 
   @Cron('1 0,30 * * * *')

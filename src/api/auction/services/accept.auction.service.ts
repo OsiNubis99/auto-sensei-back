@@ -6,6 +6,7 @@ import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import PDFService from '@common/services/pdf.service';
+import StripeService from '@common/services/stripe.service';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
@@ -25,10 +26,11 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     private auctionModel: Model<Auction>,
     private auctionService: AuctionService,
     private pdfService: PDFService,
+    private stripeService: StripeService,
   ) {}
 
   async execute({ user, filter }: P) {
-    const auction = await this.auctionModel.findOne(filter).populate('owner');
+    const auction = await this.auctionModel.findOne(filter);
     if (!auction)
       return Either.makeLeft(
         new HttpException('Bad id', HttpStatus.BAD_REQUEST),
@@ -37,9 +39,24 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
       return Either.makeLeft(
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
+    if (auction.bids.length > 0) {
+      auction.status = AuctionStatusEnum.BIDS_COMPLETED;
+      await this.auctionService.save(auction);
+    }
     if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
+      const paymentIntent = await this.stripeService.makePayment({
+        amount: auction.bids[0].amount,
+        payment_method: auction.bids[0].paymentMethod.stripePaymentId,
+        receipt_email: auction.bids[0].participant.email,
+      });
+      if (paymentIntent.isLeft()) {
+        auction.status = AuctionStatusEnum.REJECTED;
+        await this.auctionService.save(auction);
+        return Either.makeLeft(
+          new HttpException('Rejected payment method', HttpStatus.BAD_REQUEST),
+        );
+      }
       this.pdfService.generatePDF('hola');
-
       auction.status = AuctionStatusEnum.COMPLETED;
       return Either.makeRight(await this.auctionService.save(auction));
     }

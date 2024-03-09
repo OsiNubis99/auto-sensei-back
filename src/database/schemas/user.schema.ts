@@ -13,6 +13,9 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
+  @Prop()
+  customerId: string;
+
   @Prop({
     enum: UserTypeEnum,
     default: UserTypeEnum.seller,

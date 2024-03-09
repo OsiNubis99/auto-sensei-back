@@ -6,8 +6,12 @@ import JoiUtil, { JoiConfig } from './util/joi';
 
 export const StripeConfig = registerAs('stripe', (): StripeConfigI => {
   const configs: JoiConfig<StripeConfigI> = {
-    key: {
-      value: process.env.STRIPE_KEY,
+    public_key: {
+      value: process.env.STRIPE_PUBLIC_KEY,
+      joi: Joi.string().required(),
+    },
+    private_key: {
+      value: process.env.STRIPE_PRIVATE_KEY,
       joi: Joi.string().required(),
     },
   };

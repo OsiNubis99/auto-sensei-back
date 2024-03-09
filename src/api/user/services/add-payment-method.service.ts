@@ -27,7 +27,21 @@ export class AddPaymentMethodService
   ) {}
 
   async execute({ user, ...param }: P) {
+    if (!user.customerId) {
+      const name = user.dealer?.name || user.seller?.firstName || '';
+      const customerResponse = await this.stripeService.createCustomer(
+        name,
+        user.email,
+      );
+      if (customerResponse.isLeft())
+        return Either.makeLeft(
+          new HttpException(customerResponse.getLeft(), HttpStatus.BAD_REQUEST),
+        );
+      user.customerId = customerResponse.getRight().id;
+      await user.save();
+    }
     const paymentMethodResponse = await this.stripeService.addPaymentMethod(
+      user.customerId,
       { email: user.email, ...param.billing_details },
       param.card,
     );
@@ -40,14 +54,14 @@ export class AddPaymentMethodService
       );
     }
 
-    const paymentMethod = await new this.paymentMethodModel({
+    const paymentMethod = new this.paymentMethodModel({
       cardDto: JSON.stringify(param.card),
       stripePaymentId: paymentMethodResponse.getRight().id,
       billingDetails: paymentMethodResponse.getRight().billing_details,
       card: paymentMethodResponse.getRight().card,
-    }).save();
+    });
 
-    user.paymentMethods.push(paymentMethod);
+    user.paymentMethods.push(await paymentMethod.save());
 
     await user.save();
 
