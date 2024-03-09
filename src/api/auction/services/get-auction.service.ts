@@ -59,29 +59,39 @@ export class GetAuctionService implements AppServiceI<P, R, HttpException> {
         ],
       };
     }
-
     for (const key of Object.keys(filters)) {
       switch (key) {
         case 'color':
           filter['vehicleDetails.color'] = { $in: filters.color };
           break;
         case 'yearStart':
-          filter['vehicleDetails.year'] = { $gte: filters.yearStart };
+          filter['vehicleDetails.year'] = {
+            ...filter['vehicleDetails.year'],
+            $gte: filters.yearStart,
+          };
           break;
         case 'yearEnd':
-          filter['vehicleDetails.year'] = { $lte: filters.yearEnd };
+          filter['vehicleDetails.year'] = {
+            ...filter['vehicleDetails.year'],
+            $lte: filters.yearEnd,
+          };
           break;
         case 'odometerStart':
-          filter['vehicleDetails.odometer'] = { $gte: filters.odometerStart };
+          filter['vehicleDetails.odometer'] = {
+            ...filter['vehicleDetails.odometer'],
+            $gte: filters.odometerStart,
+          };
           break;
         case 'odometerEnd':
-          filter['vehicleDetails.odometer'] = { $lte: filters.odometerEnd };
+          filter['vehicleDetails.odometer'] = {
+            ...filter['vehicleDetails.odometer'],
+            $lte: filters.odometerEnd,
+          };
           break;
         default:
           filter['vehicleDetails.' + key] = filters[key];
       }
     }
-
     let data = await this.auctionModel
       .find(filter)
       .sort(sortBy)

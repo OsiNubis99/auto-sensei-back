@@ -42,13 +42,13 @@ export class FilterAuctionDto extends SortAuctionDto {
   })
   bodyType?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   @ApiProperty({
     description: 'Auction is finished',
     required: false,
   })
-  cylinder?: string;
+  cylinder?: number;
 
   @IsString()
   @IsOptional()

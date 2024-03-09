@@ -7,7 +7,7 @@ import {
   PaymentMethodDocument,
 } from '@database/schemas/payment-method.schema';
 
-@Schema({ _id: false })
+@Schema({ _id: false, timestamps: true })
 export class BidI {
   @Prop()
   amount: number;
