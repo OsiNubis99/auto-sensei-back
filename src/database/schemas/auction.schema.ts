@@ -70,9 +70,9 @@ export const AuctionSchema = SchemaFactory.createForClass(Auction);
 const autoPopulate = function (next: () => void) {
   this.populate('owner');
   this.populate('remindList');
-  this.populate({ path: 'bids', populate: 'participant' });
-  this.populate({ path: 'valuation', populate: 'user' });
-  this.populate({ path: 'bids', populate: 'paymentMethod' });
+  this.populate('bids.participant');
+  this.populate('bids.paymentMethod');
+  this.populate('valuation.user');
   next();
 };
 
