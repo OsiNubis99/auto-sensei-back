@@ -59,12 +59,13 @@ export default class StripeService {
     }
   }
 
-  public async makePayment(body: MakePaymentDto) {
+  public async makePayment({ amount, ...body }: MakePaymentDto) {
     try {
       const paymentIntent = await this._stripe.paymentIntents.create({
         currency: 'cad',
         confirm: true,
         off_session: true,
+        amount: amount * 100,
         ...body,
       });
       if (!paymentIntent) return Either.makeLeft('Payment intent error');

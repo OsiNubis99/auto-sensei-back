@@ -21,6 +21,8 @@ type R = AuctionDocument;
 
 @Injectable()
 export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
+  private taxAmount = 250;
+
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
@@ -45,7 +47,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     }
     if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
       const paymentIntent = await this.stripeService.makePayment({
-        amount: auction.bids[0].amount,
+        amount: auction.bids[0].amount + this.taxAmount,
         customer: auction.bids[0].participant.customerId,
         payment_method: auction.bids[0].paymentMethod.stripePaymentId,
         receipt_email: auction.bids[0].participant.email,
