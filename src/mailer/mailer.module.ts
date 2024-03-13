@@ -22,7 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           },
         },
         defaults: {
-          from: 'no-reply@autosensei.ca',
+          from: '"No Reply" <admin@autosensei.ca>',
         },
         template: {
           dir: 'src/mailer/templates/',
