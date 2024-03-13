@@ -12,14 +12,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         transport: {
           host: configService.get<string>('mailer.host'),
           port: configService.get<string>('mailer.port'),
-          secure: true,
+          secureConnection: false,
+          tls: {
+            ciphers: 'SSLv3',
+          },
           auth: {
             user: configService.get<string>('mailer.user'),
             pass: configService.get<string>('mailer.pass'),
           },
         },
         defaults: {
-          from: '"No Reply" <no-reply@autosensei.ca>',
+          from: 'no-reply@autosensei.ca',
         },
         template: {
           dir: 'src/mailer/templates/',
