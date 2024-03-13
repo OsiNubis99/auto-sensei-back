@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -81,6 +82,7 @@ export class AuthService {
         },
       });
     } catch (err) {
+      Logger.log(err);
       return Either.makeLeft(
         new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
       );
