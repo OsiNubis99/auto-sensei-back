@@ -26,7 +26,7 @@ export default class VinApiService {
       return Either.makeRight(<VehicleDetailsI>{
         vin,
         year: data.years?.shift()?.year,
-        basePrice: 3000,
+        basePrice: 100,
         suggestedPrice: data.price?.baseMsrp,
         make: data.make?.name,
         model: data.model?.name,

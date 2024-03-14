@@ -78,7 +78,7 @@ export class AuthService {
         template: 'welcome',
         context: {
           url,
-          name: user.seller?.firstName || user.dealer?.name || user.email,
+          name: user.seller?.firstName || user.dealer?.firstName || user.email,
         },
       });
     } catch (err) {
@@ -111,7 +111,7 @@ export class AuthService {
       template: 'forgotten-password',
       context: {
         url,
-        name: user.seller?.firstName || user.dealer?.name || user.email,
+        name: user.seller?.firstName || user.dealer?.firstName || user.email,
       },
     });
     return Either.makeRight('OK');

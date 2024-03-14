@@ -16,6 +16,22 @@ export class DealerDto extends PartialType(PhoneDto) implements DealerI {
   @IsString()
   @IsOptional()
   @ApiProperty({
+    description: 'Seller first name',
+    example: 'Barry',
+  })
+  firstName: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Seller last name',
+    example: 'Allen',
+  })
+  lastName: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
     description: 'Dealer name',
     example: 'Barry Allen',
   })

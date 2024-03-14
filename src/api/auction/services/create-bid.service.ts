@@ -63,7 +63,7 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
     }
 
     const lastPrice =
-      auction.bids[0]?.amount || auction.vehicleDetails.basePrice || 3000;
+      auction.bids[0]?.amount || auction.vehicleDetails.basePrice || 100;
 
     if (lastPrice >= param.amount) {
       return Either.makeLeft(
