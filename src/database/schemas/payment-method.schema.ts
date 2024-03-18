@@ -16,9 +16,6 @@ export class PaymentMethod {
 
   @Prop({ type: SchemaFactory.createForClass(CardI) })
   card: CardI;
-
-  @Prop({ select: false })
-  cardDto: string;
 }
 
 export const PaymentMethodSchema = SchemaFactory.createForClass(PaymentMethod);

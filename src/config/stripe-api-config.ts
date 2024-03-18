@@ -14,6 +14,10 @@ export const StripeConfig = registerAs('stripe', (): StripeConfigI => {
       value: process.env.STRIPE_PRIVATE_KEY,
       joi: Joi.string().required(),
     },
+    endpoint_secret: {
+      value: process.env.ENDPOINT_SECRET_KEY,
+      joi: Joi.string().required(),
+    },
   };
 
   return JoiUtil.validate(configs);

@@ -19,10 +19,8 @@ import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { UserDocument } from '@database/schemas/user.schema';
 
-import { AddPaymentMethodDto } from './dto/add-payment-method.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AddPaymentMethodService } from './services/add-payment-method.service';
 import { GetUserStatsService } from './services/get-user-stats.service';
 import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
@@ -34,7 +32,6 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(
-    private addPaymentMethodService: AddPaymentMethodService,
     private getStatsService: GetUserStatsService,
     private getValorationsService: GetUserValorationsService,
     private registerUserService: RegisterUserService,
@@ -106,18 +103,6 @@ export class UserController {
   })
   sendValidationCode(@Body() data: PhoneDto) {
     return this.sendValidationCodeService.execute(data);
-  }
-
-  @Post('/payment_method')
-  @AuthRequest({
-    description: 'Create a new user',
-    response: 'User Document',
-  })
-  addPaymentMethod(
-    @UserD() user: UserDocument,
-    @Body() data: AddPaymentMethodDto,
-  ) {
-    return this.addPaymentMethodService.execute({ user, ...data });
   }
 
   @Put('/')

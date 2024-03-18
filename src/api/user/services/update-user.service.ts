@@ -9,10 +9,10 @@ import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { DealerI } from '@database/interfaces/dealer.interface';
 import { SellerI } from '@database/interfaces/seller.interface';
+import { PhoneCode } from '@database/schemas/phone-code.schema';
 import { User, UserDocument } from '@database/schemas/user.schema';
 
 import { UpdateUserDto } from '@api/user/dto/update-user.dto';
-import { PhoneCode } from '@database/schemas/phone-code.schema';
 
 type P = UpdateUserDto & {
   user: UserDocument;

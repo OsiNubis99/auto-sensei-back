@@ -2,10 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { default as Stripe } from 'stripe';
 
-import { CardDto } from '@common/dtos/card.dto';
 import { MakePaymentDto } from '@common/dtos/make-payment.dto';
 import { Either } from '@common/generics/either';
-import { BillingDetailsI } from '@database/interfaces/billing-details.interface';
 
 @Injectable()
 export default class StripeService {
@@ -31,28 +29,21 @@ export default class StripeService {
     }
   }
 
-  public async addPaymentMethod(
-    customerId: string,
-    billing_details: BillingDetailsI,
-    card: CardDto,
-  ) {
+  public async createSession(userId: string, customerId: string) {
     try {
-      let paymentMethod = await this.stripe.paymentMethods.create({
-        type: 'card',
-        billing_details,
-        card,
+      const session = await this._stripe.checkout.sessions.create({
+        mode: 'setup',
+        currency: 'cad',
+        client_reference_id: userId,
+        customer: customerId,
+        success_url:
+          this.configService.get<string>('server.frontUrl') +
+          '/success-created-payment-method?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: this.configService.get<string>('server.frontUrl'),
       });
-      if (!paymentMethod) return Either.makeLeft('Bad car details');
-
-      paymentMethod = await this._stripe.paymentMethods.attach(
-        paymentMethod.id,
-        {
-          customer: customerId,
-        },
-      );
-      if (!paymentMethod) return Either.makeLeft('Bad car details');
-
-      return Either.makeRight(paymentMethod);
+      if (!session || !session.url)
+        return Either.makeLeft('Payment intent error');
+      return Either.makeRight({ url: session.url });
     } catch (err) {
       Logger.error(err);
       return Either.makeLeft(err);
