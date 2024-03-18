@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import stripe from 'stripe';
+import { default as Stripe } from 'stripe';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
@@ -24,11 +24,15 @@ import { ConfigService } from '@nestjs/config';
 @ApiTags('Stripe')
 @Controller('stripe')
 export class StripeController {
+  private _stripe: Stripe;
+
   constructor(
     private createSessionService: CreateSessionService,
     private readonly addPaymentMethodService: AddPaymentMethodService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this._stripe = new Stripe(this.configService.get('stripe.private_key'));
+  }
 
   @Get('/session-url')
   @AuthRequest({
@@ -47,11 +51,11 @@ export class StripeController {
   async webhook(@Req() request: Request) {
     const sig = request.headers['stripe-signature'];
 
-    let event: stripe.Event;
+    let event: Stripe.Event;
 
     try {
-      event = stripe.webhooks.constructEvent(
-        request.body,
+      event = this._stripe.webhooks.constructEvent(
+        JSON.stringify(request.body),
         sig,
         this.configService.get('stripe.endpoint_secret'),
       );
