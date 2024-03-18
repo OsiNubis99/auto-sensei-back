@@ -56,6 +56,7 @@ export class StripeController {
         this.configService.get('stripe.endpoint_secret'),
       );
     } catch (err) {
+      Logger.error(err);
       return Either.makeLeft(
         new HttpException('bad_request', HttpStatus.BAD_REQUEST),
       );
