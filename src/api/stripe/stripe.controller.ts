@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Logger,
   Post,
+  RawBodyRequest,
   Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,9 +18,9 @@ import { UserD } from '@common/decorators/user.decorator';
 import { Either } from '@common/generics/either';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { ConfigService } from '@nestjs/config';
 import { AddPaymentMethodService } from './services/add-payment-method.service';
 import { CreateSessionService } from './services/create-session.service';
-import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Stripe')
 @Controller('stripe')
@@ -48,14 +49,14 @@ export class StripeController {
     description: 'Upload a new file to AWS',
     response: 'Bucket url',
   })
-  async webhook(@Req() request: Request) {
+  async webhook(@Req() request: RawBodyRequest<Request>) {
     const sig = request.headers['stripe-signature'];
 
     let event: Stripe.Event;
 
     try {
       event = this._stripe.webhooks.constructEvent(
-        JSON.stringify(request.body),
+        request.rawBody,
         sig,
         this.configService.get('stripe.endpoint_secret'),
       );
