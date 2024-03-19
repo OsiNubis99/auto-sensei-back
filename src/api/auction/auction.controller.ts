@@ -17,6 +17,7 @@ import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { UserD } from '@common/decorators/user.decorator';
+import PDFService from '@common/services/pdf.service';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { CreateBidDto } from './dto/create-bid.dto';
@@ -24,23 +25,24 @@ import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { UpdateBidDto } from './dto/update-bid.dto';
 import { ValorateAuctionDto } from './dto/valorate-auction.dto';
-import { AcceptAuctionService } from './services/accept.auction.service';
+import { AcceptAuctionService } from './services/accept-auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
+import { DropOffAuctionService } from './services/drop-off-auction.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
 import { RemoveAuctionRemindService } from './services/remove-auction-remind.service';
 import { UpdateAuctionService } from './services/update-auction.service';
 import { UpdateBidService } from './services/update-bid.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
-import PDFService from '@common/services/pdf.service';
 
 @ApiTags('Auction')
 @Controller('auction')
 export class AuctionController {
   constructor(
     private readonly acceptAuctionService: AcceptAuctionService,
+    private readonly dropOffAuctionService: DropOffAuctionService,
     private readonly addAuctionRemindService: AddAuctionRemindService,
     private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
@@ -225,7 +227,7 @@ export class AuctionController {
     roles: [UserTypeEnum.dealer],
   })
   dropOff(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
-    return this.auctionService.dropOff(user, { _id });
+    return this.dropOffAuctionService.execute({ user, filter: { _id } });
   }
 
   @Patch('/cancel/:_id')

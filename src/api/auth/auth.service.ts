@@ -118,8 +118,10 @@ export class AuthService {
 
     const payload: JWTPayloadI = { sub: user.id };
 
-    return this.jwtService.sign(payload, {
-      expiresIn: '1h',
+    return Either.makeRight({
+      access_token: this.jwtService.sign(payload, {
+        expiresIn: '1h',
+      }),
     });
   }
 

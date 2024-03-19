@@ -157,20 +157,6 @@ export class AuctionService {
     return Either.makeRight(await this.save(auction));
   }
 
-  async dropOff(user: UserDocument, filter: FilterQuery<Auction>) {
-    const auction = await this.auctionModel.findOne(filter).populate('owner');
-    if (!auction)
-      return Either.makeLeft(
-        new HttpException('Bad id', HttpStatus.BAD_REQUEST),
-      );
-    if (!auction.bids[0]?.participant._id.equals(user._id))
-      return Either.makeLeft(
-        new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
-      );
-    auction.status = AuctionStatusEnum.DROP_OFF;
-    return Either.makeRight(await this.save(auction));
-  }
-
   async remove(user: UserDocument, filter: FilterQuery<Auction>) {
     const auction = await this.auctionModel.findOne(filter).populate('owner');
     if (!auction)
