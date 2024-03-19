@@ -20,9 +20,6 @@ type P = UpdateUserDto & {
 
 type R = UserDocument;
 
-const regex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
 @Injectable()
 export class UpdateUserService implements AppServiceI<P, R, HttpException> {
   constructor(
@@ -51,10 +48,6 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       );
 
     if (password) {
-      if (!regex.test(password))
-        return Either.makeLeft(
-          new HttpException('Pasword should be valid', HttpStatus.BAD_REQUEST),
-        );
       user.password = await bcrypt.hash(password, 10);
     }
 

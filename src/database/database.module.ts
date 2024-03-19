@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { Auction, AuctionSchema } from './schemas/auction.schema';
 import { Chat, ChatSchema } from './schemas/chat.schema';
+import { EmailCode, EmailCodeSchema } from './schemas/email-code.schema';
 import { Faq, FaqSchema } from './schemas/faq.schema';
 import {
   PaymentMethod,
@@ -24,6 +25,9 @@ import { User, UserSchema } from './schemas/user.schema';
     }),
     MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
     MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
+    MongooseModule.forFeature([
+      { name: EmailCode.name, schema: EmailCodeSchema },
+    ]),
     MongooseModule.forFeature([{ name: Faq.name, schema: FaqSchema }]),
     MongooseModule.forFeature([
       { name: PaymentMethod.name, schema: PaymentMethodSchema },

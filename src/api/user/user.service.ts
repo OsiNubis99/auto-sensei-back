@@ -7,7 +7,6 @@ import { Either } from '@common/generics/either';
 import { StatusEnum } from '@common/enums/status.enum';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
-String;
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -30,7 +29,9 @@ export class UserService {
         };
         break;
     }
-    return Either.makeRight(await this.userModel.find(filter));
+    return Either.makeRight(
+      await this.userModel.find(filter).sort({ createdAt: 'desc' }),
+    );
   }
 
   async findDealers(user: UserDocument) {
@@ -51,7 +52,9 @@ export class UserService {
         };
         break;
     }
-    return Either.makeRight(await this.userModel.find(filter));
+    return Either.makeRight(
+      await this.userModel.find(filter).sort({ createdAt: 'desc' }),
+    );
   }
 
   async findOne(filter: FilterQuery<User>) {

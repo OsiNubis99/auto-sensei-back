@@ -16,9 +16,6 @@ type P = RegisterUserDto;
 
 type R = UserDocument;
 
-const regex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
 @Injectable()
 export class RegisterUserService implements AppServiceI<P, R, HttpException> {
   constructor(
@@ -41,10 +38,6 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
       );
     user.email = param.email;
 
-    if (!regex.test(param.password))
-      return Either.makeLeft(
-        new HttpException('Pasword should be valid', HttpStatus.BAD_REQUEST),
-      );
     user.password = await bcrypt.hash(param.password, 10);
 
     if (isAdmin) {

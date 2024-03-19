@@ -70,6 +70,14 @@ export class CreateBidService implements AppServiceI<P, R, HttpException> {
         new HttpException('Amount is insufficient', HttpStatus.BAD_REQUEST),
       );
     }
+    if (auction.bids[0]?.biddingLimit === param.amount) {
+      return Either.makeLeft(
+        new HttpException(
+          'Amount is equal as other user auto-bid. Please try higher',
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    }
 
     const lastBid = auction.bids[0];
     auction.bids.unshift({

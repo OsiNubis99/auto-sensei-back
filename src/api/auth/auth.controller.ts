@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -50,6 +51,15 @@ export class AuthController {
   })
   async emailValidation(@Body() data: EmailDto) {
     return this.authService.emailValidation(data.email);
+  }
+
+  @Post('validate-email/:code')
+  @BasicRequest({
+    description: 'Send EmailValidation email if user exist',
+    response: 'OK',
+  })
+  async validateEmailCode(@Param('code') code: string, @Body() data: EmailDto) {
+    return this.authService.validateEmailCode(data.email, code);
   }
 
   @Post('forgotten-password')
