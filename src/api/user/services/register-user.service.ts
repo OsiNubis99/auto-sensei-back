@@ -32,7 +32,12 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
 
     const user = new this.userModel();
 
-    if (await this.userModel.findOne({ email: param.email }))
+    if (
+      await this.userModel.findOne({
+        email: param.email,
+        status: { $ne: StatusEnum.notvalidated },
+      })
+    )
       return Either.makeLeft(
         new HttpException('Email already used', HttpStatus.BAD_REQUEST),
       );
