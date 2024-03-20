@@ -30,17 +30,18 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
         new HttpException('User only can be 1 type', HttpStatus.BAD_REQUEST),
       );
 
-    const user = new this.userModel();
+    let user = await this.userModel.findOne({
+      email: param.email,
+    });
 
-    if (
-      await this.userModel.findOne({
-        email: param.email,
-        status: { $ne: StatusEnum.notvalidated },
-      })
-    )
+    if (!user) {
+      user = new this.userModel();
+    } else if (user.status != StatusEnum.notvalidated) {
       return Either.makeLeft(
         new HttpException('Email already used', HttpStatus.BAD_REQUEST),
       );
+    }
+
     user.email = param.email;
 
     user.password = await bcrypt.hash(param.password, 10);
