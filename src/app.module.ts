@@ -9,6 +9,7 @@ import { SocketModule } from './socket/socket.module';
 
 import { AWSConfig } from './config/aws-config';
 import { DatabaseConfig } from './config/database-config';
+import { DecodedVinConfig } from './config/decoded-vin-config';
 import { JWTConfig } from './config/jwt-config';
 import { MailerConfig } from './config/mailer-config';
 import { ServerConfig } from './config/server-config';
@@ -26,6 +27,7 @@ import { VinApiConfig } from './config/vin-api-config';
       load: [
         AWSConfig,
         DatabaseConfig,
+        DecodedVinConfig,
         JWTConfig,
         MailerConfig,
         ServerConfig,

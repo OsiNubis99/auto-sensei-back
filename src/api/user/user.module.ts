@@ -8,6 +8,7 @@ import { GetUserStatsService } from './services/get-user-stats.service';
 import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
 import { SendValidationCodeService } from './services/send-validation-code.service';
+import { SetStatuService } from './services/set-status.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -30,6 +31,7 @@ import { UserService } from './user.service';
     GetUserValorationsService,
     RegisterUserService,
     SendValidationCodeService,
+    SetStatuService,
     UpdateUserService,
     UserService,
   ],

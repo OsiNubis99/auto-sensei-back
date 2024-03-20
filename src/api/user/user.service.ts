@@ -61,10 +61,6 @@ export class UserService {
     return Either.makeRight(await this.userModel.findOne(filter));
   }
 
-  async setStatus(filter: FilterQuery<User>, status: StatusEnum) {
-    return Either.makeRight(await this.userModel.updateOne(filter, { status }));
-  }
-
   async delete(filter: FilterQuery<User>) {
     filter.type = { $ne: 0 };
     return Either.makeRight(

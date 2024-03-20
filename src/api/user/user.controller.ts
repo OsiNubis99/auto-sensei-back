@@ -25,6 +25,7 @@ import { GetUserStatsService } from './services/get-user-stats.service';
 import { GetUserValorationsService } from './services/get-user-valorations.service';
 import { RegisterUserService } from './services/register-user.service';
 import { SendValidationCodeService } from './services/send-validation-code.service';
+import { SetStatuService } from './services/set-status.service';
 import { UpdateUserService } from './services/update-user.service';
 import { UserService } from './user.service';
 
@@ -36,6 +37,7 @@ export class UserController {
     private getValorationsService: GetUserValorationsService,
     private registerUserService: RegisterUserService,
     private sendValidationCodeService: SendValidationCodeService,
+    private setStatuService: SetStatuService,
     private updateUserService: UpdateUserService,
     private userService: UserService,
   ) {}
@@ -121,7 +123,10 @@ export class UserController {
     roles: [UserTypeEnum.admin],
   })
   activateUser(@Param() { _id }: IdDto) {
-    return this.userService.setStatus({ _id }, StatusEnum.active);
+    return this.setStatuService.execute({
+      filter: { _id },
+      status: StatusEnum.active,
+    });
   }
 
   @Patch('/inactivate/:_id')
@@ -131,7 +136,10 @@ export class UserController {
     roles: [UserTypeEnum.admin],
   })
   inactivateUser(@Param() { _id }: IdDto) {
-    return this.userService.setStatus({ _id }, StatusEnum.inactive);
+    return this.setStatuService.execute({
+      filter: { _id },
+      status: StatusEnum.inactive,
+    });
   }
 
   @Delete('/:_id')

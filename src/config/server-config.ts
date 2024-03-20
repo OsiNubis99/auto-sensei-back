@@ -14,6 +14,10 @@ export const ServerConfig = registerAs('server', (): ServerConfigI => {
       value: process.env.SERVER_PORT,
       joi: Joi.number().required(),
     },
+    backUrl: {
+      value: process.env.BACK_URL,
+      joi: Joi.string().required(),
+    },
     frontUrl: {
       value: process.env.FRONT_URL,
       joi: Joi.string().required(),

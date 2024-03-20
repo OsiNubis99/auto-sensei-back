@@ -9,14 +9,16 @@ import PDFService from './services/pdf.service';
 import StripeService from './services/stripe.service';
 import TwilioService from './services/twilio.service';
 import VinApiService from './services/vin-api.service';
+import VinDecoderService from './services/vin-decoder.service';
 
 const commonServices = [
   AWSService,
-  StripeService,
   TwilioService,
   PDFService,
   SocketGateway,
+  StripeService,
   VinApiService,
+  VinDecoderService,
 ];
 
 @Module({
