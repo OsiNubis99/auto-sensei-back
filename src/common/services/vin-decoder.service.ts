@@ -23,14 +23,13 @@ export default class VinDecoderService {
       const noonce = 'asd' + date;
 
       const Authorization =
-        'Atmosphere ' +
-        'realm="' +
+        "Atmosphere realm='" +
         this.host +
-        '",chromedata_app_id="' +
+        "',chromedata_app_id='" +
         this.appId +
-        '",chromedata_noonce="' +
+        "',chromedata_noonce='" +
         noonce +
-        '",chromedata_secret_digest="' +
+        "',chromedata_secret_digest='" +
         Buffer.from(
           crypto
             .createHash('sha256')
@@ -38,9 +37,9 @@ export default class VinDecoderService {
             .digest('hex'),
           'base64',
         ) +
-        '",chromedata_signature_method="SHA1",chromedata_timestamp="' +
+        "',chromedata_signature_method='SHA1',chromedata_timestamp='" +
         date +
-        '"';
+        "'";
       return await axios
         .get(this.url + vin, {
           headers: { Authorization },
