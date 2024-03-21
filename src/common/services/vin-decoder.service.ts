@@ -31,11 +31,11 @@ export default class VinDecoderService {
       "',chromedata_secret_digest='" +
       Buffer.from(
         crypto
-          .createHash('sha256')
+          .createHash('sha1')
           .update(noonce + date + this.secret)
           .digest('hex'),
       ).toString('base64') +
-      "',chromedata_signature_method='SHA1',chromedata_timestamp='" +
+      "',chromedata_signature_method='SHA1',chromedata_version='1.0',chromedata_timestamp='" +
       date +
       "'";
     try {
