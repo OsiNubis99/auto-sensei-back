@@ -18,34 +18,34 @@ export default class VinDecoderService {
   }
 
   async getCarData(vin: string) {
-    try {
-      const date = Date.now();
-      const noonce = 'asd' + date;
+    const date = Date.now();
+    const noonce = 'asd' + date;
 
-      const Authorization =
-        "Atmosphere realm='" +
-        this.host +
-        "',chromedata_app_id='" +
-        this.appId +
-        "',chromedata_noonce='" +
-        noonce +
-        "',chromedata_secret_digest='" +
-        Buffer.from(
-          crypto
-            .createHash('sha256')
-            .update(noonce + date + this.secret)
-            .digest('hex'),
-          'base64',
-        ) +
-        "',chromedata_signature_method='SHA1',chromedata_timestamp='" +
-        date +
-        "'";
-      return await axios
+    const Authorization =
+      "Atmosphere realm='" +
+      this.host +
+      "',chromedata_app_id='" +
+      this.appId +
+      "',chromedata_noonce='" +
+      noonce +
+      "',chromedata_secret_digest='" +
+      Buffer.from(
+        crypto
+          .createHash('sha256')
+          .update(noonce + date + this.secret)
+          .digest('hex'),
+        'base64',
+      ) +
+      "',chromedata_signature_method='SHA1',chromedata_timestamp='" +
+      date +
+      "'";
+    try {
+      const resp = await axios
         .get(this.url + vin, {
           headers: { Authorization },
         })
         .catch((err) => err);
-
+      return { Authorization, resp };
       // if (data.errorType) return Either.makeLeft(new Error(data.message));
 
       // return Either.makeRight(<VehicleDetailsI>{
@@ -62,7 +62,7 @@ export default class VinDecoderService {
       //   doors: data.numOfDoors,
       // });
     } catch (err) {
-      return err;
+      return { Authorization, err };
     }
   }
 }
