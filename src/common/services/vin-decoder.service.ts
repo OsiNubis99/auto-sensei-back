@@ -34,8 +34,7 @@ export default class VinDecoderService {
           .createHash('sha256')
           .update(noonce + date + this.secret)
           .digest('hex'),
-        'base64',
-      ) +
+      ).toString('base64') +
       "',chromedata_signature_method='SHA1',chromedata_timestamp='" +
       date +
       "'";
