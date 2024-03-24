@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateMessageDto {
   @IsString()
@@ -19,4 +19,14 @@ export class CreateMessageDto {
     required: true,
   })
   message: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    description: 'Content',
+    example: true,
+    required: true,
+  })
+  url?: string;
 }

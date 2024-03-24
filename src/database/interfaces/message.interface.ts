@@ -13,4 +13,7 @@ export class MessageI {
 
   @Prop()
   readAt?: Date;
+
+  @Prop()
+  url?: string;
 }

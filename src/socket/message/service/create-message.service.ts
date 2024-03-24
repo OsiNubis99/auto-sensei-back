@@ -71,6 +71,7 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
 
     chat.messages.unshift({
       message: param.message,
+      url: param.url,
       user,
     });
 

@@ -32,6 +32,7 @@ export class SetStatuService implements AppServiceI<P, R, HttpException> {
         new HttpException('User undefined', HttpStatus.BAD_REQUEST),
       );
     }
+    user.status = status;
     if (status == StatusEnum.active) {
       await this.mailerService.sendMail({
         to: user.email,
