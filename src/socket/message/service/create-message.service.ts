@@ -78,7 +78,7 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
     };
 
     if (param.file) {
-      Logger.log({ file: param.file['data'] });
+      Logger.log({ file: param.file });
 
       Logger.log({ file: Buffer.from(param.file['data']) });
 
