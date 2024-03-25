@@ -71,6 +71,8 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
       user = auction.owner;
     }
 
+    Logger.log({ file: param.file });
+
     const url = await this.awsService.upload(
       `chats/${chat.id}`,
       Date.now().toString() + param.file.originalname,
