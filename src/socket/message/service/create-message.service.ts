@@ -73,7 +73,7 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
 
     const url = await this.awsService.upload(
       `chats/${chat.id}`,
-      Date.now() + param.file.originalname,
+      Date.now().toString() + param.file.originalname,
       param.file.buffer,
     );
 

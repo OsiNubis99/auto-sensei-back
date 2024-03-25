@@ -23,7 +23,7 @@ export default class AWSService {
       const resp = await this._s3.send(
         new PutObjectCommand({
           ACL: 'public-read',
-          ContentType: MineTypes[name.split('.').pop()],
+          ContentType: MineTypes[name.split('.').pop()] || undefined,
           Bucket: this._bucket,
           Key: key,
           Body: buffer,
