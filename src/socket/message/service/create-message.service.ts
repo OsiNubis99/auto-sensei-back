@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { WsException } from '@nestjs/websockets';
 import { isValidObjectId, Model } from 'mongoose';
@@ -72,10 +72,12 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
     }
 
     const url = await this.awsService.upload(
-      `chats/${chat.id}/`,
+      `chats/${chat.id}`,
       Date.now() + param.file.originalname,
       param.file.buffer,
     );
+
+    Logger.log({ url });
 
     chat.messages.unshift({
       message: param.message,
