@@ -10,6 +10,7 @@ import { Chat, ChatDocument } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
 
 import { CreateMessageDto } from '../dto/create-message.dto';
+import AWSService from '@common/services/aws.service';
 
 interface P extends CreateMessageDto {
   userId: string;
@@ -23,6 +24,7 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
     @InjectModel(Auction.name) private auctionModel: Model<Auction>,
     @InjectModel(Chat.name) private chatModel: Model<Chat>,
     @InjectModel(User.name) private userModel: Model<User>,
+    private awsService: AWSService,
   ) {}
 
   async execute({ userId, ...param }: P) {
@@ -69,9 +71,15 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
       user = auction.owner;
     }
 
+    const url = await this.awsService.upload(
+      `chats/${chat.id}/`,
+      Date.now() + param.file.originalname,
+      param.file.buffer,
+    );
+
     chat.messages.unshift({
       message: param.message,
-      url: param.url,
+      url: url.isRight() ? url.getRight() : null,
       user,
     });
 

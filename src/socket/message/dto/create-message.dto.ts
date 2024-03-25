@@ -13,20 +13,18 @@ export class CreateMessageDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    type: String,
     description: 'Content',
     example: true,
     required: true,
   })
-  message: string;
+  message?: string;
 
   @IsString()
   @IsOptional()
   @ApiProperty({
-    type: String,
     description: 'Content',
     example: true,
     required: true,
   })
-  url?: string;
+  file?: Express.Multer.File;
 }
