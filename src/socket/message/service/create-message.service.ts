@@ -5,12 +5,13 @@ import { isValidObjectId, Model } from 'mongoose';
 
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
+import AWSService from '@common/services/aws.service';
+import { MessageI } from '@database/interfaces/message.interface';
 import { Auction } from '@database/schemas/auction.schema';
 import { Chat, ChatDocument } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
 
 import { CreateMessageDto } from '../dto/create-message.dto';
-import AWSService from '@common/services/aws.service';
 
 interface P extends CreateMessageDto {
   userId: string;
@@ -71,21 +72,27 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
       user = auction.owner;
     }
 
-    Logger.log({ file: Buffer.from(param.file.data) });
-
-    const url = await this.awsService.upload(
-      `chats/${chat.id}`,
-      Date.now().toString() + '.pdf',
-      Buffer.from(param.file.data),
-    );
-
-    Logger.log({ url });
-
-    chat.messages.unshift({
+    const message: MessageI = {
       message: param.message,
-      url: url.isRight() ? url.getRight() : null,
       user,
-    });
+    };
+
+    if (param.file) {
+      Logger.log({ file: param.file.data });
+
+      Logger.log({ file: Buffer.from(param.file.data) });
+
+      const url = await this.awsService.upload(
+        `chats/${chat.id}`,
+        Date.now().toString() + '.pdf',
+        Buffer.from(param.file.data),
+      );
+
+      Logger.log({ url });
+      message.url = url?.isRight() ? url.getRight() : undefined;
+    }
+
+    chat.messages.unshift(message);
 
     return Either.makeRight(await chat.save());
   }
