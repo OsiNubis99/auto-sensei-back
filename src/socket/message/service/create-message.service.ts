@@ -78,14 +78,14 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
     };
 
     if (param.file) {
-      Logger.log({ file: param.file.data });
+      Logger.log({ file: param.file['data'] });
 
-      Logger.log({ file: Buffer.from(param.file.data) });
+      Logger.log({ file: Buffer.from(param.file['data']) });
 
       const url = await this.awsService.upload(
         `chats/${chat.id}`,
         Date.now().toString() + '.pdf',
-        Buffer.from(param.file.data),
+        Buffer.from(param.file['data']),
       );
 
       Logger.log({ url });

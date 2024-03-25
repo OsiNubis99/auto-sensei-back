@@ -26,5 +26,5 @@ export class CreateMessageDto {
     example: true,
     required: true,
   })
-  file?: { type: string; data: ArrayBuffer };
+  file?: Express.Multer.File;
 }
