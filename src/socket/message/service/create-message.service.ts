@@ -1,11 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { WsException } from '@nestjs/websockets';
 import { isValidObjectId, Model } from 'mongoose';
 
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
-import AWSService from '@common/services/aws.service';
 import { MessageI } from '@database/interfaces/message.interface';
 import { Auction } from '@database/schemas/auction.schema';
 import { Chat, ChatDocument } from '@database/schemas/chat.schema';
@@ -25,7 +24,6 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
     @InjectModel(Auction.name) private auctionModel: Model<Auction>,
     @InjectModel(Chat.name) private chatModel: Model<Chat>,
     @InjectModel(User.name) private userModel: Model<User>,
-    private awsService: AWSService,
   ) {}
 
   async execute({ userId, ...param }: P) {
@@ -74,23 +72,9 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
 
     const message: MessageI = {
       message: param.message,
+      url: param.url,
       user,
     };
-
-    if (param.file) {
-      Logger.log({ file: param.file });
-
-      Logger.log({ file: Buffer.from(param.file['data']) });
-
-      const url = await this.awsService.upload(
-        `chats/${chat.id}`,
-        Date.now().toString() + '.pdf',
-        Buffer.from(param.file['data']),
-      );
-
-      Logger.log({ url });
-      message.url = url?.isRight() ? url.getRight() : undefined;
-    }
 
     chat.messages.unshift(message);
 

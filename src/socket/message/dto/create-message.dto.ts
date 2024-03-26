@@ -22,9 +22,9 @@ export class CreateMessageDto {
   @IsString()
   @IsOptional()
   @ApiProperty({
-    description: 'Content',
+    description: 'Url',
     example: true,
     required: true,
   })
-  file?: Express.Multer.File;
+  url?: string;
 }
