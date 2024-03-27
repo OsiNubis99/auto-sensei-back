@@ -1,9 +1,9 @@
 <pdfml page-margins="25 140 24 30" page-size="LETTER">
    <head>
        <styles>
-           <npStyle font-size="50" bold="true"></npStyle>
-           <hdStyle font-size="14" color="red"></hdStyle>
-           <hpStyle font-size="14" color="red"></hpStyle>
+           <hdcontainer padding="50"></hdcontainer>
+           <hdcontend width="100%"  display="flex" justify-content="space-between" align-items="center" ></hdcontend>
+           <hdcontend_item display="flex" flex-direction="column" gap="5px" justify-content = "flex-start" align-items = "start"></hdcontend_item>
        </styles>
        <header>AutoSensei Contract</header>
        <footer>
@@ -11,10 +11,9 @@
    </head>
 
    <body>
-    <div style="padding: 100px;">
-        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-            <div
-                style="display: flex; flex-direction: column; gap: 5px; justify-content: flex-start; align-items: start;">
+    <div style="hdcontainer">
+        <div style="hdcontend" >
+            <div style="hdcontend_item">
                 <p style="hdStyle"><%= car_name %> (<%= dealer_company_name %>)</p>
                 <p><%= address_line_1 %></p>
                 <p><%= address_line_2 %></p>
