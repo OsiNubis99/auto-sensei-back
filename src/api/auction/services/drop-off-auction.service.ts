@@ -41,7 +41,7 @@ export class DropOffAuctionService implements AppServiceI<P, R, HttpException> {
       );
     if (auction.status !== AuctionStatusEnum.DROP_OFF) {
       const paymentIntent = await this.stripeService.makePayment({
-        amount: this.taxAmount,
+        amount: auction.bids[0].amount + this.taxAmount,
         customer: auction.bids[0].participant.customerId,
         payment_method: auction.bids[0].paymentMethod.stripePaymentId,
         receipt_email: auction.bids[0].participant.email,

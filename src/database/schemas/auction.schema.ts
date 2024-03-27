@@ -47,6 +47,9 @@ export class Auction {
   buyout: number;
 
   @Prop()
+  contract: string;
+
+  @Prop()
   buyNew: BuyNewI;
 
   @Prop()

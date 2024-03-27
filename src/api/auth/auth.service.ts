@@ -1,11 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -39,7 +33,7 @@ export class AuthService {
     if (user) {
       if (user.status === StatusEnum.notvalidated)
         throw new HttpException(
-          { statusCode: 20001, message: 'User not validated' },
+          { statusCode: 20001, message: 'Email do not exist' },
           HttpStatus.UNAUTHORIZED,
         );
       if (user.status === StatusEnum.unaproved)
@@ -49,7 +43,10 @@ export class AuthService {
         );
       if (await bcrypt.compare(password, user.password)) return user;
     }
-    throw new UnauthorizedException();
+    throw new HttpException(
+      { statusCode: 20001, message: 'Email do not exist' },
+      HttpStatus.UNAUTHORIZED,
+    );
   }
 
   async login(user: UserDocument) {
