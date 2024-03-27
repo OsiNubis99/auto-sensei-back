@@ -42,14 +42,17 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       );
     }
 
+    const amount = auction.bids[0]?.amount || 0;
+
     const doc = await this.pdfService.generatePDF({
       car_id: auction.id,
       car_name: `${auction.vehicleDetails.model} ${auction.vehicleDetails.make} ${auction.vehicleDetails.year}`,
-      car_price: auction.bids[0].amount.toString(),
+      car_price: amount.toString(),
       car_serial: auction.vin,
       tax: this.tax.toString(),
-      total_price: (auction.bids[0].amount + this.tax).toString(),
-      dealer_company_name: 'name?',
+      total_price: (amount + this.tax).toString(),
+      dealer_company_name:
+        auction.bids[0]?.participant.dealer?.name || 'Unknown',
       address_line_1: '',
       address_line_2: '',
     });
