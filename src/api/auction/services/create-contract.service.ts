@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -51,11 +51,14 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       car_serial: auction.vin,
       tax: this.tax.toString(),
       total_price: (amount + this.tax).toString(),
-      dealer_company_name:
-        auction.bids[0]?.participant.dealer?.name || 'Unknown',
+      dealer_company_name: auction.bids[0]?.participant?.dealer?.name || 'name',
       address_line_1: '',
       address_line_2: '',
+      dealer_phone: '',
+      invoice_id: '',
     });
+
+    Logger.log(doc);
 
     const url = await this.awsService.upload(
       'auction/contract',

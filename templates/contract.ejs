@@ -15,20 +15,19 @@
         <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
             <div
                 style="display: flex; flex-direction: column; gap: 5px; justify-content: flex-start; align-items: start;">
-                <h1 style="font-size: x-large; font-weight: 500;"><%= car_name %> (<%= dealer_company_name %>)</h1>
+                <p style="hdStyle"><%= car_name %> (<%= dealer_company_name %>)</p>
                 <p><%= address_line_1 %></p>
                 <p><%= address_line_2 %></p>
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <p>Phone: (416) 259-7128</p>
-                        <p>Fax: (416) 259-2215</p>
+                        <p>Phone: <%= dealer_phone %></p>
                     </div>
 
                 </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 5px;">
                 <p style="font-size: x-large; font-weight: 500;">Quote</p>
-                <p>Wholesale Invoice #: <span style="letter-spacing: -3px;">________________________</span> </p>
+                <p>Wholesale Invoice #: <%= invoice_id %> </p>
             </div>
         </div>
         <div>
