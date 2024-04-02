@@ -1,7 +1,9 @@
+import { Either } from '@common/generics/either';
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import * as crypto from 'crypto';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export default class VinDecoderService {
@@ -18,50 +20,52 @@ export default class VinDecoderService {
   }
 
   async getCarData(vin: string) {
-    const date = Date.now();
-    const noonce = 'asd' + date;
+    const date = Date.now().toString();
+    const nonce = 'asd' + date;
+    const secretDigestUnencrypted = nonce + date + this.secret;
+    const secretDigest = CryptoJS.SHA1(secretDigestUnencrypted).toString(
+      CryptoJS.enc.Base64,
+    );
 
     const Authorization =
-      "Atmosphere realm='" +
+      'Atmosphere realm="' +
       this.host +
-      "',chromedata_app_id='" +
+      '",chromedata_app_id="' +
       this.appId +
-      "',chromedata_noonce='" +
-      noonce +
-      "',chromedata_secret_digest='" +
-      Buffer.from(
-        crypto
-          .createHash('sha1')
-          .update(noonce + date + this.secret)
-          .digest('hex'),
-      ).toString('base64') +
-      "',chromedata_signature_method='SHA1',chromedata_version='1.0',chromedata_timestamp='" +
+      '",chromedata_nonce="' +
+      nonce +
+      '",chromedata_secret_digest="' +
+      secretDigest +
+      '",chromedata_digest_method="SHA1",chromedata_version="1.0",chromedata_timestamp="' +
       date +
-      "'";
+      '"';
+
     try {
-      const resp = await axios
+      const { data } = await axios
         .get(this.url + vin, {
           headers: { Authorization },
         })
         .catch((err) => err);
-      return { Authorization, resp };
-      // if (data.errorType) return Either.makeLeft(new Error(data.message));
+      if (!data || data.error) return Either.makeLeft(new Error('Api error'));
 
-      // return Either.makeRight(<VehicleDetailsI>{
-      //   vin,
-      //   year: data.years?.shift()?.year,
-      //   basePrice: 100,
-      //   suggestedPrice: data.price?.baseMsrp,
-      //   make: data.make?.name,
-      //   model: data.model?.name,
-      //   trim: data.years?.shift()?.styles?.shift()?.trim,
-      //   bodyType: data.categories?.primaryBodyType,
-      //   cylinder: data.engine?.cylinder,
-      //   transmission: data.transmission?.name,
-      //   doors: data.numOfDoors,
-      // });
+      const result = data.result || {};
+
+      return Either.makeRight(<VehicleDetailsI>{
+        vin,
+        year: result.year,
+        basePrice: 100,
+        make: result.make,
+        model: result.model,
+        bodyType: result.vehicles?.shift()?.bodyType,
+        doors: result.vehicles?.shift()?.doors,
+        transmission: result.vehicles?.shift()?.driveType,
+        trim: result.vehicles?.shift()?.trim,
+
+        suggestedPrice: data.price?.baseMsrp,
+        cylinder: data.engine?.cylinder,
+      });
     } catch (err) {
-      return { Authorization, err };
+      return Either.makeLeft(new Error('Vin is invalid'));
     }
   }
 }

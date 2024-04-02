@@ -4,6 +4,7 @@ import { HydratedDocument, Schema as mongooseSchema } from 'mongoose';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 import { StatusEnum } from '@common/enums/status.enum';
+import { AddressI } from '@database/interfaces/address.interface';
 import { DealerI } from '@database/interfaces/dealer.interface';
 import { SellerI } from '@database/interfaces/seller.interface';
 
@@ -39,6 +40,9 @@ export class User {
 
   @Prop()
   seller: SellerI;
+
+  @Prop({ type: SchemaFactory.createForClass(AddressI) })
+  address: AddressI;
 
   @Prop({ type: [mongooseSchema.Types.ObjectId], ref: PaymentMethod.name })
   paymentMethods: [PaymentMethodDocument];

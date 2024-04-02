@@ -6,6 +6,7 @@ import { LoginDto } from '@auth/dto/login.dto';
 
 import { DealerDto } from './dealer.dto';
 import { SellerDto } from './seller.dto';
+import { AddressI } from '@database/interfaces/address.interface';
 
 export class RegisterUserDto extends LoginDto {
   @IsOptional()
@@ -28,4 +29,13 @@ export class RegisterUserDto extends LoginDto {
     required: false,
   })
   dealer?: DealerDto;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => AddressI)
+  @ApiProperty({
+    description: 'Seller data',
+    required: false,
+  })
+  address?: AddressI;
 }

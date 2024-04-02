@@ -43,6 +43,7 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
     }
 
     user.email = param.email;
+    user.address = param.address;
 
     user.password = await bcrypt.hash(param.password, 10);
 
