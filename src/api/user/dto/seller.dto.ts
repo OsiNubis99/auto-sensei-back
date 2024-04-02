@@ -32,14 +32,6 @@ export class SellerDto extends PartialType(PhoneDto) implements SellerI {
   @IsString()
   @IsOptional()
   @ApiProperty({
-    description: 'Seller address',
-    example: 'url',
-  })
-  address: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
     description: 'Seller driver license',
     example: 'url',
   })

@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
+import { AddressDto } from '@common/dtos/address.dto';
 import { LoginDto } from '@auth/dto/login.dto';
 
 import { DealerDto } from './dealer.dto';
 import { SellerDto } from './seller.dto';
-import { AddressI } from '@database/interfaces/address.interface';
 
 export class RegisterUserDto extends LoginDto {
   @IsOptional()
@@ -32,10 +32,10 @@ export class RegisterUserDto extends LoginDto {
 
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => AddressI)
+  @Type(() => AddressDto)
   @ApiProperty({
     description: 'Seller data',
     required: false,
   })
-  address?: AddressI;
+  address?: Partial<AddressDto>;
 }

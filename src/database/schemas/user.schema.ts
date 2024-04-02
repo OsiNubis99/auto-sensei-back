@@ -41,7 +41,7 @@ export class User {
   @Prop()
   seller: SellerI;
 
-  @Prop({ type: SchemaFactory.createForClass(AddressI) })
+  @Prop()
   address: AddressI;
 
   @Prop({ type: [mongooseSchema.Types.ObjectId], ref: PaymentMethod.name })
