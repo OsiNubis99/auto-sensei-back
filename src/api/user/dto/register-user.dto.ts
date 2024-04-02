@@ -37,5 +37,5 @@ export class RegisterUserDto extends LoginDto {
     description: 'Seller data',
     required: false,
   })
-  address?: Partial<AddressDto>;
+  address?: AddressDto;
 }
