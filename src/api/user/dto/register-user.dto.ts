@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
@@ -32,7 +32,7 @@ export class RegisterUserDto extends LoginDto {
 
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => AddressDto)
+  @Type(() => PartialType(AddressDto))
   @ApiProperty({
     description: 'Seller data',
     required: false,
