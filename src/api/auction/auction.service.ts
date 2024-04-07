@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { FilterQuery, Model } from 'mongoose';
@@ -23,10 +23,12 @@ export class AuctionService {
     private stripeService: StripeService,
   ) {}
 
-  setNextSerial(auction) {
-    return auction.setNext('serial', function (err, auct) {
-      if (err) Logger.log('Cannot increment the rank because ', err);
-      return auct;
+  async setNextSerial(auction) {
+    return new Promise<AuctionDocument>((resolve, reject) => {
+      auction.setNext('serial', function (err, auct: AuctionDocument) {
+        if (err) reject('Cannot increment the rank because ' + err);
+        resolve(auct);
+      });
     });
   }
 

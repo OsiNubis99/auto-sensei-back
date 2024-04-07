@@ -44,7 +44,9 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       );
     }
 
-    auction = this.auctionService.setNextSerial(auction);
+    if (!auction.serial) {
+      auction = await this.auctionService.setNextSerial(auction);
+    }
 
     const amount = auction.bids[0]?.amount || 0;
 
