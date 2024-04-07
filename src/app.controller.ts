@@ -7,16 +7,20 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import axios from 'axios';
 import { IsOptional } from 'class-validator';
+import { Request, Response } from 'express';
 import { generatePdf } from 'html-pdf-node';
 
+import { BasicRequest } from '@common/decorators/basic-request';
 import { ContactDto } from '@common/dtos/contact.dto';
 import { Either } from '@common/generics/either';
 import AWSService from '@common/services/aws.service';
 import PDFService from '@common/services/pdf.service';
-import { BasicRequest } from '@common/decorators/basic-request';
 
 class Test {
   @IsOptional()
@@ -57,6 +61,25 @@ export class AppController {
         new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
       );
     }
+  }
+
+  @Get('files/*')
+  get(@Req() req: Request, @Res() res: Response): void {
+    const url = `http://${process.env.AWS_BUCKET}/${req.url.slice(7)}`;
+    axios({
+      method: 'get',
+      url,
+      responseType: 'arraybuffer',
+    })
+      .then((resp) => {
+        res.send({
+          type: resp.headers['content-type'],
+          data: Buffer.from(resp.data, 'binary').toString('base64'),
+        });
+      })
+      .catch((err) => {
+        res.send(err);
+      });
   }
 
   @Post('/test')
