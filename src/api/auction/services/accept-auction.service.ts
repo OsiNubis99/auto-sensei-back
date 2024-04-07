@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
@@ -8,6 +8,7 @@ import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { MailerService } from '@nestjs-modules/mailer';
 import { AuctionService } from '../auction.service';
 
 type P = {
@@ -23,6 +24,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
     private auctionService: AuctionService,
+    private mailerService: MailerService,
   ) {}
 
   async execute({ user, filter }: P) {
@@ -35,8 +37,36 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
       return Either.makeLeft(
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
-    if (auction.bids.length > 0) {
-      auction.status = AuctionStatusEnum.BIDS_COMPLETED;
+    if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
+      const payment = await this.auctionService.makeTaxPayment(auction);
+      if (payment.isRight()) {
+        try {
+          // await this.mailerService.sendMail({
+          //   to: auction.owner.email,
+          //   subject: 'Your Auction Has Been Won!',
+          //   template: 'auction-won',
+          //   context: {
+          //     name:
+          //       user.seller?.firstName || user.dealer?.firstName || user.email,
+          //   },
+          // });
+          // await this.mailerService.sendMail({
+          //   to: auction.bids[0].participant.email,
+          //   subject: 'Your Auction Has Been Won!',
+          //   template: 'auction-won',
+          //   context: {
+          //     name:
+          //       user.seller?.firstName || user.dealer?.firstName || user.email,
+          //   },
+          // });
+        } catch (err) {
+          Logger.log(err);
+          return Either.makeLeft(
+            new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
+          );
+        }
+      }
+      auction.status = AuctionStatusEnum.COMPLETED;
       await this.auctionService.save(auction);
     }
     return Either.makeRight(auction);

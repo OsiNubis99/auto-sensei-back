@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { FilterQuery, Model } from 'mongoose';
@@ -6,6 +6,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { MessageReasonEnum } from '@common/enums/message-reason.enum';
 import { Either } from '@common/generics/either';
+import StripeService from '@common/services/stripe.service';
 import { timeToEnd, timeToStart } from '@common/tools/date.functions';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
@@ -13,11 +14,21 @@ import { SocketGateway } from 'src/socket/socket.gateway';
 
 @Injectable()
 export class AuctionService {
+  private taxAmount = 300;
+
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
     private socket: SocketGateway,
+    private stripeService: StripeService,
   ) {}
+
+  setNextSerial(auction) {
+    return auction.setNext('serial', function (err, auct) {
+      if (err) Logger.log('Cannot increment the rank because ', err);
+      return auct;
+    });
+  }
 
   calculateStatus(auction: AuctionDocument) {
     if (!auction) return auction;
@@ -61,6 +72,29 @@ export class AuctionService {
       message: auction,
     });
     return auction.save();
+  }
+
+  async makePayment(auction: AuctionDocument) {
+    const paymentIntent = await this.stripeService.makePayment({
+      amount: auction.bids[0].amount,
+      customer: auction.bids[0].participant.customerId,
+      payment_method: auction.bids[0].paymentMethod.stripePaymentId,
+      receipt_email: auction.bids[0].participant.email,
+    });
+    auction.paymentFilled = paymentIntent.isRight();
+    await this.save(auction);
+  }
+
+  async makeTaxPayment(auction: AuctionDocument) {
+    const paymentIntent = await this.stripeService.makePayment({
+      amount: this.taxAmount,
+      customer: auction.bids[0].participant.customerId,
+      payment_method: auction.bids[0].paymentMethod.stripePaymentId,
+      receipt_email: auction.bids[0].participant.email,
+    });
+    auction.paymentFilled = paymentIntent.isRight();
+    await this.save(auction);
+    return paymentIntent;
   }
 
   async notifySubscribedUsers(auction: AuctionDocument) {

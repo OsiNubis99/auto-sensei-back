@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -11,6 +11,7 @@ import { IdDto } from '@common/dtos/id.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import AWSService from '@common/services/aws.service';
 import PDFService from '@common/services/pdf.service';
+import { AuctionService } from '../auction.service';
 
 type P = IdDto & { user: UserDocument };
 
@@ -22,12 +23,13 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
+    private auctionService: AuctionService,
     private pdfService: PDFService,
     private awsService: AWSService,
   ) {}
 
   async execute({ user, _id }: P) {
-    const auction = await this.auctionModel.findById(_id);
+    let auction = await this.auctionModel.findById(_id);
     if (!auction) {
       return Either.makeLeft(
         new HttpException('Id auction is invalid', HttpStatus.BAD_REQUEST),
@@ -41,6 +43,8 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
         ),
       );
     }
+
+    auction = this.auctionService.setNextSerial(auction);
 
     const amount = auction.bids[0]?.amount || 0;
 
@@ -57,8 +61,6 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       dealer_phone: '',
       invoice_id: '',
     });
-
-    Logger.log(doc);
 
     const url = await this.awsService.upload(
       'auction/contract',

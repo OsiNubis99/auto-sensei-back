@@ -1,6 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
+import * as AutoIncrementFactory from 'mongoose-sequence';
 
 import { Auction, AuctionSchema } from './schemas/auction.schema';
 import { Chat, ChatSchema } from './schemas/chat.schema';
@@ -23,7 +25,22 @@ import { User, UserSchema } from './schemas/user.schema';
         uri: configService.get<string>('database.uri'),
       }),
     }),
-    MongooseModule.forFeature([{ name: Auction.name, schema: AuctionSchema }]),
+    MongooseModule.forFeatureAsync([
+      {
+        name: Auction.name,
+        useFactory: async (connection: Connection) => {
+          const schema = AuctionSchema;
+          const AutoIncrement = AutoIncrementFactory(connection);
+          schema.plugin(AutoIncrement, {
+            id: 'serial',
+            inc_field: 'serial',
+            disable_hooks: true,
+          });
+          return schema;
+        },
+        inject: [getConnectionToken()],
+      },
+    ]),
     MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
     MongooseModule.forFeature([
       { name: EmailCode.name, schema: EmailCodeSchema },

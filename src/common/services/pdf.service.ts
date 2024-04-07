@@ -1,16 +1,16 @@
 import { CreateContractDto } from '@common/dtos/create-contract.dto';
 import { Injectable } from '@nestjs/common';
-import { join } from 'path';
-import { render } from 'pdfml';
+import { generatePdf } from 'html-pdf-node';
 
 @Injectable()
 export default class PDFService {
   constructor() {}
 
   async generatePDF(body: CreateContractDto) {
-    return render({
-      path: join(process.cwd(), 'templates', 'contract.ejs'),
-      data: { ...body },
-    });
+    const file = {
+      content: body.address_line_1,
+    };
+    const options = { format: 'A4' };
+    return await generatePdf(file, options);
   }
 }
