@@ -72,7 +72,7 @@ export class AppController {
       responseType: 'arraybuffer',
     })
       .then((resp) => {
-        res.send(resp);
+        res.send(Buffer.from(resp.data, 'binary').toString('base64'));
       })
       .catch((err) => {
         res.send(err);
