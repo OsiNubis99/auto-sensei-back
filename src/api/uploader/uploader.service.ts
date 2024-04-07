@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { UploaderDto } from './dto/uploader.dto';
 
@@ -10,6 +10,7 @@ export class UploaderService {
   constructor(private awsService: AWSService) {}
 
   async create(body: UploaderDto, file: Express.Multer.File) {
+    Logger.log(file);
     const ext = file.originalname.split('.').pop().toLocaleLowerCase();
     if (!MineTypes[ext]) {
       throw new HttpException(
