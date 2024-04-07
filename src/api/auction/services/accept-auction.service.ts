@@ -1,15 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
-import PDFService from '@common/services/pdf.service';
-import StripeService from '@common/services/stripe.service';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
+import { MailerService } from '@nestjs-modules/mailer';
 import { AuctionService } from '../auction.service';
 
 type P = {
@@ -21,14 +20,11 @@ type R = AuctionDocument;
 
 @Injectable()
 export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
-  private taxAmount = 250;
-
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
     private auctionService: AuctionService,
-    private pdfService: PDFService,
-    private stripeService: StripeService,
+    private mailerService: MailerService,
   ) {}
 
   async execute({ user, filter }: P) {
@@ -41,27 +37,37 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
       return Either.makeLeft(
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
-    if (auction.bids.length > 0) {
-      auction.status = AuctionStatusEnum.BIDS_COMPLETED;
-      await this.auctionService.save(auction);
-    }
     if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
-      const paymentIntent = await this.stripeService.makePayment({
-        amount: auction.bids[0].amount + this.taxAmount,
-        customer: auction.bids[0].participant.customerId,
-        payment_method: auction.bids[0].paymentMethod.stripePaymentId,
-        receipt_email: auction.bids[0].participant.email,
-      });
-      if (paymentIntent.isLeft()) {
-        auction.status = AuctionStatusEnum.REJECTED;
-        await this.auctionService.save(auction);
-        return Either.makeLeft(
-          new HttpException('Rejected payment method', HttpStatus.BAD_REQUEST),
-        );
+      const payment = await this.auctionService.makeTaxPayment(auction);
+      if (payment.isRight()) {
+        try {
+          // await this.mailerService.sendMail({
+          //   to: auction.owner.email,
+          //   subject: 'Your Auction Has Been Won!',
+          //   template: 'auction-won',
+          //   context: {
+          //     name:
+          //       user.seller?.firstName || user.dealer?.firstName || user.email,
+          //   },
+          // });
+          // await this.mailerService.sendMail({
+          //   to: auction.bids[0].participant.email,
+          //   subject: 'Your Auction Has Been Won!',
+          //   template: 'auction-won',
+          //   context: {
+          //     name:
+          //       user.seller?.firstName || user.dealer?.firstName || user.email,
+          //   },
+          // });
+        } catch (err) {
+          Logger.log(err);
+          return Either.makeLeft(
+            new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
+          );
+        }
       }
-      this.pdfService.generatePDF('hola');
       auction.status = AuctionStatusEnum.COMPLETED;
-      return Either.makeRight(await this.auctionService.save(auction));
+      await this.auctionService.save(auction);
     }
     return Either.makeRight(auction);
   }

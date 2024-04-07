@@ -25,7 +25,7 @@ export class AddPaymentMethodService
 
   async execute(paymentMethod: P) {
     const user = await this.userModel.findOne({
-      customerId: paymentMethod.customer,
+      customerId: paymentMethod.customer.toString(),
     });
     if (!user) {
       return Either.makeLeft(

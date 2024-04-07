@@ -20,6 +20,15 @@ export class Auction {
   status: AuctionStatusEnum;
 
   @Prop()
+  serial: number;
+
+  @Prop()
+  paymentFilled: boolean;
+
+  @Prop()
+  taxPaymentFilled: boolean;
+
+  @Prop()
   vin: string;
 
   @Prop()
@@ -45,6 +54,15 @@ export class Auction {
 
   @Prop()
   buyout: number;
+
+  @Prop()
+  contract: string;
+
+  @Prop()
+  contractSeallerSing: string;
+
+  @Prop()
+  contractDealerSing: string;
 
   @Prop()
   buyNew: BuyNewI;

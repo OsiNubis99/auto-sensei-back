@@ -5,7 +5,9 @@ export enum AuctionStatusEnum {
   'UPCOMING' = 'upcoming', //3.1
   'LIVE' = 'live', //4.1
   'BIDS_COMPLETED' = 'bids completed', //5
+  // Sing and pay tax
   'COMPLETED' = 'completed', //6.1
+  // Sing and pay full amount
   'DROP_OFF' = 'drop off', //7
   'REVIEWED' = 'reviewed', //8
 

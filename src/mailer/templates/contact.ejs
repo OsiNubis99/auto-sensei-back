@@ -2,18 +2,20 @@
   <%- include('./partials/header'); %>
   <div style="background-color: #f9f9f9; justify-content: center; align-items: center; gap:20px; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); padding: 40px 70px;">
     <h2 style="font-family: Whitney, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif; font-weight: 500; font-size: 20px; text-align: center; color: #4f545c; letter-spacing: 0.27px; ">
-      Your account with AutoSensei has been approved.
+      Website Message
     </h2>
-    <p style="text-align: center;">
-      You can now login
+    <p style="text-align: justify;">
+      Name: <%= locals.name %>
     </p>
-    <div style="text-align: center;">
-      <a
-        src="<%= locals.url %>"
-        style="background-color: #c1f861; border-radius: 8px; color: black; font-weight: 600; align-items: center; padding: 5px 40px;" >
-        Go to Autosensei
-      </a>
-    </div>
+    <p style="text-align: justify;">
+      Email: <%= locals.email %>
+    </p>
+    <p style="text-align: justify;">
+      Phone: <%= locals.phone %>
+    </p>
+    <p style="text-align: justify;">
+      Message: <%= locals.description %>
+    </p>
   </div>
   <%- include('./partials/footer'); %>
 </div>

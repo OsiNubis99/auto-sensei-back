@@ -29,6 +29,7 @@ import { AcceptAuctionService } from './services/accept-auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
+import { CreateContractService } from './services/create-contract.service';
 import { DropOffAuctionService } from './services/drop-off-auction.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
@@ -47,6 +48,7 @@ export class AuctionController {
     private readonly auctionService: AuctionService,
     private readonly createAuctionService: CreateAuctionService,
     private readonly createBidService: CreateBidService,
+    private readonly createContractService: CreateContractService,
     private readonly updateBidService: UpdateBidService,
     private readonly getAuctionService: GetAuctionService,
     private readonly getCurrentBidsAuctionsService: GetCurrentBidsAuctionsService,
@@ -56,11 +58,6 @@ export class AuctionController {
     private pdfService: PDFService,
   ) {}
 
-  @Get('/test')
-  async test() {
-    return this.pdfService.generatePDF('hi');
-  }
-
   @Get('/:_id')
   @BasicRequest({
     description: 'List auction by ID',
@@ -68,6 +65,15 @@ export class AuctionController {
   })
   findOne(@Param() { _id }: IdDto) {
     return this.auctionService.findOne({ _id });
+  }
+
+  @Get('contract/:_id')
+  @AuthRequest({
+    description: 'List auction by ID',
+    response: 'Auction Document',
+  })
+  getContract(@UserD() user: UserDocument, @Param() { _id }: IdDto) {
+    return this.createContractService.execute({ user, _id });
   }
 
   @Post('/')

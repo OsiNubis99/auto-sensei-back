@@ -8,6 +8,7 @@ import { AcceptAuctionService } from './services/accept-auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
+import { CreateContractService } from './services/create-contract.service';
 import { DropOffAuctionService } from './services/drop-off-auction.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
@@ -25,6 +26,7 @@ import { ValorateAuctionService } from './services/valorate-auction.service';
     AuctionService,
     CreateAuctionService,
     CreateBidService,
+    CreateContractService,
     DropOffAuctionService,
     GetAuctionService,
     GetCurrentBidsAuctionsService,

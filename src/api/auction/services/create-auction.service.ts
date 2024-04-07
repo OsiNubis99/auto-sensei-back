@@ -5,11 +5,11 @@ import { Model } from 'mongoose';
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
-import VinApiService from '@common/services/vin-api.service';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
 import { CreateAuctionDto } from '../dto/create-auction.dto';
+import VinDecoderService from '@common/services/vin-decoder.service';
 
 type P = CreateAuctionDto & {
   user: UserDocument;
@@ -22,7 +22,7 @@ export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
-    private vinApiService: VinApiService,
+    private vinApiService: VinDecoderService,
   ) {}
 
   async execute({ user, vin, ...param }: P) {

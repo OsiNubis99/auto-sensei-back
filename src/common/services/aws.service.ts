@@ -1,7 +1,6 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
-import { MineTypes } from '@common/enums/mine-types.enums';
 import { Either } from '@common/generics/either';
 import { ConfigService } from '@nestjs/config';
 
@@ -15,7 +14,12 @@ export default class AWSService {
     this._bucket = this.configService.get('aws.bucket');
   }
 
-  public async upload(folder: string, name: string, data: Buffer) {
+  public async upload(
+    folder: string,
+    name: string,
+    data: Buffer,
+    minetype?: string,
+  ) {
     try {
       const buffer = data;
       const key =
@@ -23,7 +27,7 @@ export default class AWSService {
       const resp = await this._s3.send(
         new PutObjectCommand({
           ACL: 'public-read',
-          ContentType: MineTypes[name.split('.').pop()],
+          ContentType: minetype,
           Bucket: this._bucket,
           Key: key,
           Body: buffer,

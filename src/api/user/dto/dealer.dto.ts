@@ -44,12 +44,4 @@ export class DealerDto extends PartialType(PhoneDto) implements DealerI {
     example: 'Allen',
   })
   omvic: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
-    description: 'Dealer address',
-    example: 'My house',
-  })
-  address: string;
 }

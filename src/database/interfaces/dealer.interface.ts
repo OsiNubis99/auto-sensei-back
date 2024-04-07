@@ -4,6 +4,5 @@ export class DealerI {
   lastName: string;
   name: string;
   omvic: string;
-  address: string;
   phone?: string;
 }

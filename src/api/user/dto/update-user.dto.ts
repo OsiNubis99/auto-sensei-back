@@ -1,6 +1,7 @@
-import { PhoneDto } from '@common/dtos/phone.dto';
 import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
 import { IsNumberString, IsOptional, Length } from 'class-validator';
+
+import { PhoneDto } from '@common/dtos/phone.dto';
 
 import { RegisterUserDto } from './register-user.dto';
 

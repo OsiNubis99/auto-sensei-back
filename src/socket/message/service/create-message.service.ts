@@ -5,6 +5,7 @@ import { isValidObjectId, Model } from 'mongoose';
 
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
+import { MessageI } from '@database/interfaces/message.interface';
 import { Auction } from '@database/schemas/auction.schema';
 import { Chat, ChatDocument } from '@database/schemas/chat.schema';
 import { User } from '@database/schemas/user.schema';
@@ -69,11 +70,13 @@ export class CreateMessageService implements AppServiceI<P, R, WsException> {
       user = auction.owner;
     }
 
-    chat.messages.unshift({
+    const message: MessageI = {
       message: param.message,
       url: param.url,
       user,
-    });
+    };
+
+    chat.messages.unshift(message);
 
     return Either.makeRight(await chat.save());
   }

@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
+import { AddressDto } from '@common/dtos/address.dto';
 import { LoginDto } from '@auth/dto/login.dto';
 
 import { DealerDto } from './dealer.dto';
@@ -28,4 +29,13 @@ export class RegisterUserDto extends LoginDto {
     required: false,
   })
   dealer?: DealerDto;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => PartialType(AddressDto))
+  @ApiProperty({
+    description: 'Seller data',
+    required: false,
+  })
+  address?: AddressDto;
 }

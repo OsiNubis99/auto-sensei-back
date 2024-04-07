@@ -31,6 +31,7 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
 
   async execute({
     user,
+    address,
     password,
     seller,
     dealer,
@@ -83,6 +84,10 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
         if (!user.seller) user.seller = <SellerI>{};
         user.seller.phone = phone;
       }
+    }
+
+    if (address) {
+      user.address = address;
     }
 
     for (const key of Object.keys(newData)) {
