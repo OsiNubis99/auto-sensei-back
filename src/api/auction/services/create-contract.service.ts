@@ -68,6 +68,7 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       'auction/contract',
       auction.id + '-not-signed.pdf',
       doc,
+      'application/pdf',
     );
 
     if (url.isLeft()) {

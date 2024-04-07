@@ -51,6 +51,11 @@ export class AppController {
     axios({
       method: 'get',
       url,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
       responseType: 'arraybuffer',
     })
       .then((resp) => {

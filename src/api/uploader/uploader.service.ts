@@ -23,6 +23,7 @@ export class UploaderService {
       body.location.replace(' ', ''),
       name + '.' + MineTypes[file.mimetype],
       file.buffer,
+      file.mimetype,
     );
 
     return url;
