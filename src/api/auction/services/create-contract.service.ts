@@ -30,7 +30,7 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
 
   async execute({ user, _id }: P) {
     let auction = await this.auctionModel.findById(_id);
-    if (!auction) {
+    if (!auction || !auction.bids[0]?.participant) {
       return Either.makeLeft(
         new HttpException('Id auction is invalid', HttpStatus.BAD_REQUEST),
       );
@@ -51,17 +51,25 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
     const amount = auction.bids[0]?.amount || 0;
 
     const doc = await this.pdfService.generatePDF({
-      car_id: auction.id,
-      car_name: `${auction.vehicleDetails.model} ${auction.vehicleDetails.make} ${auction.vehicleDetails.year}`,
+      dealer_company_name: auction.bids[0].participant.dealer?.name || 'name',
+      address_line_1: auction.bids[0].participant.address?.line1 || 'address',
+      address_line_2: auction.bids[0].participant.address?.line2 || 'address',
+      city: auction.bids[0].participant.address?.city || 'city',
+      state: auction.bids[0].participant.address?.state || 'city',
+      postal_code: auction.bids[0].participant.address?.postal_code || 'city',
+      car_name: `${auction.vehicleDetails.model} ${auction.vehicleDetails.make}`,
+      dealer_phone: auction.bids[0].participant.dealer?.phone || 'name',
+      dealer_name: auction.bids[0].participant.dealer?.firstName || 'name',
+      seller_name: auction.owner.seller?.firstName || 'name',
+      auction_serial: auction.serial?.toString() || '000',
+      date: Date.toString(),
+      car_year: auction.vehicleDetails.year || '2024',
+      car_color: auction.vehicleDetails.color || '',
+      car_vin: auction.vin,
+      car_km: auction.vehicleDetails.odometer?.toString() || '0',
       car_price: amount.toString(),
-      car_serial: auction.vin,
       tax: this.tax.toString(),
       total_price: (amount + this.tax).toString(),
-      dealer_company_name: auction.bids[0]?.participant?.dealer?.name || 'name',
-      address_line_1: '',
-      address_line_2: '',
-      dealer_phone: '',
-      invoice_id: '',
     });
 
     const url = await this.awsService.upload(

@@ -39,7 +39,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
     if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
-      const payment = await this.auctionService.makeTaxPayment(auction);
+      const payment = await this.auctionService.makePayment(auction);
       if (payment.isRight()) {
         try {
           // await this.mailerService.sendMail({

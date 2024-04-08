@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
@@ -36,38 +36,6 @@ export class DropOffAuctionService implements AppServiceI<P, R, HttpException> {
       return Either.makeLeft(
         new HttpException('This is not your auction', HttpStatus.UNAUTHORIZED),
       );
-    if (auction.status !== AuctionStatusEnum.DROP_OFF) {
-      const payment = await this.auctionService.makePayment(auction);
-      if (payment.isRight()) {
-        try {
-          // await this.mailerService.sendMail({
-          //   to: auction.owner.email,
-          //   subject: 'Your Auction Has Been Won!',
-          //   template: 'auction-won',
-          //   context: {
-          //     name:
-          //       user.seller?.firstName || user.dealer?.firstName || user.email,
-          //   },
-          // });
-          // await this.mailerService.sendMail({
-          //   to: auction.bids[0].participant.email,
-          //   subject: 'Your Auction Has Been Won!',
-          //   template: 'auction-won',
-          //   context: {
-          //     name:
-          //       user.seller?.firstName || user.dealer?.firstName || user.email,
-          //   },
-          // });
-        } catch (err) {
-          Logger.log(err);
-          return Either.makeLeft(
-            new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
-          );
-        }
-      }
-      auction.status = AuctionStatusEnum.COMPLETED;
-      return Either.makeRight(await this.auctionService.save(auction));
-    }
     auction.status = AuctionStatusEnum.DROP_OFF;
     auction.contractDealerSing = url;
     return Either.makeRight(await this.auctionService.save(auction));

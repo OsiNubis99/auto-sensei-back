@@ -81,13 +81,13 @@
         font-weight: 600;
       }
 
-      .header_one_text {
+      .header_one-text {
         display: flex;
         align-items: center;
         gap: 20px;
       }
 
-      .header_one_text_info {
+      .header_one-text_info {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -160,7 +160,7 @@
       }
 
       .tablet-info_contend>p:nth-child(2) {
-        font-size: 13px;
+        font-size: 12px;
         line-height: 20px;
         padding-bottom: 10px;
         position: relative;
@@ -168,7 +168,7 @@
       }
 
       .tablet-info_contend>p:nth-child(3) {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
       }
 
@@ -241,26 +241,24 @@
     <div class="container">
       <div class="header">
         <div class="header_one">
-          <h1>Dealerships Name</h1>
-          <p>Dealerships Address- Street Number & Street Name</p>
-          <p>City, Province</p>
+          <h1> <%= locals.dealer_company_name %> </h1>
+          <p><%= locals.address_line_1 %> - <%= locals.address_line_2 %></p>
+          <p><%= locals.city %>, <%= locals.state %></p>
           <div class="header_code-phone">
-            <p>Postal Code</p>
-            <p>Phone Number</p>
+            <p><%= locals.postal_code %></p>
           </div>
 
-          <div class="header_one_text">
-            <p> M8Z 1T8 </p>
-            <div class="header_one_text_info">
-              <p>Phone: (416) 259-7128</p>
-              <p>Fax: (416) 259-2215</p>
+          <div class="header_one-text">
+            <p> <%= locals.car_name %> </p>
+            <div class="header_one-text_info">
+              <p>Phone: <%= locals.dealer_phone %></p>
             </div>
 
           </div>
-          <p class="header_one-last">Sold to (Clients Name)</p>
+          <p class="header_one-last">Sold to <%= locals.dealer_name %></p>
         </div>
         <div class="header_two">
-          <img src="http://files.autosensei.ca/public/logo.png" alt="">
+          <img src="http://files.autosensei.ca/public/logo.png" alt="LOGO">
         </div>
       </div>
       <div>
@@ -270,28 +268,23 @@
               <tbody class="b-order">
                 <tr>
                   <td class=" w-60 b-order-right">Clients Name</td>
-                  <td class="w-20 b-order-right">Dealer #</td>
-                  <td> </td>
+                  <td class="w-20 b-order-right"><%= locals.dealer_name %></td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right">Address of Client (Street # & Street Name) </td>
-                  <td class="w-20 b-order-right"> </td>
-                  <td> </td>
+                  <td class=" w-60 b-order-right">Address of Client</td>
+                  <td class="w-20 b-order-right"><%= locals.address_line_1 %></td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right">(City), (Province)</td>
-                  <td class="w-20 b-order-right">PST #</td>
-                  <td> </td>
+                  <td class=" w-60 b-order-right"> </td>
+                  <td class="w-20 b-order-right"><%= locals.city %>, <%= locals.state %></td>
                 </tr>
                 <tr>
                   <td class=" w-60 b-order-right">Postal Code</td>
-                  <td class="w-20 b-order-right">GST/HST #</td>
-                  <td> </td>
+                  <td class="w-20 b-order-right"><%= locals.postal_code %></td>
                 </tr>
                 <tr>
                   <td class=" w-60 b-order-right">Phone Number of client</td>
-                  <td class="w-20 b-order-right">RIN #</td>
-                  <td> </td>
+                  <td class="w-20 b-order-right"><%= locals.dealer_phone %></td>
                 </tr>
               </tbody>
             </table>
@@ -299,11 +292,11 @@
           <div class="table-one_section-2">
             <div class="table-one_section-2_line">
               <p>Reference #</p>
-              <p>558871 </p>
+              <p><%= locals.auction_serial %></p>
             </div>
             <div class="table-one_section-2_line">
-              <p></p>
               <p>Date</p>
+              <p><%= locals.date %></p>
             </div>
             <div class="table-one_section-2_line">
               <p>OMVIC Registration #</p>
@@ -311,7 +304,7 @@
             </div>
             <div class="table-one_section-2_line">
               <p>Dealer Rep</p>
-              <p>Mark Webber</p>
+              <p><%= locals.dealer_name %></p>
             </div>
             <div class="table-one_section-2_line">
               <p style="opacity: 0;">-------</p>
@@ -350,15 +343,21 @@
             </th>
           </tr>
           <tr>
-            <td class="b-order">79694</td>
             <td class="b-order">
-              <p> Year of vehicle</p>
-              <p>Audi A4 2.0 8sp Tiptronic Progr</p>
-              <p>Moonlight Blue Met, Velvet Bei</p>
+              <%= locals.auction_serial %>
+            </td>
+            <td class="b-order">
+              <p><%= locals.car_year %></p>
+              <p><%= locals.car_name %></p>
+              <p><%= locals.car_color %></p>
 
             </td>
-            <td class="b-order">WAUFFCFLXEN004141 </td>
-            <td class="b-order">3000</td>
+            <td class="b-order">
+              <%= locals.car_vin %>
+            </td>
+            <td class="b-order">
+              <%= locals.car_km %>
+            </td>
           </tr>
           <tr>
             <td colspan="4">
@@ -417,8 +416,8 @@
           <tr>
             <td style="    border-left: 1px solid black;
               border-bottom: 1px solid black;">
-              <p>8K2P2A - A4 2.0 8sp Tiptronic Progres</p>
-              <p>Color of Vehicle</p>
+              <p><%= locals.car_name %></p>
+              <p><%= locals.car_color %></p>
               <br>
               <br>
               <p class="t-r" style="font-weight: 700;">Vehicle Subtotal:</p>
@@ -437,25 +436,23 @@
             </td>
             <td style="    border-right: 1px solid black;
               border-bottom: 1px solid black;">
-              <p class="t-r" style="font-weight: 700;">$45,500.00</p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.car_price %></p>
               <br>
               <br>
               <br>
-              <p class="t-r" style="font-weight: 700;">$46,700.00 </p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.car_price %></p>
               <br>
               <br>
               <br>
-              <p class="t-r" style="font-weight: 700;">$48,800.00
-              </p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.total_price %></p>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
               <br>
               <br>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
               <br>
-              <p class="t-r" style="font-weight: 700;">$55,144.00</p>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
-              <p class="t-r" style="font-weight: 700;">$55,144.00</p>
-
+              <p class="t-r" style="font-weight: 700;">$0.00</p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.total_price %></p>
             </td>
           </tr>
         </table>
@@ -465,7 +462,7 @@
         <div class="firma">
           <div class="firma_section-1">
             <div class="firma-1">
-              <p>Accepted by Purchaser:</p>
+              <p>Accepted by Seller:</p>
               <p style="letter-spacing: -3px;">____________________________________________</p>
             </div>
             <div class="firma-2">

@@ -78,19 +78,7 @@ export class AuctionService {
 
   async makePayment(auction: AuctionDocument) {
     const paymentIntent = await this.stripeService.makePayment({
-      amount: auction.bids[0].amount,
-      customer: auction.bids[0].participant.customerId,
-      payment_method: auction.bids[0].paymentMethod.stripePaymentId,
-      receipt_email: auction.bids[0].participant.email,
-    });
-    auction.paymentFilled = paymentIntent.isRight();
-    await this.save(auction);
-    return paymentIntent;
-  }
-
-  async makeTaxPayment(auction: AuctionDocument) {
-    const paymentIntent = await this.stripeService.makePayment({
-      amount: this.taxAmount,
+      amount: auction.bids[0].amount + this.taxAmount,
       customer: auction.bids[0].participant.customerId,
       payment_method: auction.bids[0].paymentMethod.stripePaymentId,
       receipt_email: auction.bids[0].participant.email,
