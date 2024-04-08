@@ -37,6 +37,7 @@ import { RemoveAuctionRemindService } from './services/remove-auction-remind.ser
 import { UpdateAuctionService } from './services/update-auction.service';
 import { UpdateBidService } from './services/update-bid.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
+import { UrlDto } from './dto/url.dto';
 
 @ApiTags('Auction')
 @Controller('auction')
@@ -209,8 +210,13 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.seller],
   })
-  accept(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+  accept(
+    @Param() { _id }: IdDto,
+    @Body() { url }: UrlDto,
+    @UserD() user: UserDocument,
+  ) {
     return this.acceptAuctionService.execute({
+      url,
       user,
       filter: { _id },
     });
@@ -232,8 +238,16 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.dealer],
   })
-  dropOff(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
-    return this.dropOffAuctionService.execute({ user, filter: { _id } });
+  dropOff(
+    @Param() { _id }: IdDto,
+    @Body() { url }: UrlDto,
+    @UserD() user: UserDocument,
+  ) {
+    return this.dropOffAuctionService.execute({
+      url,
+      user,
+      filter: { _id },
+    });
   }
 
   @Patch('/cancel/:_id')

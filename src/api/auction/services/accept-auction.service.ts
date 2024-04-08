@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
@@ -8,13 +9,13 @@ import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
 
-import { MailerService } from '@nestjs-modules/mailer';
 import { AuctionService } from '../auction.service';
+import { UrlDto } from '../dto/url.dto';
 
 type P = {
   user: UserDocument;
   filter: FilterQuery<Auction>;
-};
+} & UrlDto;
 
 type R = AuctionDocument;
 
@@ -27,7 +28,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     private mailerService: MailerService,
   ) {}
 
-  async execute({ user, filter }: P) {
+  async execute({ user, filter, url }: P) {
     const auction = await this.auctionModel.findOne(filter);
     if (!auction)
       return Either.makeLeft(
@@ -67,6 +68,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
         }
       }
       auction.status = AuctionStatusEnum.COMPLETED;
+      auction.contractSeallerSing = url;
       await this.auctionService.save(auction);
     }
     return Either.makeRight(auction);

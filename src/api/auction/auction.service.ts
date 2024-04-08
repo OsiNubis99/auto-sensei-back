@@ -85,6 +85,7 @@ export class AuctionService {
     });
     auction.paymentFilled = paymentIntent.isRight();
     await this.save(auction);
+    return paymentIntent;
   }
 
   async makeTaxPayment(auction: AuctionDocument) {
