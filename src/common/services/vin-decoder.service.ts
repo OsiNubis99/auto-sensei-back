@@ -46,11 +46,10 @@ export default class VinDecoderService {
           headers: { Authorization },
         })
         .catch((err) => err);
+      Logger.log({ data });
       if (!data || data.error) return Either.makeLeft(new Error('Api error'));
 
       const result = data.result || {};
-
-      Logger.log(result);
 
       return Either.makeRight(<VehicleDetailsI>{
         vin,
