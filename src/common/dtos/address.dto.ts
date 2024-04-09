@@ -29,7 +29,7 @@ export class AddressDto implements AddressI {
   line1?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'line2',
     example: 'line2',

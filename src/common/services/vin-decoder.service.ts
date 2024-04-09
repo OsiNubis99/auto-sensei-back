@@ -1,9 +1,10 @@
 import { Either } from '@common/generics/either';
-import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
+
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 
 @Injectable()
 export default class VinDecoderService {
@@ -46,8 +47,8 @@ export default class VinDecoderService {
           headers: { Authorization },
         })
         .catch((err) => err);
-      Logger.log({ data });
-      if (!data || data.error) return Either.makeLeft(new Error('Api error'));
+
+      if (!data) return Either.makeLeft(new Error('Api error'));
 
       const result = data.result || {};
 
