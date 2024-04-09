@@ -29,6 +29,12 @@ export class Auction {
   taxPaymentFilled: boolean;
 
   @Prop()
+  paymentError: string;
+
+  @Prop()
+  taxPaymentError: string;
+
+  @Prop()
   vin: string;
 
   @Prop()

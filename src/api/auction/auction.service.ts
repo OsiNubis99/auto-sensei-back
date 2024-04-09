@@ -83,7 +83,13 @@ export class AuctionService {
       payment_method: auction.bids[0].paymentMethod.stripePaymentId,
       receipt_email: auction.bids[0].participant.email,
     });
-    auction.paymentFilled = paymentIntent.isRight();
+    if (paymentIntent.isRight()) {
+      auction.paymentFilled = true;
+      auction.taxPaymentFilled = true;
+    } else {
+      auction.paymentError = paymentIntent.getLeft();
+      auction.taxPaymentError = paymentIntent.getLeft();
+    }
     await this.save(auction);
     return paymentIntent;
   }
