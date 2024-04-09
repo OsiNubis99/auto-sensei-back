@@ -62,7 +62,7 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       dealer_name: auction.bids[0].participant.dealer?.firstName || 'name',
       seller_name: auction.owner.seller?.firstName || 'name',
       auction_serial: auction.serial?.toString() || '000',
-      date: Date.toString(),
+      date: new Date().toString(),
       car_year: auction.vehicleDetails.year || '2024',
       car_color: auction.vehicleDetails.color || '',
       car_vin: auction.vin,
