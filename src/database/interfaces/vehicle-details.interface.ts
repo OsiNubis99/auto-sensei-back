@@ -1,25 +1,26 @@
 import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
-export class VehicleDetailsI {
+export interface VehicleDetailsI {
   vin: string;
   basePrice: number;
   year: string;
   make: string;
   model: string;
-  trim: string;
-  bodyType: string;
   cylinder: string;
   transmission: string;
-
   odometer?: number;
-  doors?: string;
   color?: string;
-  driveTrain?: DriveTrainEnum;
   aditionals?: string;
   tireCondition?: string;
   tireReplacement?: string;
   brakeCondition?: string;
   brakeReplacement?: string;
+
+  trim: string;
+  bodyType: string;
+  driveTrain?: DriveTrainEnum;
+  doors?: string;
+  trimOptions: TrimOptions[];
 
   originalDocument?: string;
   driverLicense?: string;
@@ -28,4 +29,11 @@ export class VehicleDetailsI {
   vehicleDamage?: string[];
   additionalDocuments?: string[];
   vehicleVideo?: string;
+}
+
+export interface TrimOptions {
+  trim: string;
+  bodyType: string;
+  driveTrain?: DriveTrainEnum;
+  doors?: string;
 }

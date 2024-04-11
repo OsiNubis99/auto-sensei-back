@@ -24,6 +24,7 @@ export default class VinApiService {
       if (data.errorType) return Either.makeLeft(new Error(data.message));
 
       return Either.makeRight(<VehicleDetailsI>{
+        trimOptions: [],
         vin,
         year: data.years?.shift()?.year,
         basePrice: 100,

@@ -4,7 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
 
-import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
+import {
+  TrimOptions,
+  VehicleDetailsI,
+} from '@database/interfaces/vehicle-details.interface';
+import { DriveTrainEnum } from '@common/enums/drive-train.enum';
 
 @Injectable()
 export default class VinDecoderService {
@@ -52,19 +56,37 @@ export default class VinDecoderService {
 
       const result = data.result || {};
 
+      const transmission = undefined;
+
+      const trimOptions = result.vehicles?.map(
+        (item) =>
+          <TrimOptions>{
+            trim: item.styleDescription || item.trim || '',
+            doors: item.doors || '',
+            driveTrain: item.driveType || '',
+            bodyType: item.bodyType || '',
+          },
+      ) || [
+        <TrimOptions>{
+          trim: '',
+          doors: '',
+          driveTrain: DriveTrainEnum.AWD,
+          bodyType: '',
+        },
+      ];
+
       return Either.makeRight(<VehicleDetailsI>{
         vin,
         year: result.year,
         basePrice: 100,
         make: result.make,
         model: result.model,
-        bodyType: result.vehicles ? result.vehicles[0]?.driveType : '',
-        doors: result.vehicles ? result.vehicles[0]?.doors : '',
-        transmission: result.vehicles ? result.vehicles[0]?.bodyType : '',
-        trim: result.vehicles ? result.vehicles[0]?.trim : '',
-
+        transmission,
         suggestedPrice: data.price?.baseMsrp,
         cylinder: data.engine?.cylinder,
+
+        trimOptions,
+        ...trimOptions[0],
       });
     } catch (err) {
       return Either.makeLeft(new Error('Vin is invalid'));

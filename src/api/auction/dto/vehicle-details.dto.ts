@@ -2,8 +2,79 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { DriveTrainEnum } from '@common/enums/drive-train.enum';
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 
-export class VehicleDetailsDto {
+export class VehicleDetailsDto implements VehicleDetailsI {
+  @IsOptional()
+  vin: string;
+
+  @IsOptional()
+  trimOptions: [];
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    description: 'basePrice',
+    required: false,
+  })
+  basePrice: number;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'year',
+    required: false,
+  })
+  year: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'make',
+    required: false,
+  })
+  make: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'model',
+    required: false,
+  })
+  model: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'trim',
+    required: false,
+  })
+  trim: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'bodyType',
+    required: false,
+  })
+  bodyType: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'cylinder',
+    required: false,
+  })
+  cylinder: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'transmission',
+    required: false,
+  })
+  transmission: string;
+
   @IsNumber()
   @IsOptional()
   @ApiProperty({
