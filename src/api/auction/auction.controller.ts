@@ -12,18 +12,18 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { AuthRequest } from '@common/decorators/auth-request';
 import { BasicRequest } from '@common/decorators/basic-request';
+import { UserD } from '@common/decorators/user.decorator';
 import { IdDto } from '@common/dtos/id.dto';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { UserDocument } from '@database/schemas/user.schema';
 
-import { UserD } from '@common/decorators/user.decorator';
-import PDFService from '@common/services/pdf.service';
 import { AuctionService } from './auction.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { CreateBidDto } from './dto/create-bid.dto';
 import { FilterAuctionDto } from './dto/filter-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
 import { UpdateBidDto } from './dto/update-bid.dto';
+import { UrlDto } from './dto/url.dto';
 import { ValorateAuctionDto } from './dto/valorate-auction.dto';
 import { AcceptAuctionService } from './services/accept-auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
@@ -37,7 +37,6 @@ import { RemoveAuctionRemindService } from './services/remove-auction-remind.ser
 import { UpdateAuctionService } from './services/update-auction.service';
 import { UpdateBidService } from './services/update-bid.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
-import { UrlDto } from './dto/url.dto';
 
 @ApiTags('Auction')
 @Controller('auction')
@@ -56,7 +55,6 @@ export class AuctionController {
     private readonly updateAuctionService: UpdateAuctionService,
     private readonly removeAuctionRemindService: RemoveAuctionRemindService,
     private readonly valorateAuctionService: ValorateAuctionService,
-    private pdfService: PDFService,
   ) {}
 
   @Get('/:_id')
@@ -158,6 +156,16 @@ export class AuctionController {
   })
   addRemind(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
     return this.addAuctionRemindService.execute({ _id, user });
+  }
+
+  @Patch('/:_id/retry-payment')
+  @AuthRequest({
+    description: 'Retry payment with the payment Id',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.dealer],
+  })
+  retryPayment(@Param() { _id }: IdDto, @UserD() user: UserDocument) {
+    return { _id, user };
   }
 
   @Patch('/:_id/remove-remind')
