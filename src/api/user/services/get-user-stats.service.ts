@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -10,6 +10,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 import { DealerStatsI } from '../interfaces/dealer-stats.interface';
 import { SellerStatsI } from '../interfaces/seller-stats.interface';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 type P = {
   user: UserDocument;
@@ -27,9 +28,9 @@ export class GetUserStatsService implements AppServiceI<P, R, HttpException> {
     if (user.type == UserTypeEnum.dealer) {
       const resp: DealerStatsI = {
         total_auciton: 0,
+        success_rate: '0',
         total_won: 0,
         total_purchase: 0,
-        success_rate: '0',
         top: [],
       };
       const won: AuctionDocument[] = [];
@@ -38,7 +39,10 @@ export class GetUserStatsService implements AppServiceI<P, R, HttpException> {
       });
       auctions.forEach((auction) => {
         resp.total_purchase += auction.bids[0].amount;
-        if (auction.bids[0].participant._id.equals(user._id)) {
+        if (
+          auction.bids[0].participant._id.equals(user._id) &&
+          this.validateStatus(auction)
+        ) {
           won.push(auction);
         }
       });
@@ -47,11 +51,26 @@ export class GetUserStatsService implements AppServiceI<P, R, HttpException> {
       resp.total_auciton = auctions.length;
       resp.total_won = won.length;
       resp.success_rate = ((won.length * 100) / auctions.length).toFixed(2);
-
+      return Either.makeRight(resp);
+    } else {
+      const resp: SellerStatsI = {
+        total_auciton: 0,
+        success_rate: '0',
+      };
+      const auctions = await this.auctionModel.find({
+        owner: user._id,
+      });
+      const won = auctions.filter(this.validateStatus);
+      resp.total_auciton = auctions.length;
+      resp.success_rate = ((won.length * 100) / auctions.length).toFixed(2);
       return Either.makeRight(resp);
     }
-    return Either.makeLeft(
-      new HttpException('Bad user type', HttpStatus.BAD_REQUEST),
+  }
+
+  validateStatus(auction: AuctionDocument): boolean {
+    return (
+      auction.status == AuctionStatusEnum.DROP_OFF ||
+      auction.status == AuctionStatusEnum.REVIEWED
     );
   }
 }

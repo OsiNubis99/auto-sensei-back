@@ -64,7 +64,7 @@ export class UserController {
   @AuthRequest({
     description: 'List User valorations',
     response: 'User valorations',
-    roles: [UserTypeEnum.dealer],
+    roles: [UserTypeEnum.dealer, UserTypeEnum.seller],
   })
   getStats(@UserD() user: UserDocument) {
     return this.getStatsService.execute({ user });
