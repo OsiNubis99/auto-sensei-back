@@ -73,7 +73,7 @@ export class Auction {
   @Prop()
   buyNew: BuyNewI;
 
-  @Prop({ type: SchemaFactory.createForClass(VehicleStatusI) })
+  @Prop({ type: SchemaFactory.createForClass(VehicleDetailsI) })
   vehicleDetails: VehicleDetailsI;
 
   @Prop({ type: [mongooseSchema.Types.ObjectId], ref: User.name })
