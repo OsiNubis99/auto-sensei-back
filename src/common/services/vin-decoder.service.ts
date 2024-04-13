@@ -56,7 +56,17 @@ export default class VinDecoderService {
 
       const result = data.result || {};
 
-      const transmission = undefined;
+      let transmission: string = undefined;
+      let cylinder: string = undefined;
+
+      for (const feature of result.features) {
+        if (feature.description == 'Engine Cylinders') {
+          cylinder = feature.name;
+        }
+        if (feature.description == 'Transmission') {
+          transmission = feature.name;
+        }
+      }
 
       const trimOptions = result.vehicles?.map(
         (item) =>
@@ -82,8 +92,8 @@ export default class VinDecoderService {
         make: result.make,
         model: result.model,
         transmission,
-        suggestedPrice: data.price?.baseMsrp,
-        cylinder: data.engine?.cylinder,
+        cylinder,
+        suggestedPrice: 100,
 
         trimOptions,
         ...trimOptions[0],
