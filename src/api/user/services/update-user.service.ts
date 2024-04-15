@@ -72,7 +72,7 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       });
       if (!phoneCode || phoneCode.code !== validationCode) {
         return Either.makeLeft(
-          new HttpException("Phone isn't valid", HttpStatus.BAD_REQUEST),
+          new HttpException("Code isn't valid", HttpStatus.BAD_REQUEST),
         );
       }
       if (user.type == UserTypeEnum.dealer) {
