@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { FilterQuery, Model } from 'mongoose';
@@ -45,6 +45,10 @@ export class AuctionService {
           this.notifySubscribedUsers(auction);
         }
         if (ended) {
+          if (auction.status == AuctionStatusEnum.UPCOMING) {
+            auction.status = AuctionStatusEnum.REJECTED;
+            edited = true;
+          }
           if (auction.status == AuctionStatusEnum.LIVE) {
             if (auction.bids.length > 0) {
               auction.status = AuctionStatusEnum.BIDS_COMPLETED;
@@ -106,6 +110,7 @@ export class AuctionService {
 
   @Cron('1 0,30 * * * *')
   async find() {
+    Logger.log('test crono');
     const auction = await this.auctionModel.find({
       status: { $in: [AuctionStatusEnum.UPCOMING, AuctionStatusEnum.LIVE] },
     });
