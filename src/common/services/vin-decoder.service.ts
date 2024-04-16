@@ -73,7 +73,7 @@ export default class VinDecoderService {
           <TrimOptions>{
             trim: item.styleDescription || item.trim || '',
             doors: item.doors || '',
-            driveTrain: item.driveType || '',
+            driveTrain: DriveTrainEnum[item.driveType + ''],
             bodyType: item.bodyType || '',
           },
       ) || [
