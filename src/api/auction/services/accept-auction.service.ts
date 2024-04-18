@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
@@ -11,6 +12,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { AuctionService } from '../auction.service';
 import { UrlDto } from '../dto/url.dto';
+import axios from 'axios';
 
 type P = {
   user: UserDocument;
@@ -26,6 +28,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     private auctionModel: Model<Auction>,
     private auctionService: AuctionService,
     private mailerService: MailerService,
+    private config: ConfigService,
   ) {}
 
   async execute({ user, filter, url }: P) {
@@ -41,31 +44,50 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
     if (auction.status == AuctionStatusEnum.BIDS_COMPLETED) {
       const payment = await this.auctionService.makePayment(auction);
       if (payment.isRight()) {
-        try {
-          // await this.mailerService.sendMail({
-          //   to: auction.owner.email,
-          //   subject: 'Your Auction Has Been Won!',
-          //   template: 'auction-won',
-          //   context: {
-          //     name:
-          //       user.seller?.firstName || user.dealer?.firstName || user.email,
-          //   },
-          // });
-          // await this.mailerService.sendMail({
-          //   to: auction.bids[0].participant.email,
-          //   subject: 'Your Auction Has Been Won!',
-          //   template: 'auction-won',
-          //   context: {
-          //     name:
-          //       user.seller?.firstName || user.dealer?.firstName || user.email,
-          //   },
-          // });
-        } catch (err) {
-          Logger.log(err);
-          return Either.makeLeft(
-            new HttpException('Error on mail', HttpStatus.BAD_REQUEST),
-          );
-        }
+        axios({
+          method: 'get',
+          url: `http://${process.env.AWS_BUCKET}/${url}`,
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
+          responseType: 'arraybuffer',
+        })
+          .then(async (resp) => {
+            await this.mailerService.sendMail({
+              to: auction.owner.email,
+              subject: 'Your Auction Has Been Won!',
+              template: 'auction-accept-dealer',
+              attachments: [{ content: resp.data, filename: 'contract.pdf' }],
+              context: {
+                dealerName: auction.bids[0].participant?.dealer?.firstName,
+                dropOff: auction.dropOffDate.toLocaleString(),
+                auctionNumber: auction.serial,
+                sellerName: auction.owner?.seller?.firstName,
+                sellerPhone: auction.owner?.seller?.phone,
+                url: this.config.get('server.frontUrl'),
+              },
+            });
+            await this.mailerService.sendMail({
+              to: auction.bids[0].participant.email,
+              subject: 'Congratulations on selling your car!',
+              template: 'auction-accept-seller',
+              attachments: [{ content: resp.data, filename: 'contract.pdf' }],
+              context: {
+                sellerName: auction.owner?.seller?.firstName,
+                dropOff: auction.dropOffDate.toLocaleString(),
+                dealerName: auction.bids[0].participant?.dealer?.firstName,
+                dealerPhone: auction.bids[0].participant?.dealer?.phone,
+                dealerEmail: auction.bids[0].participant?.email,
+                dealerAddress: auction.bids[0].participant?.address.line1,
+                url: this.config.get('server.frontUrl'),
+              },
+            });
+          })
+          .catch((err) => {
+            Logger.log(err);
+          });
       }
       auction.status = AuctionStatusEnum.COMPLETED;
       auction.contractSeallerSing = url;

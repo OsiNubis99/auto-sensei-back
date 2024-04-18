@@ -1,0 +1,53 @@
+<%- include('./partials/header'); %>
+  <h2 style="padding:0 20px;font-family:Whitney, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-weight:500;font-size:20px;color:#4f545c;letter-spacing:0.27px;">
+  Hi <%= locals.sellerName %>,
+  </h2>
+  <p style="text-align: left;">
+    Congratulations on successfully selling your car through AutoSensei!
+    <br>
+    Attached, you'll find the signed copy of the wholesale agreement for your records.
+    <br>
+    <br>
+    Here's what you need to do next:
+    <br>
+  </p>
+  <p style="margin: 5px 10px">
+      1. Vehicle Drop-off: Please ensure you drop off the vehicle by <%= locals.dropOff %>. If any changes are needed, kindly contact the dealer promptly.
+      <br>
+      Dealer Information:
+      <br>
+        Name: <%= locals.dealerName %>
+      <br>
+        Phone: <%= locals.dealerPhone %>
+      <br>
+        Email: <%= locals.dealerEmail %>
+      <br>
+        Address: <%= locals.dealerAddress %>
+      <br>
+      <br>
+        2. Contact the Dealer: Reach out to the dealer to arrange your drop-off. Your reference number for this transaction is [Unique ID].
+      <br>
+        3. Required Documents: Bring the original ownership, your driver's license, 2 sets of keys (if applicable), and any other accessories included in the auction listing.
+      <br>
+        4. Payment Process: Once you drop off the vehicle, coordinate the payment method with the dealer. Please anticipate up to 48 hours for payment processing, subject to the final inspection of your vehicle by the dealership.
+      <br>
+  </p>
+  <p style="text-align: left;">
+    Thank you for choosing AutoSensei for your car sale! If you've had a positive experience, we'd appreciate you sharing our platform with your friends and family. For every successful referral, you'll receive a complimentary $50 gift card! Simply email us at admin@autosensei.ca with a copy of your referral and the sold vehicle details.
+    <br>
+    Spread the word and continue enjoying hassle-free transactions with AutoSensei!
+    <br>
+    <br>
+    <br>
+    Sincerely,
+    <br>
+    The AutoSensei Team
+  </p>
+  <div style="text-align: center;">
+    <a
+      href="<%= locals.url %>" target="_blank"
+      style="background-color: #c1f861; border-radius: 8px; color: black; font-weight: 600; align-items: center; padding:10px;text-decoration: none;" >
+      Go to Autosensei
+    </a>
+  </div>
+  <%- include('./partials/footer'); %>
