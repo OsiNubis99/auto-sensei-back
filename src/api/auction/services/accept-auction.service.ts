@@ -69,6 +69,12 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
                 url: this.config.get('server.frontUrl'),
               },
             });
+            const dealerAddress = [
+              auction.bids[0].participant?.address.line1,
+              auction.bids[0].participant?.address.city,
+              auction.bids[0].participant?.address.state,
+              auction.bids[0].participant?.address.postal_code,
+            ].join(', ');
             await this.mailerService.sendMail({
               to: auction.owner.email,
               subject: 'Congratulations on selling your car!',
@@ -80,7 +86,7 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
                 dealerName: auction.bids[0].participant?.dealer?.name,
                 dealerPhone: auction.bids[0].participant?.dealer?.phone,
                 dealerEmail: auction.bids[0].participant?.email,
-                dealerAddress: auction.bids[0].participant?.address.line1,
+                dealerAddress,
                 url: this.config.get('server.frontUrl'),
               },
             });
