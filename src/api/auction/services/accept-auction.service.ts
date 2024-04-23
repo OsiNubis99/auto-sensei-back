@@ -56,12 +56,12 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
         })
           .then(async (resp) => {
             await this.mailerService.sendMail({
-              to: auction.owner.email,
+              to: auction.bids[0].participant.email,
               subject: 'Your Auction Has Been Won!',
               template: 'auction-accept-dealer',
               attachments: [{ content: resp.data, filename: 'contract.pdf' }],
               context: {
-                dealerName: auction.bids[0].participant?.dealer?.firstName,
+                dealerName: auction.bids[0].participant?.dealer?.name,
                 dropOff: auction.dropOffDate.toLocaleString(),
                 auctionNumber: auction.serial,
                 sellerName: auction.owner?.seller?.firstName,
@@ -70,14 +70,14 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
               },
             });
             await this.mailerService.sendMail({
-              to: auction.bids[0].participant.email,
+              to: auction.owner.email,
               subject: 'Congratulations on selling your car!',
               template: 'auction-accept-seller',
               attachments: [{ content: resp.data, filename: 'contract.pdf' }],
               context: {
                 sellerName: auction.owner?.seller?.firstName,
                 dropOff: auction.dropOffDate.toLocaleString(),
-                dealerName: auction.bids[0].participant?.dealer?.firstName,
+                dealerName: auction.bids[0].participant?.dealer?.name,
                 dealerPhone: auction.bids[0].participant?.dealer?.phone,
                 dealerEmail: auction.bids[0].participant?.email,
                 dealerAddress: auction.bids[0].participant?.address.line1,
