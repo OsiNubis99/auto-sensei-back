@@ -216,4 +216,12 @@ export class VehicleDetailsDto implements VehicleDetailsI {
     required: false,
   })
   vehicleVideo?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Vehicledetails',
+    required: false,
+  })
+  repairs?: string;
 }
