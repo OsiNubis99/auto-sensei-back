@@ -16,6 +16,7 @@ import { RemoveAuctionRemindService } from './services/remove-auction-remind.ser
 import { UpdateAuctionService } from './services/update-auction.service';
 import { UpdateBidService } from './services/update-bid.service';
 import { ValorateAuctionService } from './services/valorate-auction.service';
+import { AuctionNotificationService } from './services/auction-notification.service';
 
 @Module({
   imports: [CommonModule],
@@ -34,6 +35,7 @@ import { ValorateAuctionService } from './services/valorate-auction.service';
     UpdateBidService,
     RemoveAuctionRemindService,
     ValorateAuctionService,
+    AuctionNotificationService,
   ],
 })
 export class AuctionsModule {}

@@ -16,6 +16,4 @@ export class CreateContractDto {
   car_vin: string;
   car_km: string;
   car_price: string;
-  tax: string;
-  total_price: string;
 }

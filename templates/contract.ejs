@@ -267,24 +267,29 @@
             <table>
               <tbody class="b-order">
                 <tr>
-                  <td class=" w-60 b-order-right">Clients Name</td>
-                  <td class="w-20 b-order-right"><%= locals.dealer_name %></td>
+                  <td class="w-60 b-order-right"><%= locals.dealer_name %></td>
+                  <td class="w-20 b-order-right">Dealer #</td>
+                  <td class="w-20 b-order-right"> </td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right">Address of Client</td>
-                  <td class="w-20 b-order-right"><%= locals.address_line_1 %></td>
+                  <td class="w-60 b-order-right"><%= locals.address_line_1 %></td>
+                  <td class="w-20 b-order-right"> </td>
+                  <td class="w-20 b-order-right"> </td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right"> </td>
-                  <td class="w-20 b-order-right"><%= locals.city %>, <%= locals.state %></td>
+                  <td class="w-60 b-order-right"><%= locals.city %>, <%= locals.state %></td>
+                  <td class="w-20 b-order-right">PST #</td>
+                  <td class="w-20 b-order-right"> </td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right">Postal Code</td>
-                  <td class="w-20 b-order-right"><%= locals.postal_code %></td>
+                  <td class="w-60 b-order-right"><%= locals.postal_code %></td>
+                  <td class="w-20 b-order-right">GST/HST #</td>
+                  <td class="w-20 b-order-right"> </td>
                 </tr>
                 <tr>
-                  <td class=" w-60 b-order-right">Phone Number of client</td>
-                  <td class="w-20 b-order-right"><%= locals.dealer_phone %></td>
+                  <td class="w-60 b-order-right"><%= locals.dealer_phone %></td>
+                  <td class="w-20 b-order-right">RIN #</td>
+                  <td class="w-20 b-order-right"> </td>
                 </tr>
               </tbody>
             </table>
@@ -444,7 +449,7 @@
               <br>
               <br>
               <br>
-              <p class="t-r" style="font-weight: 700;">$<%= locals.total_price %></p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.car_price %></p>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
               <br>
               <br>
@@ -452,7 +457,7 @@
               <br>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
               <p class="t-r" style="font-weight: 700;">$0.00</p>
-              <p class="t-r" style="font-weight: 700;">$<%= locals.total_price %></p>
+              <p class="t-r" style="font-weight: 700;">$<%= locals.car_price %></p>
             </td>
           </tr>
         </table>

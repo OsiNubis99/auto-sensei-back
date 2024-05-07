@@ -27,6 +27,7 @@ import { UrlDto } from './dto/url.dto';
 import { ValorateAuctionDto } from './dto/valorate-auction.dto';
 import { AcceptAuctionService } from './services/accept-auction.service';
 import { AddAuctionRemindService } from './services/add-auction-remind.service';
+import { AuctionNotificationService } from './services/auction-notification.service';
 import { CreateAuctionService } from './services/create-auction.service';
 import { CreateBidService } from './services/create-bid.service';
 import { CreateContractService } from './services/create-contract.service';
@@ -42,6 +43,7 @@ import { ValorateAuctionService } from './services/valorate-auction.service';
 @Controller('auction')
 export class AuctionController {
   constructor(
+    private readonly auctionNotificationService: AuctionNotificationService,
     private readonly acceptAuctionService: AcceptAuctionService,
     private readonly dropOffAuctionService: DropOffAuctionService,
     private readonly addAuctionRemindService: AddAuctionRemindService,
@@ -56,6 +58,16 @@ export class AuctionController {
     private readonly removeAuctionRemindService: RemoveAuctionRemindService,
     private readonly valorateAuctionService: ValorateAuctionService,
   ) {}
+
+  @Get('/force-notification')
+  @AuthRequest({
+    description: 'List auction by ID',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.admin],
+  })
+  forceNotification() {
+    return this.auctionNotificationService.execute();
+  }
 
   @Get('/:_id')
   @BasicRequest({

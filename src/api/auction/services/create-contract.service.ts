@@ -68,8 +68,6 @@ export class CreateContractService implements AppServiceI<P, R, HttpException> {
       car_vin: auction.vin,
       car_km: auction.vehicleDetails.odometer?.toString() || '0',
       car_price: amount.toString(),
-      tax: this.tax.toString(),
-      total_price: (amount + this.tax).toString(),
     });
 
     const url = await this.awsService.upload(
