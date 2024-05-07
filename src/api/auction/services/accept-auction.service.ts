@@ -55,45 +55,55 @@ export class AcceptAuctionService implements AppServiceI<P, R, HttpException> {
           responseType: 'arraybuffer',
         })
           .then(async (resp) => {
-            await this.mailerService.sendMail({
-              to: auction.bids[0].participant.email,
-              subject: 'Your Auction Has Been Won!',
-              template: 'auction-accept-dealer',
-              attachments: [{ content: resp.data, filename: 'contract.pdf' }],
-              context: {
-                dealerName: auction.bids[0].participant?.dealer?.name,
-                dropOff: auction.dropOffDate.toLocaleString(),
-                auctionNumber: auction.serial,
-                sellerName: auction.owner?.seller?.firstName,
-                sellerPhone: auction.owner?.seller?.phone,
-                url: this.config.get('server.frontUrl'),
-              },
-            });
+            await this.mailerService
+              .sendMail({
+                to: auction.bids[0].participant.email,
+                subject: 'Your Auction Has Been Won!',
+                template: 'auction-accept-dealer',
+                attachments: [{ content: resp.data, filename: 'contract.pdf' }],
+                context: {
+                  dealerName: auction.bids[0].participant?.dealer?.name,
+                  dropOff: auction.dropOffDate.toLocaleString(),
+                  auctionNumber: auction.serial,
+                  sellerName: auction.owner?.seller?.firstName,
+                  sellerPhone: auction.owner?.seller?.phone,
+                  url: this.config.get('server.frontUrl'),
+                },
+              })
+              .catch((err) => {
+                Logger.log(err);
+              });
             const dealerAddress = [
               auction.bids[0].participant?.address.line1,
               auction.bids[0].participant?.address.city,
               auction.bids[0].participant?.address.state,
               auction.bids[0].participant?.address.postal_code,
             ].join(', ');
-            await this.mailerService.sendMail({
-              to: auction.owner.email,
-              subject: 'Congratulations on selling your car!',
-              template: 'auction-accept-seller',
-              attachments: [{ content: resp.data, filename: 'contract.pdf' }],
-              context: {
-                sellerName: auction.owner?.seller?.firstName,
-                dropOff: auction.dropOffDate.toLocaleString(),
-                dealerName: auction.bids[0].participant?.dealer?.name,
-                dealerPhone: auction.bids[0].participant?.dealer?.phone,
-                dealerEmail: auction.bids[0].participant?.email,
-                dealerAddress,
-                url: this.config.get('server.frontUrl'),
-              },
-            });
+            await this.mailerService
+              .sendMail({
+                to: auction.owner.email,
+                subject: 'Congratulations on selling your car!',
+                template: 'auction-accept-seller',
+                attachments: [{ content: resp.data, filename: 'contract.pdf' }],
+                context: {
+                  sellerName: auction.owner?.seller?.firstName,
+                  dropOff: auction.dropOffDate.toLocaleString(),
+                  dealerName: auction.bids[0].participant?.dealer?.name,
+                  dealerPhone: auction.bids[0].participant?.dealer?.phone,
+                  dealerEmail: auction.bids[0].participant?.email,
+                  dealerAddress,
+                  url: this.config.get('server.frontUrl'),
+                },
+              })
+              .catch((err) => {
+                Logger.log(err);
+              });
           })
           .catch((err) => {
             Logger.log(err);
           });
+      } else {
+        Logger.log(payment.getLeft());
       }
       auction.status = AuctionStatusEnum.COMPLETED;
       auction.contractSeallerSing = url;
