@@ -8,9 +8,9 @@ import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Auction } from '@database/schemas/auction.schema';
 
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { User } from '@database/schemas/user.schema';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
+import { User } from '@database/schemas/user.schema';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 type R = number;
 
@@ -27,7 +27,7 @@ export class AuctionNotificationService
     private config: ConfigService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_8AM)
+  @Cron(CronExpression.EVERY_DAY_AT_NOON)
   async execute() {
     const startDate = new Date();
     const endDate = new Date().setDate(startDate.getDate() + 1);
@@ -36,8 +36,7 @@ export class AuctionNotificationService
     });
     if (auctions.length) {
       const users = await this.userModel.find({
-        email: 'osinubis99@gmail.com',
-        type: { $in: [UserTypeEnum.dealer, UserTypeEnum.seller] },
+        type: UserTypeEnum.dealer,
       });
       for (const user of users) {
         await this.mailerService.sendMail({
