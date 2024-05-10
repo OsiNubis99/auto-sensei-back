@@ -1,0 +1,27 @@
+<%- include('./partials/header'); %>
+  <h2 style="padding:0 20px;font-family:Whitney, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-weight:500;font-size:20px;color:#4f545c;letter-spacing:0.27px;">
+  Hi <%= locals.name %>,
+  </h2>
+  <p style="text-align: left;">
+    Thank you for choosing AutoSensei.
+    <br>
+    Attached, please find a PDF copy of your wholesale bill of sale, duly signed by both parties.
+    <br>
+    Regarding payment arrangements, it is the dealership's responsibility to facilitate payment to you. However, please note that the dealership reserves the right to cancel this transaction within 48 hours if undisclosed issues arise during inspection or to renegotiate the deal.
+    <br>
+    If you have any questions or need assistance, feel free to reach out to our support team at admin@autosensei.ca.
+    <br>
+    Warm regards,
+    <br>
+    AutoSensei Team
+  </p>
+  <div style="text-align: center;">
+    <a
+      href="<%= locals.url %>" target="_blank"
+      style="background-color: #c1f861; border-radius: 8px; color: black; font-weight: 600; align-items: center; padding:10px;text-decoration: none;" >
+      Go to Autosensei
+    </a>
+  </div>
+
+
+  <%- include('./partials/footer'); %>

@@ -1,0 +1,46 @@
+<%- include('./partials/header'); %>
+  <h2 style="padding:0 20px;font-family:Whitney, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-weight:500;font-size:20px;color:#4f545c;letter-spacing:0.27px;">
+  Hi <%= locals.dealerName %>,
+  </h2>
+  <p style="text-align: left;">
+    Congratulations on winning the auction through AutoSensei!
+    <br>
+    Here's the reference number for your auction: #<%= locals.auctionNumber %>.
+    <br>
+    The seller has indicated that the vehicle will be dropped off by <%= locals.dropOff %>.
+    <br>
+    Please coordinate with the seller to arrange a suitable drop-off time within your business hours.
+    <br>
+    Seller’s Contact Information:
+  </p>
+  <p style="margin: 5px 10px">
+    <%= locals.sellerName %> <%= locals.sellerPhone %>
+  </p>
+  <p style="text-align: left;">
+    <br>
+    You've been successfully charged $300 + tax via Stripe for the auction won.
+    <br>
+    Should there be any valid reasons for canceling the deal based on your final inspection, please inform us, and we'll initiate a refund for the processed payment after reviewing and confirming the reason to be valid..
+    <br>
+    Ensure clear communication with the seller regarding payment expectations. Upon receiving the vehicle, mark it as received in the completed auctions section on your dealer page to receive your final wholesale agreement via email.
+    <br>
+    Please make sure to verify that the ownership matches the Drivers License of the seller to protect your dealership from any fraudulent transactions.
+    <br>
+    Thank you once again for choosing AutoSensei.
+    <br>
+    For any inquiries or assistance, don't hesitate to reach out to admin@autosensei.ca.
+    <br>
+    Best Regards,
+    <br>
+    AutoSensei Team
+  </p>
+  <div style="text-align: center;">
+    <a
+      href="<%= locals.url %>" target="_blank"
+      style="background-color: #c1f861; border-radius: 8px; color: black; font-weight: 600; align-items: center; padding:10px;text-decoration: none;" >
+      Go to Autosensei
+    </a>
+  </div>
+
+
+  <%- include('./partials/footer'); %>

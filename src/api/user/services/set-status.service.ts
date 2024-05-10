@@ -36,7 +36,7 @@ export class SetStatuService implements AppServiceI<P, R, HttpException> {
     if (status == StatusEnum.active) {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Welcome to Autosensei',
+        subject: 'Your account has been approved!',
         template: 'account-approved',
         context: {
           url: this.config.get('server.frontUrl'),

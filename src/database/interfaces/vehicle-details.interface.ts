@@ -31,6 +31,8 @@ export class VehicleDetailsI {
   brakeCondition?: string;
   @Prop()
   brakeReplacement?: string;
+  @Prop()
+  repairs?: string;
 
   @Prop()
   trim: string;

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron } from '@nestjs/schedule';
 import { FilterQuery, Model } from 'mongoose';
@@ -110,7 +110,6 @@ export class AuctionService {
 
   @Cron('1 0,30 * * * *')
   async find() {
-    Logger.log('test crono');
     const auction = await this.auctionModel.find({
       status: { $in: [AuctionStatusEnum.UPCOMING, AuctionStatusEnum.LIVE] },
     });
