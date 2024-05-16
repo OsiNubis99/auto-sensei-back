@@ -90,12 +90,12 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       }
       if (user.type == UserTypeEnum.dealer) {
         if (!user.dealer) user.dealer = <DealerI>{};
-        user.dealer.phoneValidated = false;
+        user.dealer.phoneValidated = true;
       }
 
       if (user.type == UserTypeEnum.seller) {
         if (!user.seller) user.seller = <SellerI>{};
-        user.seller.phoneValidated = false;
+        user.seller.phoneValidated = true;
       }
     }
 
