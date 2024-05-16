@@ -35,13 +35,13 @@ export class User {
   })
   email: string;
 
-  @Prop()
+  @Prop({ type: SchemaFactory.createForClass(DealerI) })
   dealer: DealerI;
 
-  @Prop()
+  @Prop({ type: SchemaFactory.createForClass(SellerI) })
   seller: SellerI;
 
-  @Prop()
+  @Prop({ type: SchemaFactory.createForClass(AddressI) })
   address: AddressI;
 
   @Prop({ type: [mongooseSchema.Types.ObjectId], ref: PaymentMethod.name })

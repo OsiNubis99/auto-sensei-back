@@ -52,12 +52,12 @@ export class RegisterUserService implements AppServiceI<P, R, HttpException> {
     } else {
       if (seller) {
         user.type = UserTypeEnum.seller;
-        user.seller = seller;
+        user.seller = { ...seller, phoneValidated: false };
       }
 
       if (dealer) {
         user.type = UserTypeEnum.dealer;
-        user.dealer = dealer;
+        user.dealer = { ...dealer, phoneValidated: false };
       }
     }
 
