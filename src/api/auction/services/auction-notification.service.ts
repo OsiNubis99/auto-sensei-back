@@ -11,6 +11,7 @@ import { Auction } from '@database/schemas/auction.schema';
 import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { User } from '@database/schemas/user.schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 
 type R = number;
 
@@ -33,6 +34,7 @@ export class AuctionNotificationService
     const endDate = new Date().setDate(startDate.getDate() + 1);
     const auctions = await this.auctionModel.find({
       startDate: { $gte: startDate, $lte: endDate },
+      status: AuctionStatusEnum.UPCOMING,
     });
     if (auctions.length) {
       const users = await this.userModel.find({
