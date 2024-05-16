@@ -5,4 +5,5 @@ export class DealerI {
   name: string;
   omvic: string;
   phone?: string;
+  phoneValidated?: boolean;
 }

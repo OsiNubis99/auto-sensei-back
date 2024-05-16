@@ -4,4 +4,5 @@ export class SellerI {
   lastName: string;
   driverLicense: string;
   phone?: string;
+  phoneValidated?: boolean;
 }
