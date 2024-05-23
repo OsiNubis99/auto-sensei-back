@@ -67,6 +67,19 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
     }
 
     if (phone) {
+      if (user.type == UserTypeEnum.dealer) {
+        if (!user.dealer) user.dealer = <DealerI>{};
+        user.dealer.phone = phone;
+        user.dealer.phoneValidated = false;
+      }
+
+      if (user.type == UserTypeEnum.seller) {
+        if (!user.seller) user.seller = <SellerI>{};
+        user.seller.phone = phone;
+        user.seller.phoneValidated = false;
+      }
+    }
+    if (validationCode) {
       const phoneCode = await this.phoneCodeModel.findOne({
         phone: phone,
       });
@@ -77,12 +90,12 @@ export class UpdateUserService implements AppServiceI<P, R, HttpException> {
       }
       if (user.type == UserTypeEnum.dealer) {
         if (!user.dealer) user.dealer = <DealerI>{};
-        user.dealer.phone = phone;
+        user.dealer.phoneValidated = true;
       }
 
       if (user.type == UserTypeEnum.seller) {
         if (!user.seller) user.seller = <SellerI>{};
-        user.seller.phone = phone;
+        user.seller.phoneValidated = true;
       }
     }
 
