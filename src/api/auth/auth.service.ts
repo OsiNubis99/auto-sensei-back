@@ -33,7 +33,7 @@ export class AuthService {
     if (user) {
       if (user.status === StatusEnum.notvalidated)
         throw new HttpException(
-          { statusCode: 20001, message: 'Email do not exist' },
+          { statusCode: 20003, message: 'Email do not validated' },
           HttpStatus.UNAUTHORIZED,
         );
       if (user.status === StatusEnum.unaproved)
@@ -44,7 +44,7 @@ export class AuthService {
       if (await bcrypt.compare(password, user.password)) return user;
     }
     throw new HttpException(
-      { statusCode: 20001, message: 'Email do not exist' },
+      { statusCode: 20001, message: 'Credentials do not match' },
       HttpStatus.UNAUTHORIZED,
     );
   }
