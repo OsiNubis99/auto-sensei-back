@@ -65,8 +65,8 @@ export class AuctionController {
     response: 'Auction Document',
     roles: [UserTypeEnum.admin],
   })
-  forceNotification() {
-    return this.auctionNotificationService.execute();
+  forceNotification(@UserD() user: UserDocument) {
+    return this.auctionNotificationService.execute({ user });
   }
 
   @Get('/:_id')
