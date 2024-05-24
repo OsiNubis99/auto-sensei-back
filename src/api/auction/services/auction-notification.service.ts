@@ -10,11 +10,11 @@ import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Auction } from '@database/schemas/auction.schema';
-import { User } from '@database/schemas/user.schema';
+import { User, UserDocument } from '@database/schemas/user.schema';
 
-type P = { email?: string };
+type P = { user?: UserDocument };
 
-type R = number;
+type R = { auctions: number; users: number };
 
 @Injectable()
 export class AuctionNotificationService
@@ -30,18 +30,20 @@ export class AuctionNotificationService
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
-  async execute({ email }: P) {
+  async execute({ user }: P) {
     const startDate = new Date();
     const endDate = new Date().setDate(startDate.getDate() + 1);
     const auctions = await this.auctionModel.find({
       startDate: { $gte: startDate, $lte: endDate },
       status: AuctionStatusEnum.UPCOMING,
     });
+    let users = [user];
     if (auctions.length) {
-      const users = await this.userModel.find({
-        email,
-        type: UserTypeEnum.dealer,
-      });
+      if (!users.length) {
+        users = await this.userModel.find({
+          type: UserTypeEnum.dealer,
+        });
+      }
       for (const user of users) {
         await this.mailerService.sendMail({
           to: user.email,
@@ -57,6 +59,6 @@ export class AuctionNotificationService
         });
       }
     }
-    return Either.makeRight(auctions.length);
+    return Either.makeRight({ auctions: auctions.length, users: users.length });
   }
 }
