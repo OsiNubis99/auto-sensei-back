@@ -2,22 +2,23 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 
+import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Auction } from '@database/schemas/auction.schema';
-
-import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { User } from '@database/schemas/user.schema';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
+
+type P = { email?: string };
 
 type R = number;
 
 @Injectable()
 export class AuctionNotificationService
-  implements AppServiceI<null, R, HttpException>
+  implements AppServiceI<P, R, HttpException>
 {
   constructor(
     @InjectModel(Auction.name)
@@ -29,7 +30,7 @@ export class AuctionNotificationService
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
-  async execute() {
+  async execute({ email }: P) {
     const startDate = new Date();
     const endDate = new Date().setDate(startDate.getDate() + 1);
     const auctions = await this.auctionModel.find({
@@ -38,12 +39,13 @@ export class AuctionNotificationService
     });
     if (auctions.length) {
       const users = await this.userModel.find({
+        email,
         type: UserTypeEnum.dealer,
       });
       for (const user of users) {
         await this.mailerService.sendMail({
           to: user.email,
-          subject: 'Todays Auctions!',
+          subject: 'Happy Bidding - AutoSensei',
           template: 'auction-notification',
           context: {
             baseUrl: `http://${process.env.AWS_BUCKET}/`,

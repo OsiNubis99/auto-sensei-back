@@ -66,7 +66,9 @@ export class AuctionController {
     roles: [UserTypeEnum.admin],
   })
   forceNotification() {
-    return this.auctionNotificationService.execute();
+    return this.auctionNotificationService.execute({
+      email: 'ahurtado.wc@gmail.com',
+    });
   }
 
   @Get('/:_id')
