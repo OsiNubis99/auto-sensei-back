@@ -2,7 +2,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
@@ -29,7 +28,7 @@ export class AuctionNotificationService
     private config: ConfigService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON)
+  // @Cron(CronExpression.EVERY_DAY_AT_NOON)
   async execute({ user }: P) {
     const startDate = new Date();
     const endDate = new Date().setDate(startDate.getDate() + 1);
