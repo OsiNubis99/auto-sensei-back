@@ -1,6 +1,6 @@
 export enum MessageReasonEnum {
   newMessageSended = 'newMessageSended',
-  newMessageRecived = 'newMessageReceived',
+  newMessageReceived = 'newMessageReceived',
   auctionUpdate = 'auctionUpdate',
   subscribedAuctionStarted = 'subscribedAuctionStarted',
   bidExceeded = 'bidExceeded',

@@ -34,6 +34,7 @@ import { CreateContractService } from './services/create-contract.service';
 import { DropOffAuctionService } from './services/drop-off-auction.service';
 import { GetAuctionService } from './services/get-auction.service';
 import { GetCurrentBidsAuctionsService } from './services/get-current-bids-auctions.service';
+import { LaunchAuctionService } from './services/launch-auction.service';
 import { RemoveAuctionRemindService } from './services/remove-auction-remind.service';
 import { UpdateAuctionService } from './services/update-auction.service';
 import { UpdateBidService } from './services/update-bid.service';
@@ -44,6 +45,7 @@ import { ValorateAuctionService } from './services/valorate-auction.service';
 export class AuctionController {
   constructor(
     private readonly auctionNotificationService: AuctionNotificationService,
+    private readonly launchAuctionService: LaunchAuctionService,
     private readonly acceptAuctionService: AcceptAuctionService,
     private readonly dropOffAuctionService: DropOffAuctionService,
     private readonly addAuctionRemindService: AddAuctionRemindService,
@@ -67,6 +69,16 @@ export class AuctionController {
   })
   forceNotification(@UserD() user: UserDocument) {
     return this.auctionNotificationService.execute({ user });
+  }
+
+  @Get('/force-launch/:_id')
+  @AuthRequest({
+    description: 'Forces launch by ID',
+    response: 'Auction Document',
+    roles: [UserTypeEnum.admin],
+  })
+  forceLaunch(@Param() { _id }: IdDto) {
+    return this.launchAuctionService.execute({ _id });
   }
 
   @Get('/:_id')
