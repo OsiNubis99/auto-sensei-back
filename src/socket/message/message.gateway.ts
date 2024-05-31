@@ -97,7 +97,7 @@ export class MessageGateway
           ? message.auction.owner._id.toString()
           : message.participant._id.toString(),
         message,
-        MessageReasonEnum.newMessageRecived,
+        MessageReasonEnum.newMessageReceived,
       );
       this.broadcast(userId, message, MessageReasonEnum.newMessageSended);
       return messageResponse;
