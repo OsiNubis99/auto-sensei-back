@@ -1,15 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
+import VinDecoderService from '@common/services/vin-decoder.service';
+import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
-
 import { CreateAuctionDto } from '../dto/create-auction.dto';
-import VinDecoderService from '@common/services/vin-decoder.service';
 
 type P = CreateAuctionDto & {
   user: UserDocument;
@@ -26,15 +26,15 @@ export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
   ) {}
 
   async execute({ user, vin, ...param }: P) {
-    const vinResponse = await this.vinApiService.getCarData(vin);
-    if (vinResponse.isLeft()) {
-      return Either.makeLeft(
-        new HttpException(
-          vinResponse.getLeft().message,
-          HttpStatus.BAD_REQUEST,
-        ),
-      );
-    }
+    // const vinResponse = await this.vinApiService.getCarData(vin);
+    // if (vinResponse.isLeft()) {
+    //   return Either.makeLeft(
+    //     new HttpException(
+    //       vinResponse.getLeft().message,
+    //       HttpStatus.BAD_REQUEST,
+    //     ),
+    //   );
+    // }
     const auction = new this.auctionModel();
 
     auction.owner = user;
@@ -45,7 +45,10 @@ export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
     }
 
     auction.status = AuctionStatusEnum.DRAFT;
-    auction.vehicleDetails = vinResponse.getRight();
+    // auction.vehicleDetails = vinResponse.getRight();
+    auction.vehicleDetails = <VehicleDetailsI>{
+      vin,
+    };
 
     return Either.makeRight(await auction.save());
   }
