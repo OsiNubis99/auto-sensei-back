@@ -38,6 +38,11 @@ export class UpdateAuctionService implements AppServiceI<P, R, HttpException> {
     ...param
   }: P) {
     const auction = await this.auctionModel.findOne({ _id }).populate('owner');
+    if (!auction) {
+      return Either.makeLeft(
+        new HttpException('Auction not found', HttpStatus.NOT_FOUND),
+      );
+    }
     if (
       user.type === UserTypeEnum.admin ||
       user._id.equals(auction.owner._id)
