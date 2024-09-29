@@ -1,11 +1,10 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
-import VinDecoderService from '@common/services/vin-decoder.service';
 import { VehicleDetailsI } from '@database/interfaces/vehicle-details.interface';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
 import { UserDocument } from '@database/schemas/user.schema';
@@ -22,10 +21,10 @@ export class CreateAuctionService implements AppServiceI<P, R, HttpException> {
   constructor(
     @InjectModel(Auction.name)
     private auctionModel: Model<Auction>,
-    private vinApiService: VinDecoderService,
   ) {}
 
   async execute({ user, vin, ...param }: P) {
+    Logger.log(vin, 'vin');
     // const vinResponse = await this.vinApiService.getCarData(vin);
     // if (vinResponse.isLeft()) {
     //   return Either.makeLeft(
