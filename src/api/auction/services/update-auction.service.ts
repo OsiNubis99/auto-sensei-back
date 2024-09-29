@@ -61,6 +61,7 @@ export class UpdateAuctionService implements AppServiceI<P, R, HttpException> {
       if (vehicleDetails) {
         const newVehicleDehtails = <VehicleDetailsI>{
           ...auction.vehicleDetails,
+          vin,
         };
         for (const key of Object.keys(vehicleDetails)) {
           newVehicleDehtails[key] = vehicleDetails[key];
