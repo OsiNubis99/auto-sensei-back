@@ -45,7 +45,7 @@ export class LaunchAuctionService implements AppServiceI<P, R, HttpException> {
       if (currentDate.getUTCHours() > 21) {
         currentDate.setDate(currentDate.getDate() + 1);
       }
-      currentDate.setUTCHours(13, 0, 0);
+      currentDate.setUTCHours(14, 0, 0);
 
       auction.startDate = currentDate;
 
