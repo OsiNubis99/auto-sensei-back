@@ -109,13 +109,22 @@ export class AuctionController {
     return this.createAuctionService.execute({ user, ...body });
   }
 
-  @Post('/find-all')
+  @Post('/find')
   @AuthRequest({
     description: 'List auctions',
     response: 'Auction Document',
   })
-  findAll(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
+  find(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
     return this.getAuctionService.execute({ user, ...data });
+  }
+
+  @Post('/find-my-auctions')
+  @AuthRequest({
+    description: 'List auctions',
+    response: 'Auction Document',
+  })
+  findMyAuctions(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
+    return this.getAuctionService.execute({ myAuctions: true, user, ...data });
   }
 
   @Post('/find/current-bids')

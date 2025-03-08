@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
 import { AuctionStatusEnum } from '@common/enums/auction-status.enum';
-import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { AppServiceI } from '@common/generics/app-service.interface';
 import { Either } from '@common/generics/either';
 import { Auction, AuctionDocument } from '@database/schemas/auction.schema';
@@ -13,6 +12,7 @@ import { AuctionService } from '../auction.service';
 import { FilterAuctionDto } from '../dto/filter-auction.dto';
 
 type P = FilterAuctionDto & {
+  myAuctions?: boolean;
   user: UserDocument;
 };
 
@@ -26,16 +26,16 @@ export class GetAuctionService implements AppServiceI<P, R, HttpException> {
     private auctionService: AuctionService,
   ) {}
 
-  async execute({ user, sortBy, ...filters }: P) {
+  async execute({ myAuctions, user, sortBy, ...filters }: P) {
     let filter: FilterQuery<Auction> = {};
-    if (user.type == UserTypeEnum.seller) {
+    if (myAuctions) {
       filter = {
         owner: user._id,
         status: { $nin: [AuctionStatusEnum.DELETED] },
       };
-    }
-    if (user.type == UserTypeEnum.dealer) {
+    } else {
       filter = {
+        owner: { $ne: user._id },
         $or: [
           {
             status: {
