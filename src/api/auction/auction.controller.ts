@@ -122,6 +122,7 @@ export class AuctionController {
   @AuthRequest({
     description: 'List auctions',
     response: 'Auction Document',
+    roles: [UserTypeEnum.seller],
   })
   findMyAuctions(@UserD() user: UserDocument, @Body() data: FilterAuctionDto) {
     return this.getAuctionService.execute({ myAuctions: true, user, ...data });
