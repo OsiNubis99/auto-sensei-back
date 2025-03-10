@@ -10,6 +10,7 @@ import { UserDocument } from '@database/schemas/user.schema';
 
 import { AuctionService } from '../auction.service';
 import { FilterAuctionDto } from '../dto/filter-auction.dto';
+import { UserTypeEnum } from '@common/enums/user-type.enum';
 
 type P = FilterAuctionDto & {
   myAuctions?: boolean;
@@ -34,30 +35,32 @@ export class GetAuctionService implements AppServiceI<P, R, HttpException> {
         status: { $nin: [AuctionStatusEnum.DELETED] },
       };
     } else {
-      filter = {
-        owner: { $ne: user._id },
-        $or: [
-          {
-            status: {
-              $in: [AuctionStatusEnum.UPCOMING],
+      if (user.type !== UserTypeEnum.admin) {
+        filter = {
+          owner: { $ne: user._id },
+          $or: [
+            {
+              status: {
+                $in: [AuctionStatusEnum.UPCOMING],
+              },
             },
-          },
-          {
-            status: AuctionStatusEnum.LIVE,
-            'bids.participant': { $ne: user._id },
-          },
-          {
-            status: {
-              $in: [AuctionStatusEnum.COMPLETED, AuctionStatusEnum.DROP_OFF],
+            {
+              status: AuctionStatusEnum.LIVE,
+              'bids.participant': { $ne: user._id },
             },
-            'bids.participant': user._id,
-          },
-          {
-            status: { $ne: AuctionStatusEnum.DELETED },
-            'valuation.user': user._id,
-          },
-        ],
-      };
+            {
+              status: {
+                $in: [AuctionStatusEnum.COMPLETED, AuctionStatusEnum.DROP_OFF],
+              },
+              'bids.participant': user._id,
+            },
+            {
+              status: { $ne: AuctionStatusEnum.DELETED },
+              'valuation.user': user._id,
+            },
+          ],
+        };
+      }
     }
     for (const key of Object.keys(filters)) {
       switch (key) {
