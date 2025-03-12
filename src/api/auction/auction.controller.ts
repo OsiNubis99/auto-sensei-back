@@ -141,7 +141,6 @@ export class AuctionController {
   @AuthRequest({
     description: 'Create a new bid',
     response: 'Auction Document',
-    roles: [UserTypeEnum.dealer],
   })
   createBid(
     @Param() { _id }: IdDto,
