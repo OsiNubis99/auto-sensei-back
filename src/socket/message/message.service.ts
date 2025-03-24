@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { WsException } from '@nestjs/websockets';
 import { isValidObjectId, Model } from 'mongoose';
 
-import { UserTypeEnum } from '@common/enums/user-type.enum';
 import { Either } from '@common/generics/either';
 import { Auction } from '@database/schemas/auction.schema';
 import { Chat } from '@database/schemas/chat.schema';
@@ -57,14 +56,16 @@ export class MessageService {
     if (!user) {
       return Either.makeLeft(new WsException('user invalid'));
     }
-    if (user.type == UserTypeEnum.seller)
-      return Either.makeRight(
-        await this.chatModel
-          .find({})
-          .then((chats) =>
-            chats.filter((chat) => chat.auction?.owner._id.equals(user._id)),
+    return Either.makeRight(
+      await this.chatModel
+        .find({})
+        .then((chats) =>
+          chats.filter(
+            (chat) =>
+              chat.auction?.owner._id.equals(user._id) ||
+              chat.participant._id.equals(user._id),
           ),
-      );
-    return Either.makeRight(await this.chatModel.find({ participant: user }));
+        ),
+    );
   }
 }
