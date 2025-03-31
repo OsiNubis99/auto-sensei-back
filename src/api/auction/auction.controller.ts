@@ -277,7 +277,7 @@ export class AuctionController {
   @AuthRequest({
     description: 'Set drop off an Auction',
     response: 'Auction Document',
-    roles: [UserTypeEnum.dealer],
+    roles: [UserTypeEnum.dealer, UserTypeEnum.seller],
   })
   dropOff(
     @Param() { _id }: IdDto,
