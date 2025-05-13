@@ -10,6 +10,7 @@ export class UploaderService {
   constructor(private awsService: AWSService) {}
 
   async create(body: UploaderDto, file: Express.Multer.File) {
+    console.log(JSON.stringify({ body, file }, null, 2));
     Logger.log(file.mimetype);
     if (!MineTypes[file.mimetype]) {
       throw new HttpException(
