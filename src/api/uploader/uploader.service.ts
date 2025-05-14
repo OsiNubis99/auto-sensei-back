@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { UploaderDto } from './dto/uploader.dto';
 
@@ -10,8 +10,6 @@ export class UploaderService {
   constructor(private awsService: AWSService) {}
 
   async create(body: UploaderDto, file: Express.Multer.File) {
-    console.log(JSON.stringify({ body, file }, null, 2));
-    Logger.log(file.mimetype);
     if (!MineTypes[file.mimetype]) {
       throw new HttpException(
         'BAD_REQUEST: file is invalid',

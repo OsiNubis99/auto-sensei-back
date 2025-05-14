@@ -3,6 +3,7 @@ export enum MineTypes {
   'image/jpeg' = 'jpeg',
   'image/png' = 'png',
   'image/webp' = 'webp',
+  'image/heif' = 'heic',
   'image/gif' = 'gif',
   'video/mp4' = 'mp4',
   'video/mpeg' = 'mpeg',
