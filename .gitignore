@@ -1,8 +1,7 @@
 #Env
 .env
 
-#Deps
-yarn.lock
+#Deps (yarn.lock SÍ se commitea para builds deterministas)
 package-lock.json
 
 # compiled output
