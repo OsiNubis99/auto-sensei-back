@@ -19,10 +19,8 @@ env:
   ECS_SERVICE: autosensei-prod-back
   TASK_DEFINITION_FAMILY: autosensei-prod-back
   CONTAINER_NAME: back
-  # TODO: reemplazar <ACCOUNT_ID> con el Account ID real después de crear la
-  # cuenta AWS y aplicar el módulo github-oidc de Terraform. Se obtiene con:
-  #   terraform output -raw github_actions_back_role_arn
-  AWS_ROLE_ARN: arn:aws:iam::<ACCOUNT_ID>:role/autosensei-prod-gha-back
+  # El rol se crea cuando se aplique el módulo github-oidc de Terraform.
+  AWS_ROLE_ARN: arn:aws:iam::972971302437:role/autosensei-prod-gha-back
 
 jobs:
   deploy:
