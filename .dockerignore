@@ -1,0 +1,34 @@
+# Dependencias (se instalan en el build stage)
+node_modules
+npm-debug.log
+
+# Env files (secretos van por Secrets Manager)
+.env
+.env.*
+!.env.example
+
+# Build output (se genera dentro del container)
+dist
+coverage
+
+# Git
+.git
+.gitignore
+
+# IDEs / OS
+.idea
+.vscode
+.DS_Store
+
+# Logs
+*.log
+
+# Testing
+.nyc_output
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Docs
+README.md
