@@ -1,11 +1,8 @@
 name: Deploy to prod (ECS Fargate)
 
 on:
-  # Activar el trigger de push cuando la infra de AWS esté lista
-  # (Fase 7 del plan — después de aplicar módulo github-oidc y reemplazar
-  # <ACCOUNT_ID> en AWS_ROLE_ARN más abajo).
-  # push:
-  #   branches: [master]
+  push:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
