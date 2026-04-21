@@ -16,11 +16,17 @@ RUN yarn build
 FROM node:22-alpine
 WORKDIR /app
 
-# Copiar artefactos del build stage
+# Artefactos del build
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+
+# PDF templates (usadas por pdfml/html-pdf-node en el flujo de contratos)
 COPY --from=builder /app/templates ./templates
-COPY package.json ./
+
+# Email templates (referenciadas por mailer.module.ts con path relativo
+# 'src/mailer/templates/' — los .ejs NO se compilan, hay que copiarlos)
+COPY --from=builder /app/src/mailer/templates ./src/mailer/templates
 
 ENV NODE_ENV=production
 EXPOSE 3000
