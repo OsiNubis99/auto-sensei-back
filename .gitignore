@@ -1,5 +1,7 @@
-#Env
+#Env (todas las variantes con secretos; .env.example SÍ se commitea)
 .env
+.env.*
+!.env.example
 
 #Deps (yarn.lock SÍ se commitea para builds deterministas)
 package-lock.json

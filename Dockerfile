@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---------- Stage 1: build ----------
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Instalar dependencias
@@ -13,7 +13,7 @@ COPY . .
 RUN yarn build
 
 # ---------- Stage 2: runtime ----------
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 
 # Copiar artefactos del build stage
