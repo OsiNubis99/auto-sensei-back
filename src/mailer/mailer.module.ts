@@ -8,30 +8,33 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     NestMailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          host: configService.get<string>('mailer.host'),
-          port: configService.get<string>('mailer.port'),
-          secureConnection: false,
-          tls: {
-            ciphers: 'SSLv3',
+      useFactory: async (configService: ConfigService) => {
+        const port = Number(configService.get<string>('mailer.port'));
+        return {
+          transport: {
+            host: configService.get<string>('mailer.host'),
+            port,
+            // 465 → SSL directo; 587 → STARTTLS (upgrade en caliente).
+            secure: port === 465,
+            auth: {
+              user: configService.get<string>('mailer.user'),
+              pass: configService.get<string>('mailer.pass'),
+            },
           },
-          auth: {
-            user: configService.get<string>('mailer.user'),
-            pass: configService.get<string>('mailer.pass'),
+          defaults: {
+            from:
+              configService.get<string>('mailer.from') ||
+              `"AutoSensei" <${configService.get<string>('mailer.user')}>`,
           },
-        },
-        defaults: {
-          from: '"No Reply" <admin@autosensei.ca>',
-        },
-        template: {
-          dir: 'src/mailer/templates/',
-          adapter: new EjsAdapter({ inlineCssEnabled: true }),
-          options: {
-            strict: true,
+          template: {
+            dir: 'src/mailer/templates/',
+            adapter: new EjsAdapter({ inlineCssEnabled: true }),
+            options: {
+              strict: true,
+            },
           },
-        },
-      }),
+        };
+      },
     }),
   ],
 })

@@ -22,6 +22,10 @@ export const MailerConfig = registerAs('mailer', (): MailerConfigI => {
       value: process.env.MAILER_PASS,
       joi: Joi.string().required(),
     },
+    from: {
+      value: process.env.MAILER_FROM,
+      joi: Joi.string().optional().allow(''),
+    },
   };
 
   return JoiUtil.validate(configs);
